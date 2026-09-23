@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<!-- 量价趋势 · v7.2（2026-09-23）：图例指标简介 ⓘ 全量——相对强度（v6.15 起）之外的六个指标（融资强度/站上20日线/指数乖离率/拥挤度/恐慌指标/站上30日线）图例按钮右侧新增 ⓘ 图标，点击弹一句话读法简介（RS_TIP 泛化为 SERIES_TIPS 注册表，复用 toggleRefTip 毛玻璃弹窗，ⓘ 拦截不触发开关）；图注「指标口径」补 融资强度＝两融余额÷流通市值×100%；布局/数据零改动 -->
 <!-- 量价趋势 · v7.1（2026-09-23）：移动端响应式适配 + 图注折叠 + 表 1 更新——①图例组/按钮去掉 415px/100px 写死宽，≤640px 时整组满宽、按钮等分自动换行；②图表左右边距由固定 84px 改为随屏宽动态计算（手机 52px/平板 72px/桌面 84px），CSS 面板框经 --grid-margin 变量同步，buildXLabelSet 的 168 硬编码改为 2×动态边距；③参考线胶囊新增窄屏短文案（加仓/减仓/抄底/拥挤/过热/恐慌…），resize 时同步切换；④窄屏下图表加高至 560px、胶囊/表格/卡片内边距收紧、wrap 加 overflow-x 防横向滚动；⑤图注长段文字改为「注 ⓘ」毛玻璃按钮 + 点击展开的口径说明面板（参考阈值/指标口径两层精简文案）；⑥表 1 用当日鲜活的涨跌停家数替换两融余额列（两融公布滞后一日、最新日恒显 --，曲线仍保留在图例可开）；⑦表 1 最终定型为四指标状态词——不显示指标名，大字直给状态（超买/超卖/中性、拥挤/偏冷/正常、恐慌/平稳、大盘强/小盘强），数值与阈值缩入注释行；⑧表 1 状态词升级为活性玻璃胶囊（着色玻璃质感，状态由当日数据驱动、与图 1 参考线同源联动，盘面变化胶囊即变），注释行数字全部移除，点击胶囊弹出该指标完整状态谱（当前态着色高亮，点空白收起）；⑨时间滑动条玻璃化——磨砂浅槽轨道(圆角)+白色玻璃渐变选中窗+白玻璃描边手柄，与 range-tabs/胶囊组件语言统一。桌面端布局与数据零改动 -->
 <!-- 量价趋势 · v7.0（2026-09-22）：质感改版里程碑（v6.12–v6.15 四轮累计，布局/数据全程零改动）——「学术期刊风 × Apple 玻璃拟态」定型：真玻璃卡片（半透磨砂+渐变边缘光）、iOS 分段控件时间页签、系列色着色玻璃图例（on/off 单向着色区分）、曲线色板去撞色+线宽统一+浮起投影+三停辉光、参考线实线化+玻璃胶囊、相对强度解读迁入图例 ⓘ、背景环境辉光加倍。自本版起主版本号 7 -->
 <!-- 量价趋势 · v6.15（2026-09-22）：细节四项——①参考线点划线 [4,3]/1.7px 改 1.5px 圆头实线（跌停零轴虚线同步改实线）；②指数乖离率胶囊「超买 +5%/超卖 -5%」删数值只留「超买/超卖」（数值仍在点击简介里）；③相对强度 Tips 胶囊从图框右上角移除（突兀），信息迁入图例「相对强度」按钮右侧 ⓘ 图标——点击弹同一毛玻璃简介（legend-bar 事件委托优先拦截 .legend-info，不触发开关），REF_TAGS 删 rs 项、tip 文本提取为 RS_TIP 常量；版式/数据零改动 -->
@@ -293,6 +294,7 @@ body{background-color:var(--parchment);background-image:radial-gradient(1100px 5
         <p>· 恐慌指标（基于中证2000）——20 日对数收益率样本标准差×√244 年化；≥40%＝高波动恐慌区</p>
         <b>指标口径</b>
         <p>· 成交额＝剔除北交所后的沪深两市合计</p>
+        <p>· 融资强度＝两融余额÷流通市值×100%</p>
         <p>· 站上30日线＝收盘价高于30日均线的个股比例（当日有该均线数据的个股）</p>
         <p>· 涨跌停家数＝收盘价等于当日限价（前收盘价×(1±板块涨跌幅比例)，四舍五入到分）且盘中未越线；主板 ±10%（ST ±5%）、创业板注册制后与科创板 ±20%、北交所 ±30%；上市首日与无涨跌幅限制窗口内的新股不计入。副图 1 中涨停正向（红）绘制、跌停负向（绿）绘制，右侧家数轴显示绝对家数</p>
         <p>· 相对强度＝中证2000/沪深300 收盘比值（2013-12-31 起，中证2000 基数日）</p>
@@ -519,8 +521,16 @@ const REF_TAGS={
   1:[{series:'站上20日线_副图1',type:'reduce',axis:2,value:CFG.reduceLine20,label:"下穿减仓线 "+CFG.reduceLine20+"%",slabel:"减仓",tip:{t:'下穿减仓线 45%',text:'低于45%＝多数个股跌破20日线，短线转弱按规则减仓'}},{series:'成交额_副图1',type:'amt',axis:4,value:CFG.amtLine,label:(CFG.amtLine/CFG.yiSplit).toFixed(0)+"万亿",slabel:"2万亿",tip:{t:'成交额 2万亿',text:'高于2万亿＝交投过热警惕放量滞涨，低于＝量能正常'}},{series:'涨停家数_副图1',type:'crowd',axis:3,value:CFG.limitUpLine,label:"过热 "+CFG.limitUpLine+"家",slabel:"过热",tip:{t:'涨停过热线 130家',text:'单日涨停≥130家＝短线情绪过热，次日分歧概率大'}},{series:'跌停家数_副图1',type:'bottom',axis:3,value:-CFG.limitDownLine,label:"恐慌 "+CFG.limitDownLine+"家",slabel:"恐慌",tip:{t:'跌停恐慌线 50家',text:'单日跌停≥50家＝恐慌抛售扩散，常临近阶段底'}},{series:'指数乖离率_副图1',type:'crowd',axis:2,value:CFG.biasExtLine,label:"超买",tip:{t:'乖离超买线 +5%',text:'高于+5%＝短期涨速过快，追高风险'}},{series:'指数乖离率_副图1',type:'bottom',axis:2,value:-CFG.biasExtLine,label:"超卖",tip:{t:'乖离超卖线 −5%',text:'低于−5%＝短期超卖，常有修复'}}],
   2:[{series:'拥挤度_副图2',type:'crowd',axis:5,value:CFG.crowdLine*100,label:"拥挤线 "+(CFG.crowdLine*100)+"%",slabel:"拥挤",tip:{t:'拥挤线 45%',text:'高于45%＝资金拥挤结构脆弱，低于＝结构分散更健康'}},{series:'站上30日线_副图2',type:'add',axis:5,value:CFG.addLine30,label:"上穿加仓线 "+CFG.addLine30+"%",slabel:"加仓",tip:{t:'上穿加仓线 50%',text:'高于50%＝中期广度转强确认，按规则加仓'}},{series:'站上30日线_副图2',type:'bottom',axis:5,value:CFG.bottomLine,label:"下穿抄底线 "+CFG.bottomLine+"%",slabel:"抄底",tip:{t:'下穿抄底线 15%',text:'低于15%＝深度恐慌区，常有超跌反弹'}},{series:'恐慌指标_副图2',type:'hv',axis:5,value:CFG.hvWarnLine,label:"恐慌 "+CFG.hvWarnLine+"%",slabel:"恐慌",tip:{t:'恐慌线 40%（年化波动）',text:'高于40%＝高波动恐慌，多见于暴跌后'}}]
 };
-// v6.15：相对强度解读从图框右上角 Tips 胶囊迁至图例按钮 ⓘ 图标（点击弹同一简介），图面不再有悬置胶囊
-const RS_TIP={t:'相对强度 · 大小盘风格计',text:'上行小盘占优、下行大盘占优、拐头风格切换'};
+// v7.2：图例指标一句话简介注册表（相对强度 v6.15 起，其余六指标 v7.2 追加）——点击图例按钮右侧 ⓘ 弹出；t=指标名·定位词，text=一句话读法（阈值语义由参考线药丸 tip 承担，不重复）
+const SERIES_TIPS={
+  '融资强度':{t:'融资强度 · 杠杆温度计',text:'上行＝杠杆加码、下行＝杠杆退潮、持续高位＝情绪过热'},
+  '站上20日线':{t:'站上20日线 · 短线效应',text:'骤降＝短线情绪快速转弱'},
+  '指数乖离率':{t:'指数乖离率 · 短期涨速',text:'过高＝涨速过快（有追高风险）、过低＝超跌（常有修复）'},
+  '拥挤度':{t:'拥挤度 · 资金抱团度',text:'上行＝资金抱团、过高＝结构脆弱、回落＝抱团瓦解'},
+  '恐慌指标':{t:'恐慌指标 · 波动率温度',text:'升高＝恐慌升温、极高＝恐慌极值、回落＝情绪修复'},
+  '站上30日线':{t:'站上30日线 · 中期趋势',text:'上行＝中期趋势转强、下行＝中期趋势走弱、极低位＝恐慌超跌'},
+  '相对强度':{t:'相对强度 · 大小盘风格计',text:'上行小盘占优、下行大盘占优、拐头风格切换'}
+};
 // 胶囊点击简介（v6.5）：单例毛玻璃浮层，展示"高于/低于"语义；点击空白、滚轮、缩放、图例切换（positionRefTags 开头）自动关闭
 let refTipEl=null,refTipAnchor=null;
 const hideRefTip=()=>{if(refTipEl)refTipEl.style.display='none';refTipAnchor=null};
@@ -592,8 +602,9 @@ function renderLegend(){
       btn.setAttribute('aria-pressed',String(on));
       btn.style.setProperty('--sc',color); // v6.12 选中态着色玻璃取色源
       btn.innerHTML=`<span class="legend-line" style="background:${color}"></span>${label}`;
-      if(name==='相对强度_副图2'){ // v6.15：解读信息迁入按钮右侧 ⓘ，点击弹简介（不触发开关）
-        const ic=document.createElement('span');ic.className='legend-info';ic.textContent='i';ic.title='相对强度解读';btn.appendChild(ic);
+      const tip=SERIES_TIPS[base]; // v6.15 起相对强度、v7.2 追加其余六指标：有简介的图例按钮右侧加 ⓘ，点击弹一句话简介（不触发开关）
+      if(tip){
+        const ic=document.createElement('span');ic.className='legend-info';ic.textContent='i';ic.title=base+'解读';btn.appendChild(ic);
       }
       container.appendChild(btn);
     });
@@ -969,7 +980,13 @@ function toggleSeries(name){
 // 图例 pill：事件委托，支持动态生成与后续重渲染；ⓘ 简介图标优先拦截（stopPropagation 防止触发开关与全局关闭顺序颠倒）
 document.querySelector('.legend-bar').addEventListener('click',e=>{
   const info=e.target.closest('.legend-info');
-  if(info){e.stopPropagation();toggleRefTip(info,RS_TIP);return}
+  if(info){
+    e.stopPropagation();
+    const owner=info.closest('.legend-item[data-series]');
+    const tip=owner?SERIES_TIPS[ratioBaseName(owner.dataset.series)]:null; // v7.2：按按钮所属系列取注册表简介（v6.15 起仅相对强度）
+    if(tip)toggleRefTip(info,tip);
+    return
+  }
   const btn=e.target.closest('.legend-item[data-series]');
   if(btn)toggleSeries(btn.dataset.series);
 });
