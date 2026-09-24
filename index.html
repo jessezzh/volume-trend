@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<!-- 量价趋势 · v7.3（2026-09-24）：融资强度参考线定档——按全序列分布+前瞻收益检验标注三处：①2.2% 退冰点（蓝，低于＝杠杆退潮至冰点档，2020年以来该档未来60日胜率仅13%）；②2.2%~2.6% 健康区（淡绿半透明色带+绿药丸，占2016年以来约2/3交易日）；③2.8% 过热线（橙，2020年以来该档未来60日平均−7.2%、胜率0%）；三条均可点击弹简介，与既有参考线同一语言（1.5px 圆头实线+框外毛玻璃药丸）；CFG 新增 rzThaw/rzHealthTop/rzHot，REF_STYLE 新增 health 色型；2.6~2.8 偏热档按 Jesse 决定留空不标。口径依据：仪表盘 rawData 融资强度序列 2010-03-31~2026-09-22（4004 交易日），近代数值与 Choice/Wind 公开口径逐点核验一致（2026-05-25 2.71 vs 2.72、2026-06-23 2.82 vs 2.83）。布局/数据零改动 -->
+<!-- 量价趋势 · v7.3（2026-09-24）：融资强度参考线定档——按全序列分布+前瞻收益检验标注三处：①2.2% 冰点（蓝，低于＝杠杆退潮至冰点档）；②2.2%~2.6% 健康区（淡绿半透明色带+绿药丸，占2016年以来约2/3交易日）；③2.8% 过热线（橙，2020年以来该档未来60日平均−7.2%、胜率0%）；三条均可点击弹简介，与既有参考线同一语言（1.5px 圆头实线+框外毛玻璃药丸）；CFG 新增 rzThaw/rzHealthTop/rzHot，REF_STYLE 新增 health 色型；2.6~2.8 偏热档按 Jesse 决定留空不标。口径依据：仪表盘 rawData 融资强度序列 2010-03-31~2026-09-22（4004 交易日），近代数值与 Choice/Wind 公开口径逐点核验一致（2026-05-25 2.71 vs 2.72、2026-06-23 2.82 vs 2.83）。同日文案定稿（Jesse）：药丸去数值——冰点/健康/过热；点击简介精简为「杠杆退潮至冰点，2020以来未来胜率仅13%」「杠杆健康常态」「杠杆过热预警，2020年以来该档未来60日平均 -7.2」（药丸名目定为 冰点/健康/过热）。布局/数据零改动 -->
 <!-- 量价趋势 · v7.2（2026-09-23）：图例指标简介 ⓘ 全量——相对强度（v6.15 起）之外的六个指标（融资强度/站上20日线/指数乖离率/拥挤度/恐慌指标/站上30日线）图例按钮右侧新增 ⓘ 图标，点击弹一句话读法简介（RS_TIP 泛化为 SERIES_TIPS 注册表，复用 toggleRefTip 毛玻璃弹窗，ⓘ 拦截不触发开关）；图注「指标口径」补 融资强度＝两融余额÷流通市值×100%；布局/数据零改动 -->
 <!-- 量价趋势 · v7.1（2026-09-23）：移动端响应式适配 + 图注折叠 + 表 1 更新——①图例组/按钮去掉 415px/100px 写死宽，≤640px 时整组满宽、按钮等分自动换行；②图表左右边距由固定 84px 改为随屏宽动态计算（手机 52px/平板 72px/桌面 84px），CSS 面板框经 --grid-margin 变量同步，buildXLabelSet 的 168 硬编码改为 2×动态边距；③参考线胶囊新增窄屏短文案（加仓/减仓/抄底/拥挤/过热/恐慌…），resize 时同步切换；④窄屏下图表加高至 560px、胶囊/表格/卡片内边距收紧、wrap 加 overflow-x 防横向滚动；⑤图注长段文字改为「注 ⓘ」毛玻璃按钮 + 点击展开的口径说明面板（参考阈值/指标口径两层精简文案）；⑥表 1 用当日鲜活的涨跌停家数替换两融余额列（两融公布滞后一日、最新日恒显 --，曲线仍保留在图例可开）；⑦表 1 最终定型为四指标状态词——不显示指标名，大字直给状态（超买/超卖/中性、拥挤/偏冷/正常、恐慌/平稳、大盘强/小盘强），数值与阈值缩入注释行；⑧表 1 状态词升级为活性玻璃胶囊（着色玻璃质感，状态由当日数据驱动、与图 1 参考线同源联动，盘面变化胶囊即变），注释行数字全部移除，点击胶囊弹出该指标完整状态谱（当前态着色高亮，点空白收起）；⑨时间滑动条玻璃化——磨砂浅槽轨道(圆角)+白色玻璃渐变选中窗+白玻璃描边手柄，与 range-tabs/胶囊组件语言统一。桌面端布局与数据零改动 -->
 <!-- 量价趋势 · v7.0（2026-09-22）：质感改版里程碑（v6.12–v6.15 四轮累计，布局/数据全程零改动）——「学术期刊风 × Apple 玻璃拟态」定型：真玻璃卡片（半透磨砂+渐变边缘光）、iOS 分段控件时间页签、系列色着色玻璃图例（on/off 单向着色区分）、曲线色板去撞色+线宽统一+浮起投影+三停辉光、参考线实线化+玻璃胶囊、相对强度解读迁入图例 ⓘ、背景环境辉光加倍。自本版起主版本号 7 -->
@@ -293,7 +293,7 @@ body{background-color:var(--parchment);background-image:radial-gradient(1100px 5
         <p>· 涨跌停——单日涨停 ≥130 家＝短线情绪过热；跌停 ≥50 家＝恐慌抛售扩散（常临近阶段底）</p>
         <p>· 指数乖离率（基于中证2000）——(收盘−20日均线)/20日均线×100%；+5%＝超买、−5%＝超卖</p>
         <p>· 恐慌指标（基于中证2000）——20 日对数收益率样本标准差×√244 年化；≥40%＝高波动恐慌区</p>
-        <p>· 融资强度（两融余额÷流通市值）——2.2%＝退冰点（低于＝杠杆退潮至冰点档）、2.2~2.6%＝健康区（占 2016 年以来约 2/3 交易日）、2.8%＝过热线（2016 年以来仅 63 天触及）；2.6~2.8 为偏热档（未标线）</p>
+        <p>· 融资强度（两融余额÷流通市值）——2.2%＝冰点（低于＝杠杆退潮至冰点档）、2.2~2.6%＝健康区（占 2016 年以来约 2/3 交易日）、2.8%＝过热（2016 年以来仅 63 天触及）；2.6~2.8 为偏热档（未标线）</p>
         <b>指标口径</b>
         <p>· 成交额＝剔除北交所后的沪深两市合计</p>
         <p>· 融资强度＝两融余额÷流通市值×100%</p>
@@ -367,7 +367,7 @@ const CFG={
   // 恐慌指标警戒线（年化%，≈p91）
   hvWarnLine:40,
   // 融资强度参考线（%，两融余额÷流通市值；2026-09-24 按全序列分布+前瞻收益检验定档，v7.3）
-  rzThaw:2.2,      // 退冰点（低于＝杠杆退潮至冰点档：2020年以来该档未来60日胜率仅13%）
+  rzThaw:2.2,      // 冰点（低于＝杠杆退潮至冰点档：2020年以来该档未来60日胜率仅13%）
   rzHealthTop:2.6, // 健康区上沿（2.2~2.6 占2016年以来约2/3交易日；2.6~2.8 偏热档留空不标）
   rzHot:2.8,       // 过热线（2016年以来仅63天触及；2020年以来该档未来60日平均−7.2%）
   // 两融余额 / 成交额显示为"万亿"的分界（亿元）
@@ -525,7 +525,7 @@ const REF_STYLE={
 const refMarkData=(type,y)=>({yAxis:y,label:{show:false},lineStyle:{color:REF_STYLE[type].line,type:'solid',width:1.5,cap:'round'}});
 // 面板框外药丸（值与 CFG 单一来源）：axis=对应 yAxisIndex（副图1 比例轴2/家数轴3/成交额轴4，副图2 比例轴5），y 由 convertToPixel 按线位置计算
 const REF_TAGS={
-  1:[{series:'融资强度_副图1',type:'bottom',axis:2,value:CFG.rzThaw,label:"退冰点 "+CFG.rzThaw+"%",slabel:"退冰",tip:{t:'退冰点 2.2%',text:'低于2.2%＝杠杆退潮至冰点；低位≠安全，2020年以来该档未来60日胜率仅13%'}},{series:'融资强度_副图1',type:'health',axis:2,value:(CFG.rzThaw+CFG.rzHealthTop)/2,label:"健康 "+CFG.rzThaw+"%~"+CFG.rzHealthTop+"%",slabel:"健康",tip:{t:'健康区 2.2%–2.6%',text:'该区间＝杠杆水平常态健康，占2016年以来约2/3交易日'}},{series:'融资强度_副图1',type:'crowd',axis:2,value:CFG.rzHot,label:"过热 "+CFG.rzHot+"%",slabel:"过热",tip:{t:'过热线 2.8%',text:'高于2.8%＝杠杆过热预警；2020年以来该档未来60日平均−7.2%、胜率0%'}},{series:'站上20日线_副图1',type:'reduce',axis:2,value:CFG.reduceLine20,label:"下穿减仓线 "+CFG.reduceLine20+"%",slabel:"减仓",tip:{t:'下穿减仓线 45%',text:'低于45%＝多数个股跌破20日线，短线转弱按规则减仓'}},{series:'成交额_副图1',type:'amt',axis:4,value:CFG.amtLine,label:(CFG.amtLine/CFG.yiSplit).toFixed(0)+"万亿",slabel:"2万亿",tip:{t:'成交额 2万亿',text:'高于2万亿＝交投过热警惕放量滞涨，低于＝量能正常'}},{series:'涨停家数_副图1',type:'crowd',axis:3,value:CFG.limitUpLine,label:"过热 "+CFG.limitUpLine+"家",slabel:"过热",tip:{t:'涨停过热线 130家',text:'单日涨停≥130家＝短线情绪过热，次日分歧概率大'}},{series:'跌停家数_副图1',type:'bottom',axis:3,value:-CFG.limitDownLine,label:"恐慌 "+CFG.limitDownLine+"家",slabel:"恐慌",tip:{t:'跌停恐慌线 50家',text:'单日跌停≥50家＝恐慌抛售扩散，常临近阶段底'}},{series:'指数乖离率_副图1',type:'crowd',axis:2,value:CFG.biasExtLine,label:"超买",tip:{t:'乖离超买线 +5%',text:'高于+5%＝短期涨速过快，追高风险'}},{series:'指数乖离率_副图1',type:'bottom',axis:2,value:-CFG.biasExtLine,label:"超卖",tip:{t:'乖离超卖线 −5%',text:'低于−5%＝短期超卖，常有修复'}}],
+  1:[{series:'融资强度_副图1',type:'bottom',axis:2,value:CFG.rzThaw,label:"冰点",slabel:"冰点",tip:{t:'冰点',text:'杠杆退潮至冰点，2020以来未来胜率仅13%'}},{series:'融资强度_副图1',type:'health',axis:2,value:(CFG.rzThaw+CFG.rzHealthTop)/2,label:"健康",slabel:"健康",tip:{t:'健康区',text:'杠杆健康常态'}},{series:'融资强度_副图1',type:'crowd',axis:2,value:CFG.rzHot,label:"过热",slabel:"过热",tip:{t:'过热',text:'杠杆过热预警，2020年以来该档未来60日平均 -7.2'}},{series:'站上20日线_副图1',type:'reduce',axis:2,value:CFG.reduceLine20,label:"下穿减仓线 "+CFG.reduceLine20+"%",slabel:"减仓",tip:{t:'下穿减仓线 45%',text:'低于45%＝多数个股跌破20日线，短线转弱按规则减仓'}},{series:'成交额_副图1',type:'amt',axis:4,value:CFG.amtLine,label:(CFG.amtLine/CFG.yiSplit).toFixed(0)+"万亿",slabel:"2万亿",tip:{t:'成交额 2万亿',text:'高于2万亿＝交投过热警惕放量滞涨，低于＝量能正常'}},{series:'涨停家数_副图1',type:'crowd',axis:3,value:CFG.limitUpLine,label:"过热 "+CFG.limitUpLine+"家",slabel:"过热",tip:{t:'涨停过热线 130家',text:'单日涨停≥130家＝短线情绪过热，次日分歧概率大'}},{series:'跌停家数_副图1',type:'bottom',axis:3,value:-CFG.limitDownLine,label:"恐慌 "+CFG.limitDownLine+"家",slabel:"恐慌",tip:{t:'跌停恐慌线 50家',text:'单日跌停≥50家＝恐慌抛售扩散，常临近阶段底'}},{series:'指数乖离率_副图1',type:'crowd',axis:2,value:CFG.biasExtLine,label:"超买",tip:{t:'乖离超买线 +5%',text:'高于+5%＝短期涨速过快，追高风险'}},{series:'指数乖离率_副图1',type:'bottom',axis:2,value:-CFG.biasExtLine,label:"超卖",tip:{t:'乖离超卖线 −5%',text:'低于−5%＝短期超卖，常有修复'}}],
   2:[{series:'拥挤度_副图2',type:'crowd',axis:5,value:CFG.crowdLine*100,label:"拥挤线 "+(CFG.crowdLine*100)+"%",slabel:"拥挤",tip:{t:'拥挤线 45%',text:'高于45%＝资金拥挤结构脆弱，低于＝结构分散更健康'}},{series:'站上30日线_副图2',type:'add',axis:5,value:CFG.addLine30,label:"上穿加仓线 "+CFG.addLine30+"%",slabel:"加仓",tip:{t:'上穿加仓线 50%',text:'高于50%＝中期广度转强确认，按规则加仓'}},{series:'站上30日线_副图2',type:'bottom',axis:5,value:CFG.bottomLine,label:"下穿抄底线 "+CFG.bottomLine+"%",slabel:"抄底",tip:{t:'下穿抄底线 15%',text:'低于15%＝深度恐慌区，常有超跌反弹'}},{series:'恐慌指标_副图2',type:'hv',axis:5,value:CFG.hvWarnLine,label:"恐慌 "+CFG.hvWarnLine+"%",slabel:"恐慌",tip:{t:'恐慌线 40%（年化波动）',text:'高于40%＝高波动恐慌，多见于暴跌后'}}]
 };
 // v7.2：图例指标一句话简介注册表（相对强度 v6.15 起，其余六指标 v7.2 追加）——点击图例按钮右侧 ⓘ 弹出；t=指标名·定位词，text=一句话读法（阈值语义由参考线药丸 tip 承担，不重复）
@@ -736,7 +736,7 @@ function makeSubSeries(name,xAxisIdx,ratioYAxis){
   const base=ratioBaseName(name);
   const color=SERIES_COLOR[base];
   const line={type:'line',name,xAxisIndex:xAxisIdx,smooth:false,symbol:'none',lineStyle:{width:2.2,color,cap:'round',join:'round',...lift(color)},itemStyle:{color},emphasis:{focus:'series'}};
-  if(base==='融资强度')return {...line,yAxisIndex:ratioYAxis,data:sRzStrength,areaStyle:glow(color),z:5,markLine:{silent:true,symbol:'none',data:[refMarkData('bottom',CFG.rzThaw),refMarkData('crowd',CFG.rzHot)]},markArea:{silent:true,itemStyle:{color:'rgba(52,199,89,.07)'},data:[[{yAxis:CFG.rzThaw},{yAxis:CFG.rzHealthTop}]]}}; // v7.3：2.2退冰点/2.8过热线（框外药丸）+ 2.2~2.6 健康区淡绿色带
+  if(base==='融资强度')return {...line,yAxisIndex:ratioYAxis,data:sRzStrength,areaStyle:glow(color),z:5,markLine:{silent:true,symbol:'none',data:[refMarkData('bottom',CFG.rzThaw),refMarkData('crowd',CFG.rzHot)]},markArea:{silent:true,itemStyle:{color:'rgba(52,199,89,.07)'},data:[[{yAxis:CFG.rzThaw},{yAxis:CFG.rzHealthTop}]]}}; // v7.3：2.2冰点/2.8过热线（框外药丸）+ 2.2~2.6 健康区淡绿色带
   if(base==='拥挤度')return {...line,yAxisIndex:ratioYAxis,data:sCrowd,areaStyle:glow(color),markLine:{silent:true,symbol:'none',data:[refMarkData('crowd',CFG.crowdLine*100)]}};
   if(base==='站上20日线')return {...line,yAxisIndex:ratioYAxis,data:sAbove20,areaStyle:glow(color),large:true,largeThreshold:3000,markLine:{silent:true,symbol:'none',data:[refMarkData('reduce',CFG.reduceLine20)]}};
   if(base==='站上30日线')return {...line,yAxisIndex:ratioYAxis,data:sAbove30,areaStyle:glow(color),large:true,largeThreshold:3000,markLine:{silent:true,symbol:'none',data:[refMarkData('add',CFG.addLine30),refMarkData('bottom',CFG.bottomLine)]}};
