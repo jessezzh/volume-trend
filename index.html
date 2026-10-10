@@ -3,6 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<!-- 量价趋势 · v7.7（2026-10-10）：手机端 UI 三轮优化（Jesse 四项指令，方案A/甲拍板；桌面仅动家数轴，其余变化只进 ≤640 断点与窄屏 JS 分支；本地定稿待确认后发布）——①指标摘要药丸改编号列表：「1.主图指标 2.副图1指标 3.副图2指标」按面板编号列出已开指标名（同组、连接，未开显"点选指标"，超宽省略号截断），去掉"已开"计数与彩点（方案）；②涨跌停家数竖轴由右侧迁至左侧（全端，与比例/成交额轴同侧堆叠，offset 随同开轴动态 0/46 桌面、0/42 手机；对称轴±家数、参考线、tooltip 不变）（方案）；③「● 市场状态」标签与「指标」按钮同排（方案A：按钮居左弹性宽+标签贴右，窄屏省一行；弹层右锚定防溢出；DOM 由 head-timeline 内迁出为 card-head 直接子项，桌面 tabs+标签同排版式不变）（诉求）；④手机右轴全变左轴（诉求）：两融/纳指轴窄屏移左（纳指刻度仍隐藏走 tooltip），参考线药丸移回框外右侧不遮曲线，左距动态 52/84px（甲：两根左轴同开时撑开，绘图区随之收窄）；同日自检修复：legend-toggle flex 基尺寸 1 1 0%（长摘要不再把状态标签挤到第二排、弹层不再左溢出）。数据契约/阈值/参考线语义零改动 -->
+<!-- 量价趋势 · v7.6（2026-10-10）：手机端 UI 二轮优化（Jesse 截图反馈，变化仅进 ≤640px 断点与窄屏 JS 分支，桌面零改动；本地定稿待 Jesse 确认后发布）——①图例按钮等大不拉伸（flex 0 0 33.33%，每排 3 个，行内不足留空不铺满），三图组保留分块：组间细分隔线 + 组名小字（主图/副图 1/副图 2），指标归属一眼可辨；②绘图区右侧留白回收：窄屏右边距 88→56px（绘图区加宽约 32px），参考线药丸改挂绘图区框内右侧（right 锚定左伸、短文案不变、点击简介不变），窄屏隐去纳指轴名防叠字（数值仍走 tooltip）；③表 1 四状态胶囊恢复一行四列（撤销 v7.5 的 2×2 网格）。数据契约/阈值/参考线语义零改动 -->
 <!-- 量价趋势 · v7.5（2026-10-10）：手机端 UI 专项优化（桌面端布局/数据零改动，变化只进 ≤640/≤900 断点与 JS 窄屏分支）——①窄屏图高按可见面板数动态（1面板480/2面板600/3面板700px，替代固定560px 三面板挤成一团）；②图例改「指标」折叠抽屉：窄屏默认收起，顶部药丸显示已开指标彩点摘要+计数，约200px 纵向空间还给图表，点开即全量图例（开关逻辑零改动）；③触控显式补齐：dataZoom inside 启用 zoomOnTouch/moveOnTouch（双指捏合缩放+单指平移），时间滑块窄屏加高 16→24px（把手 26px，达触控命中标准）；④窄屏纵轴刻度字号 11→10px、X 轴标签最小间距 44→52px 防日期重叠；⑤tooltip 窄屏字号 12→11px；⑥表 1 窄屏改 2×2 网格（四列胶囊 360px 屏下挤压），表 2/图注/参考线短文案字号各提 1px、行距放宽（排版舒展）；⑦viewport-fit=cover + safe-area-inset 刘海屏/底部横条安全区；⑧resize 跨断点改走 applyVisibility 全量同步（轴字号/滑块高/纳指轴 offset 不再滞留旧值）。rawData/sNdx/15字段契约/全部阈值/参考线语义/桌面布局零改动 -->
 <!-- 量价趋势 · v7.4（2026-10-09，A股个股数据更新至10-09；指数与 NDX 收盘数据空缺，待补）：主图新增纳指100（NDX）曲线——右侧第二根独立数值轴（position:right + offset 外移，与两融余额轴并列），真实点位刻度、轴名与刻度色随系列线色；图例独立按钮（与两融零联动，无互斥规则）；数据经 iFinD 按季拉取 2004-2026 日线收盘、与 Yahoo Finance 关键点交叉核验一致（2020-03-23/2021-11-19/2024-12-31/2026-09-24 偏差≤0.02%），按 A 股交易日对齐（美股休市日前值填充，5279 天仅 4 天填充）；为守住 rawData 15 字段契约，NDX 以独立对齐数组 sNdx 注入、不改动 rawData；幽灵序列撑轴刻度；tooltip 含涨跌幅%+点位、图例 ⓘ 简介；图表左右边距拆分（左 84/72/52 不变，右 150/120/88 容纳双轴），CSS 面板框经 --grid-margin-r 同步；窄屏(<640)纳指轴刻度隐藏、仅曲线+tooltip。无参考线、无药丸；布局其余零改动 -->
 <!-- 量价趋势 · v7.3（2026-09-24）：融资强度参考线定档——按全序列分布+前瞻收益检验标注三处：①2.2% 冰点（蓝，低于＝杠杆退潮至冰点档）；②2.2%~2.6% 健康区（淡绿半透明色带+绿药丸，占2016年以来约2/3交易日）；③2.8% 过热线（橙，2020年以来该档未来60日平均−7.2%、胜率0%）；三条均可点击弹简介，与既有参考线同一语言（1.5px 圆头实线+框外毛玻璃药丸）；CFG 新增 rzThaw/rzHealthTop/rzHot，REF_STYLE 新增 health 色型；2.6~2.8 偏热档按 Jesse 决定留空不标。口径依据：仪表盘 rawData 融资强度序列 2010-03-31~2026-09-22（4004 交易日），近代数值与 Choice/Wind 公开口径逐点核验一致（2026-05-25 2.71 vs 2.72、2026-06-23 2.82 vs 2.83）。同日文案定稿（Jesse）：药丸去数值——冰点/健康/过热；点击简介精简为「杠杆退潮至冰点，2020以来未来胜率仅13%」「杠杆健康常态」「杠杆过热预警，2020年以来该档未来60日平均 -7.2」（药丸名目定为 冰点/健康/过热）。同日胶囊标注触发方向并三处统一（Jesse）：广度择时线药丸 slabel 改为 下穿减仓/上穿加仓/下穿抄底，图注同步改为「50%＝上穿加仓线、15%＝下穿抄底线；站上20日线 45%＝下穿减仓线」。布局/数据零改动 -->
@@ -178,10 +180,11 @@ body{background-color:var(--parchment);background-image:radial-gradient(1100px 5
 .fig-notes b:first-of-type{margin-top:0}
 .fig-notes p{margin:0 0 2px}
 
-/* 控制区（单一真源）：图例一行在上，时间范围左对齐在下，紧贴主图 */
-.card-head{display:flex;flex-direction:column;align-items:stretch;gap:8px;margin-bottom:10px}
-.card-head>.legend-bar{order:1;display:flex;width:100%;flex-wrap:wrap;align-items:flex-start;justify-content:flex-start;gap:6px;font-size:12px;color:var(--apple-muted-strong)}
-.card-head>.head-timeline{order:2;align-self:stretch;display:flex;flex-wrap:wrap;align-items:center;gap:8px}
+/* 控制区（单一真源）：图例一行在上，时间范围左对齐在下，紧贴主图；v7.7 改行级 wrap 以支持窄屏「指标」按钮与状态标签同排（方案A） */
+.card-head{display:flex;flex-direction:row;flex-wrap:wrap;align-items:center;gap:8px;margin-bottom:10px}
+.card-head>.legend-bar{order:1;flex:0 0 100%;display:flex;width:100%;flex-wrap:wrap;align-items:flex-start;justify-content:flex-start;gap:6px;font-size:12px;color:var(--apple-muted-strong)}
+.card-head>.head-timeline{order:2;flex:0 0 auto;display:flex;flex-wrap:wrap;align-items:center;gap:8px}
+.card-head>.regime-wrap{order:3;flex:0 0 auto}
 
 /* Range tabs：内嵌浅槽的分段控件，选中态黑底白字（学术风克制投影） */
 .range-tabs{display:flex;gap:2px;background:rgba(232,233,237,.8);backdrop-filter:blur(20px) saturate(180%);-webkit-backdrop-filter:blur(20px) saturate(180%);border:1px solid var(--line-2);border-radius:8px;padding:3px;box-shadow:inset 0 1px 3px rgba(16,16,20,.07),inset 0 1px 0 rgba(255,255,255,.4)}
@@ -217,10 +220,10 @@ body{background-color:var(--parchment);background-image:radial-gradient(1100px 5
 .legend-toggle{order:0;display:none;align-items:center;gap:8px;width:100%;appearance:none;cursor:pointer;font-family:var(--font-sans);font-size:11px;font-weight:600;letter-spacing:.02em;color:var(--ink-2);padding:9px 12px;border-radius:10px;border:1px solid rgba(16,16,20,.10);background:linear-gradient(180deg,rgba(255,255,255,.78),rgba(247,248,250,.58));backdrop-filter:blur(20px) saturate(180%);-webkit-backdrop-filter:blur(20px) saturate(180%);box-shadow:inset 0 1px 0 rgba(255,255,255,.85),0 1px 2px rgba(16,16,20,.04);transition:box-shadow .18s ease}
 .legend-toggle:active{transform:scale(.99)}
 .legend-toggle:focus-visible{outline:3px solid rgba(0,102,204,.28);outline-offset:2px}
-.legend-toggle .lt-dots{display:flex;align-items:center;gap:4px;flex:1;min-width:0;overflow:hidden}
-.legend-toggle .lt-dot{width:10px;height:4px;border-radius:999px;flex:none}
+#legendToggleTxt{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;text-align:left} /* v7.7：编号列表超宽省略号截断 */
 .legend-toggle .lt-arrow{flex:none;color:var(--ink-4);font-size:10px;transition:transform .18s ease}
 .legend-toggle[aria-expanded="true"] .lt-arrow{transform:rotate(180deg)}
+.legend-group-cap{display:none} /* v7.6：窄屏图组名小字（主图/副图 1/副图 2），桌面不显示 */
 
 /* Responsive */
 @media(max-width:900px){
@@ -236,11 +239,12 @@ body{background-color:var(--parchment);background-image:radial-gradient(1100px 5
   .brand-txt h1{font-size:22px}
   .topbar{gap:8px;margin-bottom:14px;padding-bottom:12px}
   .chart-card{padding:16px 12px 14px;border-radius:12px}
-  /* 图例：整组满宽、按钮等分自动换行（替代桌面 415px 定宽 × 100px 定钮） */
+  /* 图例：整组满宽、按钮等大 3 列（v7.6：不拉伸，行内不足留空不铺满；三图组分块+组名+组间分隔线） */
   .legend-group{width:100%;gap:5px}
-  .legend-group+.legend-group{margin-left:0}
+  .legend-group+.legend-group{margin-left:0;margin-top:8px;padding-top:9px;border-top:1px solid var(--line-3)}
   .legend-group+.legend-group::before{display:none}
-  .legend-item{flex:1 1 calc(33.333% - 4px);width:auto;min-width:0;height:34px;padding:0 2px;gap:5px;font-size:10px}
+  .legend-group-cap{display:block;flex:0 0 100%;font-size:9.5px;font-weight:600;letter-spacing:.06em;color:var(--ink-4);padding:1px 2px 0}
+  .legend-item{flex:0 0 calc(33.333% - 4px);width:auto;min-width:0;height:34px;padding:0 2px;gap:5px;font-size:10px}
   .card-head .rtab{padding:5px 8px;font-size:10.5px}
   /* 三面板纵排需要更高图幅（v7.5：JS 按可见面板数动态覆盖为 480/600/700px，此为兜底值） */
   #mainChart{height:700px}
@@ -250,18 +254,19 @@ body{background-color:var(--parchment);background-image:radial-gradient(1100px 5
   .stat-val td{padding:14px 2px 16px}
   .kpi-pill{font-size:14px;padding:8px 15px}
   .kpi-pop span{font-size:10.5px;padding:4px 7px}
-  /* 参考线胶囊：窄屏短文案 + 更小字号（文案由 JS 同步切换） */
+  /* 参考线胶囊：窄屏短文案；v7.7 移回框外右侧（诉求：药丸不遮曲线），右轴全左后框外整条只放药丸 */
   .ref-tags{margin-left:4px}
   .ref-tags span{font-size:10px;padding:2px 6px}
   .fig-caption{margin-top:12px;padding-top:10px}
   .fig-notes{font-size:11px;line-height:1.7}
   /* 图例折叠抽屉（v7.5）：窄屏默认收起，彩点摘要代替 15 按钮纵排 */
-  .legend-toggle{display:flex}
+  .legend-toggle{display:flex;width:auto;flex:1 1 0%;min-width:0} /* v7.7 自检修复：basis 0 保证长摘要下仍与状态标签同排（超宽走省略号），不再把标签挤到第二行 */
   .legend-bar[data-collapsed="true"]{display:none}
-  /* 表 1 窄屏 2×2 网格（v7.5）：四列胶囊 360px 屏下挤压，改两行两列 */
-  .stat-table table,.stat-table tbody{display:block}
-  .stat-table tr.stat-val{display:grid;grid-template-columns:1fr 1fr;row-gap:2px}
-  .stat-table td{width:auto}
+  /* v7.7 方案A：「● 市场状态」与「指标」按钮同排贴右，tabs 独占下一行——窄屏省一行 */
+  .card-head>.regime-wrap{order:1}
+  .card-head>.legend-bar{order:2}
+  .card-head>.head-timeline{order:3;width:100%}
+  .regime-sep{display:none}
 }
 @media(prefers-reduced-motion:reduce){.legend-item,.rtab{transition:none}.legend-item:hover,.legend-item:active{transform:none}}
 /* ===== 市场状态机（模块一 · 追加层）：时间轨道右侧当前阶段标签 + 判定说明弹层；主图色带由 ECharts markArea 绘制 ===== */
@@ -290,7 +295,7 @@ body{background-color:var(--parchment);background-image:radial-gradient(1100px 5
 .regime-switch:checked{background:#34c759}
 .regime-switch::after{content:'';position:absolute;top:2px;left:2px;width:16px;height:16px;border-radius:50%;background:#fff;box-shadow:0 1px 3px rgba(16,16,20,.25);transition:left .2s ease}
 .regime-switch:checked::after{left:16px}
-@media (max-width:640px){.regime-pop{width:min(330px,86vw);right:auto;left:0}}
+@media (max-width:640px){.regime-pop{width:min(330px,86vw)}} /* v7.7：随 regime-wrap 贴右，沿用基态 right:0 右锚定防溢出 */
 /* ===== 未来趋势展望（模块二 · 追加层）：表 2 历史同状态后续表现（三线表，与表 1 同语言） ===== */
 /* 指数切换 tab：复用 range-tabs 的 iOS 分段控件语言（槽内凹 + 白玻璃浮起选中），小号 */
 .outlook-tabs{display:inline-flex;gap:2px;background:rgba(232,233,237,.8);backdrop-filter:blur(20px) saturate(180%);-webkit-backdrop-filter:blur(20px) saturate(180%);border:1px solid var(--line-2);border-radius:8px;padding:3px;margin-bottom:10px;box-shadow:inset 0 1px 3px rgba(16,16,20,.07),inset 0 1px 0 rgba(255,255,255,.4)}
@@ -320,7 +325,7 @@ body{background-color:var(--parchment);background-image:radial-gradient(1100px 5
   <!-- Main chart · 全宽 -->
   <div class="chart-card" style="margin-bottom:24px">
     <div class="card-head">
-      <button type="button" class="legend-toggle" id="legendToggle" aria-expanded="false" aria-controls="legendBar"><span id="legendToggleTxt">指标</span><span class="lt-dots" id="legendToggleDots"></span><span class="lt-arrow" aria-hidden="true">▼</span></button>
+      <button type="button" class="legend-toggle" id="legendToggle" aria-expanded="false" aria-controls="legendBar"><span id="legendToggleTxt">点选指标</span><span class="lt-arrow" aria-hidden="true">▼</span></button>
       <div class="legend-bar" id="legendBar" role="group" aria-label="图表指标开关">
         <div class="legend-group" data-group="main" aria-label="主图指标"></div>
         <div class="legend-group" data-group="sub1" aria-label="副图 1 指标"></div>
@@ -336,18 +341,18 @@ body{background-color:var(--parchment);background-image:radial-gradient(1100px 5
           <button class="rtab" data-days="122">半年</button>
           <button class="rtab" data-days="21">1个月</button>
         </div>
-        <!-- 市场状态机（模块一 · 追加层）：当前阶段标签在时间轨道外，点击弹出判定口径与色带开关 -->
+        <!-- 市场状态机（模块一 · 追加层）：v7.7 起 regime-wrap 迁出 head-timeline——窄屏与「指标」按钮同排（方案A），桌面与 tabs 同排版式不变 -->
         <span class="regime-sep" aria-hidden="true"></span>
-        <div class="regime-wrap">
-          <button type="button" class="regime-tag" id="regimePill" aria-expanded="false" aria-controls="regimePop"><span class="regime-dot" aria-hidden="true"></span><span id="regimePillTxt">--</span></button>
-          <div class="regime-pop" id="regimePop" hidden>
-            <h4 id="regimePopTitle">市场状态机</h4>
-            <div id="regimeLegend"></div>
-            <p id="regimePopStats"></p>
-            <div class="regime-toggle">
-              <label for="regimeSwitch">主图阶段色带</label>
-              <input type="checkbox" class="regime-switch" id="regimeSwitch" checked aria-label="主图阶段色带开关">
-            </div>
+      </div>
+      <div class="regime-wrap">
+        <button type="button" class="regime-tag" id="regimePill" aria-expanded="false" aria-controls="regimePop"><span class="regime-dot" aria-hidden="true"></span><span id="regimePillTxt">--</span></button>
+        <div class="regime-pop" id="regimePop" hidden>
+          <h4 id="regimePopTitle">市场状态机</h4>
+          <div id="regimeLegend"></div>
+          <p id="regimePopStats"></p>
+          <div class="regime-toggle">
+            <label for="regimeSwitch">主图阶段色带</label>
+            <input type="checkbox" class="regime-switch" id="regimeSwitch" checked aria-label="主图阶段色带开关">
           </div>
         </div>
       </div>
@@ -480,7 +485,7 @@ const CFG={
 // ===== 响应式图表边距（v7.1）：窄屏压缩左右留白；桌面 84 不变。CSS 面板框经 --grid-margin 变量同步；v7.4 右侧加纳指轴，右边距独立 =====
 function syncGridMargin(){
   CFG.gridMargin=innerWidth<640?52:(innerWidth<900?72:84);
-  CFG.gridMarginR=innerWidth<640?88:(innerWidth<900?120:150);
+  CFG.gridMarginR=innerWidth<640?56:(innerWidth<900?120:150); // v7.6：窄屏右边距 88→56px 回收绘图区宽度（药丸已改挂框内）
   document.documentElement.style.setProperty('--grid-margin',CFG.gridMargin+'px');
   document.documentElement.style.setProperty('--grid-margin-r',CFG.gridMarginR+'px');
 }
@@ -694,6 +699,8 @@ function renderLegend(){
     const container=document.querySelector(`.legend-group[data-group="${group}"]`);
     if(!container)return;
     container.innerHTML='';
+    // v7.6：图组名小字（主图/副图 1/副图 2），窄屏显示、桌面 CSS 隐藏——指标归属一眼可辨
+    const cap=document.createElement('span');cap.className='legend-group-cap';cap.textContent=group==='main'?'主图':group==='sub1'?'副图 1':'副图 2';container.appendChild(cap);
     names.forEach(name=>{
       if(name===S3_MERGED){ // 涨跌停合并按钮：红绿双色点 + 单开关，点击同开同关两条曲线
         const on=!!selected[name];
@@ -726,19 +733,21 @@ function renderLegend(){
     });
   });
 }
-// v7.5 图例折叠抽屉（窄屏）：默认收起省纵向空间；药丸摘要=已开指标彩点+计数，点击展开/收起；桌面不显示按钮、图例常驻
-const LEGEND_KEYS=[...MAIN_SERIES,...SUB1_LEGEND,...SUB2_SERIES];
+// v7.5 图例折叠抽屉（窄屏）：默认收起省纵向空间，点击展开/收起；桌面不显示按钮、图例常驻
 const legendToggleBtn=document.getElementById('legendToggle'),legendBarEl=document.getElementById('legendBar');
 let legendDrawerOpen=false;
 function syncLegendToggle(){
   if(!legendToggleBtn||!legendBarEl)return;
   legendBarEl.dataset.collapsed=(!legendDrawerOpen&&innerWidth<640)?'true':'false';
   legendToggleBtn.setAttribute('aria-expanded',String(legendDrawerOpen));
-  const act=LEGEND_KEYS.filter(n=>selected[n]);
-  const colorOf=n=>n===S3_MERGED?SERIES_COLOR['涨停家数']:(SERIES_COLOR[ratioBaseName(n)]||SERIES_COLOR[n]||'#999');
-  const txtEl=document.getElementById('legendToggleTxt'),dotsEl=document.getElementById('legendToggleDots');
-  if(txtEl)txtEl.textContent=act.length?`指标 · 已开 ${act.length}`:'指标 · 点选指标';
-  if(dotsEl)dotsEl.innerHTML=act.slice(0,12).map(n=>`<span class="lt-dot" style="background:${colorOf(n)}"></span>`).join('');
+  // v7.7（Jesse 方案）：摘要=「N.指标名」编号列表——1=主图 2=副图1 3=副图2，同组、连接；不再显示"已开"计数与彩点
+  const parts=[];
+  [MAIN_SERIES,SUB1_LEGEND,SUB2_SERIES].forEach((keys,i)=>{
+    const names=keys.filter(n=>selected[n]).map(n=>ratioBaseName(n));
+    if(names.length)parts.push((i+1)+'.'+names.join('、'));
+  });
+  const txtEl=document.getElementById('legendToggleTxt');
+  if(txtEl)txtEl.textContent=parts.length?parts.join(' '):'点选指标';
 }
 if(legendToggleBtn){legendToggleBtn.addEventListener('click',e=>{e.stopPropagation();legendDrawerOpen=!legendDrawerOpen;syncLegendToggle()})}
 // 单一比例指标时与趋势线同色；多指标同时显示时使用黑色，避免给出错误的单一归属暗示。
@@ -785,7 +794,7 @@ const xTickInterval=(i,value)=>{
   const idx=dateIndexByValue.get(value);
   if(idx==null)return false;
   if(idx!==xLastIdx+1){ // 新一轮渲染的首个刻度 → 按签名重建
-    const sig=mainChart.getWidth()+'|'+(function(){try{const dz=mainChart.getModel().getComponent('dataZoom',0);return dz&&dz.option?dz.option.start+'~'+dz.option.end:zoomStart+'~'+zoomEnd}catch(e){return zoomStart+'~'+zoomEnd}})();
+    const sig=mainChart.getWidth()+'|'+CFG.gridMargin+'-'+CFG.gridMarginR+'|'+(function(){try{const dz=mainChart.getModel().getComponent('dataZoom',0);return dz&&dz.option?dz.option.start+'~'+dz.option.end:zoomStart+'~'+zoomEnd}catch(e){return zoomStart+'~'+zoomEnd}})(); // v7.7：边距入签名（左距动态后 x 标签容量随之重建）
     if(sig!==xBuildSig){xBuildSig=sig;buildXLabelSet()}
   }
   xLastIdx=idx;
@@ -899,8 +908,8 @@ mainChart.setOption({
     {type:'value',gridIndex:0,show:MAIN_IDX.some(n=>selected[n]),name:'指数',nameLocation:'end',nameRotate:0,nameGap:8,position:'left',scale:true,nameTextStyle:{color:'#1d1d1f',fontSize:11,align:'right'},axisLine:{show:false},axisTick:{show:true,inside:true,length:3,lineStyle:{color:'#c7c7c9'}},axisLabel:{show:MAIN_IDX.some(n=>selected[n]),align:'right',color:C.label,fontFamily:F_NUM,fontSize:11},splitLine:{lineStyle:{color:'rgba(16,16,20,.05)'}}},
     // 副图1 比例轴：融资强度/站上20日线/指数乖离率（偏离带负值会把轴下探；单一指标随线色，多指标时黑色）。
     {type:'value',gridIndex:1,show:['融资强度_副图1','站上20日线_副图1','指数乖离率_副图1'].some(n=>selected[n]),name:'比例',nameLocation:'end',nameRotate:0,nameGap:8,position:'left',scale:true,nameTextStyle:{color:ratioAxisColor(['融资强度_副图1','站上20日线_副图1','指数乖离率_副图1']),fontSize:11,align:'right'},axisLine:{show:false},axisTick:{show:true,inside:true,length:3,lineStyle:{color:'#c7c7c9'}},axisLabel:{show:['融资强度_副图1','站上20日线_副图1','指数乖离率_副图1'].some(n=>selected[n]),align:'right',color:C.label,fontFamily:F_NUM,fontSize:11,formatter:v=>v+'%'},splitLine:{lineStyle:{color:'rgba(16,16,20,.05)'}}},
-    // 副图1 家数轴（右侧）：方案B 对称轴（双开 ±m 居中，单开占半边），刻度与十字标签显示绝对家数；splitLine 关闭避免与比例轴网格线重叠
-    {type:'value',gridIndex:1,show:['涨停家数_副图1','跌停家数_副图1'].some(n=>selected[n]),name:'家数',nameLocation:'end',nameRotate:0,nameGap:8,position:'right',min:s3AxisMin,max:s3AxisMax,nameTextStyle:{color:'#1d1d1f',fontSize:11,align:'left'},axisLine:{show:false},axisTick:{show:true,inside:true,length:3,lineStyle:{color:'#c7c7c9'}},axisLabel:{show:['涨停家数_副图1','跌停家数_副图1'].some(n=>selected[n]),align:'left',color:C.label,fontFamily:F_NUM,fontSize:11,formatter:v=>Math.abs(Math.round(v))},axisPointer:{label:{formatter:p=>Math.abs(Math.round(p.value))}},splitLine:{show:false}},
+    // 副图1 家数轴（v7.7 Jesse 方案迁至左侧，与比例/成交额同侧堆叠）：方案B 对称轴（双开 ±m 居中，单开占半边），刻度与十字标签显示绝对家数；splitLine 关闭避免与比例轴网格线重叠
+    {type:'value',gridIndex:1,show:['涨停家数_副图1','跌停家数_副图1'].some(n=>selected[n]),name:'家数',nameLocation:'end',nameRotate:0,nameGap:8,position:'left',min:s3AxisMin,max:s3AxisMax,nameTextStyle:{color:'#1d1d1f',fontSize:11,align:'right'},axisLine:{show:false},axisTick:{show:true,inside:true,length:3,lineStyle:{color:'#c7c7c9'}},axisLabel:{show:['涨停家数_副图1','跌停家数_副图1'].some(n=>selected[n]),align:'right',color:C.label,fontFamily:F_NUM,fontSize:11,formatter:v=>Math.abs(Math.round(v))},axisPointer:{label:{formatter:p=>Math.abs(Math.round(p.value))}},splitLine:{show:false}},
     {type:'value',gridIndex:1,show:!!selected['成交额_副图1'],name:'成交额',nameLocation:'end',nameRotate:0,nameGap:8,position:'left',scale:true,nameTextStyle:{color:SERIES_COLOR['成交额'],fontSize:11,align:'right'},axisLine:{show:false},axisTick:{show:true,inside:true,length:3,lineStyle:{color:'#c7c7c9'}},axisLabel:{show:!!selected['成交额_副图1'],align:'right',color:C.label,fontFamily:F_NUM,fontSize:11,formatter:v=>v>=10000?(v/10000).toFixed(1)+'万亿':v+'亿'},splitLine:{show:false}},
     // 副图2 比例轴：拥挤度/站上30日线/恐慌指标（单一指标随线色，多指标时黑色）。
     {type:'value',gridIndex:2,show:['拥挤度_副图2','站上30日线_副图2','恐慌指标_副图2'].some(n=>selected[n]),name:'比例',nameLocation:'end',nameRotate:0,nameGap:8,position:'left',scale:true,nameTextStyle:{color:ratioAxisColor(['拥挤度_副图2','站上30日线_副图2','恐慌指标_副图2']),fontSize:11,align:'right'},axisLine:{show:false},axisTick:{show:true,inside:true,length:3,lineStyle:{color:'#c7c7c9'}},axisLabel:{show:['拥挤度_副图2','站上30日线_副图2','恐慌指标_副图2'].some(n=>selected[n]),align:'right',color:C.label,fontFamily:F_NUM,fontSize:11,formatter:v=>v+'%'},splitLine:{lineStyle:{color:'rgba(16,16,20,.05)'}}},
@@ -1098,24 +1107,31 @@ function applyVisibility(){
   const s1CntOn=['涨停家数_副图1','跌停家数_副图1'].some(n=>selected[n]);
   const s2RsOn=!!selected['相对强度_副图2'];
   const axFs=innerWidth<640?10:11; // v7.5：窄屏纵轴刻度字号 10px（桌面 11px 不变）
+  // v7.7：手机右轴全变左轴（两融/纳指窄屏移左），家数轴全端迁左（方案二）；甲方案——窄屏两根左轴同开时左距 52→84px 动态撑开
+  const narrow=innerWidth<640;
+  const needWideLeft=narrow&&((mainBalanceOn&&mainIndexOn)||(s1CntOn&&(sub1RatioOn||sub1AmtOn)));
+  CFG.gridMargin=narrow?(needWideLeft?84:52):(innerWidth<900?72:84);
+  document.documentElement.style.setProperty('--grid-margin',CFG.gridMargin+'px');
+  const rzPos=narrow?'left':'right',rzAlign=narrow?'right':'left',rzOffset=narrow&&mainIndexOn?42:0;
+  const cntOffset=(sub1RatioOn||sub1AmtOn)?(narrow?42:46):0;
   mainChart.setOption({
     legend:{selected:Object.assign({},selected)},
     tooltip:{textStyle:{fontSize:innerWidth<640?11:12}}, // v7.5：窄屏 tooltip 字号收紧
     dataZoom:[{},{height:innerWidth<640?24:16,bottom:innerWidth<640?7:9,moveHandleSize:innerWidth<640?26:20}], // v7.5：窄屏滑块加高、把手放大（触控命中区）
     series:[{id:'ghostMain',data:mainIndexOn?nulls():rawSh},{name:'_rzAxis',data:ghostRzData},{name:'_ndxAxis',data:selected['纳指100']?nulls():sNdx}],
     yAxis:[
-      {show:mainBalanceOn,axisLabel:{show:mainBalanceOn,align:'left',fontSize:axFs},nameTextStyle:{color:SERIES_COLOR['两融余额'],align:'left'}},
+      {show:mainBalanceOn,position:rzPos,offset:rzOffset,axisLabel:{show:mainBalanceOn,align:rzAlign,fontSize:axFs},nameTextStyle:{color:SERIES_COLOR['两融余额'],align:rzAlign}},
       {show:mainIndexOn,axisLabel:{show:mainIndexOn,align:'right',fontSize:axFs},nameTextStyle:{color:'#1d1d1f',align:'right'}},
       {show:sub1RatioOn,axisLabel:{show:sub1RatioOn,align:'right',fontSize:axFs},nameTextStyle:{color:sub1RatioColor,align:'right'}},
-      {show:s1CntOn,axisLabel:{show:s1CntOn,align:'left',fontSize:axFs},nameTextStyle:{color:'#1d1d1f',align:'left'}},
+      {show:s1CntOn,position:'left',offset:cntOffset,axisLabel:{show:s1CntOn,align:'right',fontSize:axFs},nameTextStyle:{color:'#1d1d1f',align:'right'}},
       {show:sub1AmtOn,axisLabel:{show:sub1AmtOn,align:'right',fontSize:axFs},nameTextStyle:{color:SERIES_COLOR['成交额'],align:'right'}},
       {show:sub2RatioOn,axisLabel:{show:sub2RatioOn,align:'right',fontSize:axFs},nameTextStyle:{color:sub2RatioColor,align:'right'}},
       {show:s2RsOn,axisLabel:{show:s2RsOn,align:'right',fontSize:axFs},nameTextStyle:{color:SERIES_COLOR['相对强度'],align:'right'}},
-      {show:!!selected['纳指100'],offset:innerWidth<640?0:66,axisLabel:{show:!!selected['纳指100']&&innerWidth>=640,align:'left',fontSize:axFs},nameTextStyle:{color:SERIES_COLOR['纳指100'],align:'left'}}
+      {show:!!selected['纳指100'],position:narrow?'left':'right',offset:narrow?0:66,name:innerWidth<640?'':'纳指100',axisLabel:{show:!!selected['纳指100']&&innerWidth>=640,align:narrow?'right':'left',fontSize:axFs},nameTextStyle:{color:SERIES_COLOR['纳指100'],align:narrow?'right':'left'}}
     ]
   });
   document.querySelectorAll('.legend-item[data-series]').forEach(el=>{const on=!!selected[el.dataset.series];el.classList.toggle('off',!on);el.setAttribute('aria-pressed',String(on))});
-  syncLegendToggle(); // v7.5：图例抽屉摘要（彩点+计数）随开关刷新
+  syncLegendToggle(); // v7.7：图例抽屉摘要（N.指标名编号列表）随开关刷新
   layoutPanes();
 }
 
