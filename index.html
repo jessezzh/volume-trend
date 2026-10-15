@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<!-- 量价趋势 · v7.9（2026-10-15）：手机端 UI 五轮优化（Jesse 验收 V7.8 右侧后拍板"左边的轴也内化到图里面"；变化只进 ≤640 断点与窄屏 JS 分支，桌面零改动）——①左轴锚点内化（养基宝同款）：窄屏左边距 52→10px，每面板主轴刻度（min/中/max 3 档）画进绘图区左缘（axisLabel margin 负值+align left+白描边 2px 压线可读，随 dataZoom 实时更新）；②副轴刻度隐藏走 tooltip：两融余额（与指数同开时）、家数轴（与比例/成交额同开时）只留曲线，独开时升为主轴照常内化——needWideLeft 双轴堆叠/offset 42 机制退役，axLab 三分支（pri/hid/桌面显式复位 margin:8+textBorderWidth:0 防 merge 残留）；③面板编号 (a)(b)(c) 挪各面板右上角避开左上锚点；④桌面分支轴补丁显式带 margin/textBorder 复位，跨断点旋屏不残留。iPhone 390pt 绘图区约 283→324px（较 v7.7 累计 +37%）。已知代价：两融/家数与主轴同开时左缘无量级刻度（tooltip 十字线读数）；工程版 V7.8.html 已由 Jesse 删除，本轮起以桌面主文件为权威源 -->
 <!-- 量价趋势 · v7.8（2026-10-15）：手机端 UI 四轮优化（参考养基宝 App 极简图风，Jesse 拍板"去框+轴简化+胶囊融进图内"；变化只进 ≤640 断点与窄屏 JS 分支，桌面零改动）——①窄屏去面板框：pane-frame 去左右边框，只留极浅顶部分隔线（面板编号 (a)(b)(c) 保留，图注引用不变）；②轴简化：Y 轴刻度 5~6 档→3 档（splitNumber 2）、轴名（两融余额/指数/比例/家数/成交额/比值/纳指100）窄屏隐藏；③胶囊融进图内：11 条参考线短文案改挂 markLine label（insideEndTop/Bottom 贴线端 9px 同语义色，拥挤线 45% 特判 insideEndBottom 避让加仓线 50% 标注），框外 DOM 药丸窄屏整体退场（.ref-tags display:none），右侧留白 56→10px——iPhone 390pt 绘图区约 237→283px（+19%），彻底根治 v7.7 药丸被 overflow-x:clip 裁切问题；代价（已知）：参考线"高于/低于"点击简介窄屏暂不可达（ref-info 随药丸隐藏），简介并入图例抽屉留待下轮 -->
 <!-- 量价趋势 · v7.7（2026-10-10）：手机端 UI 三轮优化（Jesse 四项指令，方案A/甲拍板；桌面仅动家数轴，其余变化只进 ≤640 断点与窄屏 JS 分支；本地定稿待确认后发布）——①指标摘要药丸改编号列表：「1.主图指标 2.副图1指标 3.副图2指标」按面板编号列出已开指标名（同组、连接，未开显"点选指标"，超宽省略号截断），去掉"已开"计数与彩点（方案）；②涨跌停家数竖轴由右侧迁至左侧（全端，与比例/成交额轴同侧堆叠，offset 随同开轴动态 0/46 桌面、0/42 手机；对称轴±家数、参考线、tooltip 不变）（方案）；③「● 市场状态」标签与「指标」按钮同排（方案A：按钮居左弹性宽+标签贴右，窄屏省一行；弹层右锚定防溢出；DOM 由 head-timeline 内迁出为 card-head 直接子项，桌面 tabs+标签同排版式不变）（诉求）；④手机右轴全变左轴（诉求）：两融/纳指轴窄屏移左（纳指刻度仍隐藏走 tooltip），参考线药丸移回框外右侧不遮曲线，左距动态 52/84px（甲：两根左轴同开时撑开，绘图区随之收窄）；同日自检修复：legend-toggle flex 基尺寸 1 1 0%（长摘要不再把状态标签挤到第二排、弹层不再左溢出）。数据契约/阈值/参考线语义零改动 -->
 <!-- 量价趋势 · v7.6（2026-10-10）：手机端 UI 二轮优化（Jesse 截图反馈，变化仅进 ≤640px 断点与窄屏 JS 分支，桌面零改动；本地定稿待 Jesse 确认后发布）——①图例按钮等大不拉伸（flex 0 0 33.33%，每排 3 个，行内不足留空不铺满），三图组保留分块：组间细分隔线 + 组名小字（主图/副图 1/副图 2），指标归属一眼可辨；②绘图区右侧留白回收：窄屏右边距 88→56px（绘图区加宽约 32px），参考线药丸改挂绘图区框内右侧（right 锚定左伸、短文案不变、点击简介不变），窄屏隐去纳指轴名防叠字（数值仍走 tooltip）；③表 1 四状态胶囊恢复一行四列（撤销 v7.5 的 2×2 网格）。数据契约/阈值/参考线语义零改动 -->
@@ -258,6 +259,8 @@ body{background-color:var(--parchment);background-image:radial-gradient(1100px 5
   /* v7.8：参考线改 markLine 图内标注（融胶囊），框外药丸窄屏整体退场；面板框去左右边框只留极浅顶分隔（对齐养基宝式极简图风） */
   .ref-tags{display:none}
   .pane-frame{border-left:none;border-right:none;border-top:1px solid rgba(16,16,20,.07)}
+  /* v7.9：左轴锚点内化——面板编号 (a)(b)(c) 挪右上角，避开图内左缘顶部锚点值 */
+  .pane-label{left:auto;right:7px}
   .fig-caption{margin-top:12px;padding-top:10px}
   .fig-notes{font-size:11px;line-height:1.7}
   /* 图例折叠抽屉（v7.5）：窄屏默认收起，彩点摘要代替 15 按钮纵排 */
@@ -485,7 +488,7 @@ const CFG={
 
 // ===== 响应式图表边距（v7.1）：窄屏压缩左右留白；桌面 84 不变。CSS 面板框经 --grid-margin 变量同步；v7.4 右侧加纳指轴，右边距独立 =====
 function syncGridMargin(){
-  CFG.gridMargin=innerWidth<640?52:(innerWidth<900?72:84);
+  CFG.gridMargin=innerWidth<640?10:(innerWidth<900?72:84); // v7.9：窄屏左边距 52→10px（左轴锚点内化进图，左侧只留发丝空隙）
   CFG.gridMarginR=innerWidth<640?10:(innerWidth<900?120:150); // v7.8：窄屏右边距 56→10px（药丸已融进图内 markLine label，右侧只留发丝空隙）；v7.6 曾 88→56
   document.documentElement.style.setProperty('--grid-margin',CFG.gridMargin+'px');
   document.documentElement.style.setProperty('--grid-margin-r',CFG.gridMarginR+'px');
@@ -1116,27 +1119,31 @@ function applyVisibility(){
   const s1CntOn=['涨停家数_副图1','跌停家数_副图1'].some(n=>selected[n]);
   const s2RsOn=!!selected['相对强度_副图2'];
   const axFs=innerWidth<640?10:11; // v7.5：窄屏纵轴刻度字号 10px（桌面 11px 不变）
-  // v7.7：手机右轴全变左轴（两融/纳指窄屏移左），家数轴全端迁左（方案二）；甲方案——窄屏两根左轴同开时左距 52→84px 动态撑开
+  // v7.7：手机右轴全变左轴（两融/纳指窄屏移左）；v7.9：左轴锚点内化——窄屏每面板只保留主轴，刻度画进绘图区左缘（白描边灰字，随缩放实时更新），副轴刻度隐藏数值走 tooltip，左距固定 10px（needWideLeft 双轴堆叠机制退役）
   const narrow=innerWidth<640;
   const axSplit=narrow?2:5; // v7.8：窄屏 Y 轴简化为 3 档刻度（min/中/max），轴名同步隐藏（养基宝式极简图风）；桌面 5 档+轴名不变
-  const needWideLeft=narrow&&((mainBalanceOn&&mainIndexOn)||(s1CntOn&&(sub1RatioOn||sub1AmtOn)));
-  CFG.gridMargin=narrow?(needWideLeft?84:52):(innerWidth<900?72:84);
+  CFG.gridMargin=narrow?10:(innerWidth<900?72:84);
   document.documentElement.style.setProperty('--grid-margin',CFG.gridMargin+'px');
-  const rzPos=narrow?'left':'right',rzAlign=narrow?'right':'left',rzOffset=narrow&&mainIndexOn?42:0;
-  const cntOffset=(sub1RatioOn||sub1AmtOn)?(narrow?42:46):0;
+  const rzPos=narrow?'left':'right',rzAlign=narrow?'right':'left';
+  // v7.9：轴标签三分支——pri=主轴锚点内化（margin 负值把标签推到绘图区左缘内侧+白描边压线可读）；hid=副轴（与主轴同开时只留曲线）；桌面分支显式复位 margin/align/textBorder，防跨断点 setOption merge 残留窄屏值
+  const axLab=(show,align,mode)=>narrow
+    ?(mode==='pri'?{show:show,align:'left',fontSize:axFs,margin:-(CFG.gridMargin-4),textBorderColor:'rgba(255,255,255,.92)',textBorderWidth:2}:{show:false})
+    :{show:show,align:align,fontSize:axFs,margin:8,textBorderWidth:0};
+  const rzOffset=0; // v7.9：窄屏副轴堆叠退役，两融轴恒 offset 0（桌面右侧本就 0）
+  const cntOffset=(sub1RatioOn||sub1AmtOn)?(narrow?0:46):0; // v7.9：窄屏家数轴与比例/成交额同开时 offset 归 0（刻度已隐藏）；桌面 46 堆叠不变
   mainChart.setOption({
     legend:{selected:Object.assign({},selected)},
     tooltip:{textStyle:{fontSize:innerWidth<640?11:12}}, // v7.5：窄屏 tooltip 字号收紧
     dataZoom:[{},{height:innerWidth<640?24:16,bottom:innerWidth<640?7:9,moveHandleSize:innerWidth<640?26:20}], // v7.5：窄屏滑块加高、把手放大（触控命中区）
     series:[{id:'ghostMain',data:mainIndexOn?nulls():rawSh},{name:'_rzAxis',data:ghostRzData},{name:'_ndxAxis',data:selected['纳指100']?nulls():sNdx}],
     yAxis:[
-      {show:mainBalanceOn,position:rzPos,offset:rzOffset,name:narrow?'':'两融余额',splitNumber:axSplit,axisLabel:{show:mainBalanceOn,align:rzAlign,fontSize:axFs},nameTextStyle:{color:SERIES_COLOR['两融余额'],align:rzAlign}},
-      {show:mainIndexOn,name:narrow?'':'指数',splitNumber:axSplit,axisLabel:{show:mainIndexOn,align:'right',fontSize:axFs},nameTextStyle:{color:'#1d1d1f',align:'right'}},
-      {show:sub1RatioOn,name:narrow?'':'比例',splitNumber:axSplit,axisLabel:{show:sub1RatioOn,align:'right',fontSize:axFs},nameTextStyle:{color:sub1RatioColor,align:'right'}},
-      {show:s1CntOn,position:'left',offset:cntOffset,name:narrow?'':'家数',splitNumber:axSplit,axisLabel:{show:s1CntOn,align:'right',fontSize:axFs},nameTextStyle:{color:'#1d1d1f',align:'right'}},
-      {show:sub1AmtOn,name:narrow?'':'成交额',splitNumber:axSplit,axisLabel:{show:sub1AmtOn,align:'right',fontSize:axFs},nameTextStyle:{color:SERIES_COLOR['成交额'],align:'right'}},
-      {show:sub2RatioOn,name:narrow?'':'比例',splitNumber:axSplit,axisLabel:{show:sub2RatioOn,align:'right',fontSize:axFs},nameTextStyle:{color:sub2RatioColor,align:'right'}},
-      {show:s2RsOn,name:narrow?'':'比值',splitNumber:axSplit,axisLabel:{show:s2RsOn,align:'right',fontSize:axFs},nameTextStyle:{color:SERIES_COLOR['相对强度'],align:'right'}},
+      {show:mainBalanceOn,position:rzPos,offset:rzOffset,name:narrow?'':'两融余额',splitNumber:axSplit,axisLabel:axLab(mainBalanceOn,rzAlign,mainIndexOn?'hid':'pri'),nameTextStyle:{color:SERIES_COLOR['两融余额'],align:rzAlign}},
+      {show:mainIndexOn,name:narrow?'':'指数',splitNumber:axSplit,axisLabel:axLab(mainIndexOn,'right','pri'),nameTextStyle:{color:'#1d1d1f',align:'right'}},
+      {show:sub1RatioOn,name:narrow?'':'比例',splitNumber:axSplit,axisLabel:axLab(sub1RatioOn,'right','pri'),nameTextStyle:{color:sub1RatioColor,align:'right'}},
+      {show:s1CntOn,position:'left',offset:cntOffset,name:narrow?'':'家数',splitNumber:axSplit,axisLabel:axLab(s1CntOn,'right',(sub1RatioOn||sub1AmtOn)?'hid':'pri'),nameTextStyle:{color:'#1d1d1f',align:'right'}},
+      {show:sub1AmtOn,name:narrow?'':'成交额',splitNumber:axSplit,axisLabel:axLab(sub1AmtOn,'right','pri'),nameTextStyle:{color:SERIES_COLOR['成交额'],align:'right'}},
+      {show:sub2RatioOn,name:narrow?'':'比例',splitNumber:axSplit,axisLabel:axLab(sub2RatioOn,'right','pri'),nameTextStyle:{color:sub2RatioColor,align:'right'}},
+      {show:s2RsOn,name:narrow?'':'比值',splitNumber:axSplit,axisLabel:axLab(s2RsOn,'right','pri'),nameTextStyle:{color:SERIES_COLOR['相对强度'],align:'right'}},
       {show:!!selected['纳指100'],position:narrow?'left':'right',offset:narrow?0:66,name:innerWidth<640?'':'纳指100',axisLabel:{show:!!selected['纳指100']&&innerWidth>=640,align:narrow?'right':'left',fontSize:axFs},nameTextStyle:{color:SERIES_COLOR['纳指100'],align:narrow?'right':'left'}}
     ]
   });
