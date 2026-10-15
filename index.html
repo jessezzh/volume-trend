@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<!-- 量价趋势 · v7.8（2026-10-15）：手机端 UI 四轮优化（参考养基宝 App 极简图风，Jesse 拍板"去框+轴简化+胶囊融进图内"；变化只进 ≤640 断点与窄屏 JS 分支，桌面零改动）——①窄屏去面板框：pane-frame 去左右边框，只留极浅顶部分隔线（面板编号 (a)(b)(c) 保留，图注引用不变）；②轴简化：Y 轴刻度 5~6 档→3 档（splitNumber 2）、轴名（两融余额/指数/比例/家数/成交额/比值/纳指100）窄屏隐藏；③胶囊融进图内：11 条参考线短文案改挂 markLine label（insideEndTop/Bottom 贴线端 9px 同语义色，拥挤线 45% 特判 insideEndBottom 避让加仓线 50% 标注），框外 DOM 药丸窄屏整体退场（.ref-tags display:none），右侧留白 56→10px——iPhone 390pt 绘图区约 237→283px（+19%），彻底根治 v7.7 药丸被 overflow-x:clip 裁切问题；代价（已知）：参考线"高于/低于"点击简介窄屏暂不可达（ref-info 随药丸隐藏），简介并入图例抽屉留待下轮 -->
 <!-- 量价趋势 · v7.7（2026-10-10）：手机端 UI 三轮优化（Jesse 四项指令，方案A/甲拍板；桌面仅动家数轴，其余变化只进 ≤640 断点与窄屏 JS 分支；本地定稿待确认后发布）——①指标摘要药丸改编号列表：「1.主图指标 2.副图1指标 3.副图2指标」按面板编号列出已开指标名（同组、连接，未开显"点选指标"，超宽省略号截断），去掉"已开"计数与彩点（方案）；②涨跌停家数竖轴由右侧迁至左侧（全端，与比例/成交额轴同侧堆叠，offset 随同开轴动态 0/46 桌面、0/42 手机；对称轴±家数、参考线、tooltip 不变）（方案）；③「● 市场状态」标签与「指标」按钮同排（方案A：按钮居左弹性宽+标签贴右，窄屏省一行；弹层右锚定防溢出；DOM 由 head-timeline 内迁出为 card-head 直接子项，桌面 tabs+标签同排版式不变）（诉求）；④手机右轴全变左轴（诉求）：两融/纳指轴窄屏移左（纳指刻度仍隐藏走 tooltip），参考线药丸移回框外右侧不遮曲线，左距动态 52/84px（甲：两根左轴同开时撑开，绘图区随之收窄）；同日自检修复：legend-toggle flex 基尺寸 1 1 0%（长摘要不再把状态标签挤到第二排、弹层不再左溢出）。数据契约/阈值/参考线语义零改动 -->
 <!-- 量价趋势 · v7.6（2026-10-10）：手机端 UI 二轮优化（Jesse 截图反馈，变化仅进 ≤640px 断点与窄屏 JS 分支，桌面零改动；本地定稿待 Jesse 确认后发布）——①图例按钮等大不拉伸（flex 0 0 33.33%，每排 3 个，行内不足留空不铺满），三图组保留分块：组间细分隔线 + 组名小字（主图/副图 1/副图 2），指标归属一眼可辨；②绘图区右侧留白回收：窄屏右边距 88→56px（绘图区加宽约 32px），参考线药丸改挂绘图区框内右侧（right 锚定左伸、短文案不变、点击简介不变），窄屏隐去纳指轴名防叠字（数值仍走 tooltip）；③表 1 四状态胶囊恢复一行四列（撤销 v7.5 的 2×2 网格）。数据契约/阈值/参考线语义零改动 -->
 <!-- 量价趋势 · v7.5（2026-10-10）：手机端 UI 专项优化（桌面端布局/数据零改动，变化只进 ≤640/≤900 断点与 JS 窄屏分支）——①窄屏图高按可见面板数动态（1面板480/2面板600/3面板700px，替代固定560px 三面板挤成一团）；②图例改「指标」折叠抽屉：窄屏默认收起，顶部药丸显示已开指标彩点摘要+计数，约200px 纵向空间还给图表，点开即全量图例（开关逻辑零改动）；③触控显式补齐：dataZoom inside 启用 zoomOnTouch/moveOnTouch（双指捏合缩放+单指平移），时间滑块窄屏加高 16→24px（把手 26px，达触控命中标准）；④窄屏纵轴刻度字号 11→10px、X 轴标签最小间距 44→52px 防日期重叠；⑤tooltip 窄屏字号 12→11px；⑥表 1 窄屏改 2×2 网格（四列胶囊 360px 屏下挤压），表 2/图注/参考线短文案字号各提 1px、行距放宽（排版舒展）；⑦viewport-fit=cover + safe-area-inset 刘海屏/底部横条安全区；⑧resize 跨断点改走 applyVisibility 全量同步（轴字号/滑块高/纳指轴 offset 不再滞留旧值）。rawData/sNdx/15字段契约/全部阈值/参考线语义/桌面布局零改动 -->
@@ -254,9 +255,9 @@ body{background-color:var(--parchment);background-image:radial-gradient(1100px 5
   .stat-val td{padding:14px 2px 16px}
   .kpi-pill{font-size:14px;padding:8px 15px}
   .kpi-pop span{font-size:10.5px;padding:4px 7px}
-  /* 参考线胶囊：窄屏短文案；v7.7 移回框外右侧（诉求：药丸不遮曲线），右轴全左后框外整条只放药丸 */
-  .ref-tags{margin-left:4px}
-  .ref-tags span{font-size:10px;padding:2px 6px}
+  /* v7.8：参考线改 markLine 图内标注（融胶囊），框外药丸窄屏整体退场；面板框去左右边框只留极浅顶分隔（对齐养基宝式极简图风） */
+  .ref-tags{display:none}
+  .pane-frame{border-left:none;border-right:none;border-top:1px solid rgba(16,16,20,.07)}
   .fig-caption{margin-top:12px;padding-top:10px}
   .fig-notes{font-size:11px;line-height:1.7}
   /* 图例折叠抽屉（v7.5）：窄屏默认收起，彩点摘要代替 15 按钮纵排 */
@@ -485,7 +486,7 @@ const CFG={
 // ===== 响应式图表边距（v7.1）：窄屏压缩左右留白；桌面 84 不变。CSS 面板框经 --grid-margin 变量同步；v7.4 右侧加纳指轴，右边距独立 =====
 function syncGridMargin(){
   CFG.gridMargin=innerWidth<640?52:(innerWidth<900?72:84);
-  CFG.gridMarginR=innerWidth<640?56:(innerWidth<900?120:150); // v7.6：窄屏右边距 88→56px 回收绘图区宽度（药丸已改挂框内）
+  CFG.gridMarginR=innerWidth<640?10:(innerWidth<900?120:150); // v7.8：窄屏右边距 56→10px（药丸已融进图内 markLine label，右侧只留发丝空隙）；v7.6 曾 88→56
   document.documentElement.style.setProperty('--grid-margin',CFG.gridMargin+'px');
   document.documentElement.style.setProperty('--grid-margin-r',CFG.gridMarginR+'px');
 }
@@ -631,12 +632,20 @@ const REF_STYLE={
   hv:{line:'rgba(175,82,222,.55)',bg:'rgba(175,82,222,.14)',border:'rgba(175,82,222,.45)',text:'#8944AB'},
   health:{line:'rgba(52,199,89,.5)',bg:'rgba(52,199,89,.13)',border:'rgba(52,199,89,.42)',text:'#1F7A33'} // v7.3 融资强度健康区（与色带同源淡绿）
 };
-const refMarkData=(type,y)=>({yAxis:y,label:{show:false},lineStyle:{color:REF_STYLE[type].line,type:'solid',width:1.5,cap:'round'}});
+// v7.8：参考线统一样式（Apple 风）：1.5px 圆头实线 + 桌面框右侧毛玻璃药丸（.ref-tags）+ 窄屏图内 markLine 端点标注；语义色 = 加仓红/减仓绿/抄底蓝/拥挤橙/成交额棕/恐慌紫
+const refMarkData=(type,y)=>{
+  const lab=REF_LINE_LABELS[type+':'+y]; // v7.8：窄屏胶囊融进图内——短文案挂线端，语义色同源；type:value 定位（45% 减仓/拥挤靠 type 区分）
+  const show=innerWidth<640&&!!lab;
+  return {yAxis:y,label:{show:show,position:lab?lab.pos:'insideEndTop',formatter:lab?lab.text:'',fontSize:9,fontWeight:600,color:REF_STYLE[type].text,distance:4},lineStyle:{color:REF_STYLE[type].line,type:'solid',width:1.5,cap:'round'}};
+};
 // 面板框外药丸（值与 CFG 单一来源）：axis=对应 yAxisIndex（副图1 比例轴2/家数轴3/成交额轴4，副图2 比例轴5），y 由 convertToPixel 按线位置计算
 const REF_TAGS={
   1:[{series:'融资强度_副图1',type:'bottom',axis:2,value:CFG.rzThaw,label:"冰点",slabel:"冰点",tip:{t:'冰点',text:'杠杆退潮至冰点，2020以来未来胜率仅13%'}},{series:'融资强度_副图1',type:'health',axis:2,value:(CFG.rzThaw+CFG.rzHealthTop)/2,label:"健康",slabel:"健康",tip:{t:'健康区',text:'杠杆健康常态'}},{series:'融资强度_副图1',type:'crowd',axis:2,value:CFG.rzHot,label:"过热",slabel:"过热",tip:{t:'过热',text:'杠杆过热预警，2020年以来该档未来60日平均 -7.2'}},{series:'站上20日线_副图1',type:'reduce',axis:2,value:CFG.reduceLine20,label:"下穿减仓线 "+CFG.reduceLine20+"%",slabel:"下穿减仓",tip:{t:'下穿减仓线 45%',text:'低于45%＝多数个股跌破20日线，短线转弱按规则减仓'}},{series:'成交额_副图1',type:'amt',axis:4,value:CFG.amtLine,label:(CFG.amtLine/CFG.yiSplit).toFixed(0)+"万亿",slabel:"2万亿",tip:{t:'成交额 2万亿',text:'高于2万亿＝交投过热警惕放量滞涨，低于＝量能正常'}},{series:'涨停家数_副图1',type:'crowd',axis:3,value:CFG.limitUpLine,label:"过热 "+CFG.limitUpLine+"家",slabel:"过热",tip:{t:'涨停过热线 130家',text:'单日涨停≥130家＝短线情绪过热，次日分歧概率大'}},{series:'跌停家数_副图1',type:'bottom',axis:3,value:-CFG.limitDownLine,label:"恐慌 "+CFG.limitDownLine+"家",slabel:"恐慌",tip:{t:'跌停恐慌线 50家',text:'单日跌停≥50家＝恐慌抛售扩散，常临近阶段底'}},{series:'指数乖离率_副图1',type:'crowd',axis:2,value:CFG.biasExtLine,label:"超买",tip:{t:'乖离超买线 +5%',text:'高于+5%＝短期涨速过快，追高风险'}},{series:'指数乖离率_副图1',type:'bottom',axis:2,value:-CFG.biasExtLine,label:"超卖",tip:{t:'乖离超卖线 −5%',text:'低于−5%＝短期超卖，常有修复'}}],
-  2:[{series:'拥挤度_副图2',type:'crowd',axis:5,value:CFG.crowdLine*100,label:"拥挤线 "+(CFG.crowdLine*100)+"%",slabel:"拥挤",tip:{t:'拥挤线 45%',text:'高于45%＝资金拥挤结构脆弱，低于＝结构分散更健康'}},{series:'站上30日线_副图2',type:'add',axis:5,value:CFG.addLine30,label:"上穿加仓线 "+CFG.addLine30+"%",slabel:"上穿加仓",tip:{t:'上穿加仓线 50%',text:'高于50%＝中期广度转强确认，按规则加仓'}},{series:'站上30日线_副图2',type:'bottom',axis:5,value:CFG.bottomLine,label:"下穿抄底线 "+CFG.bottomLine+"%",slabel:"下穿抄底",tip:{t:'下穿抄底线 15%',text:'低于15%＝深度恐慌区，常有超跌反弹'}},{series:'恐慌指标_副图2',type:'hv',axis:5,value:CFG.hvWarnLine,label:"恐慌 "+CFG.hvWarnLine+"%",slabel:"恐慌",tip:{t:'恐慌线 40%（年化波动）',text:'高于40%＝高波动恐慌，多见于暴跌后'}}]
+  2:[{series:'拥挤度_副图2',type:'crowd',lpos:'insideEndBottom',axis:5,value:CFG.crowdLine*100,label:"拥挤线 "+(CFG.crowdLine*100)+"%",slabel:"拥挤",tip:{t:'拥挤线 45%',text:'高于45%＝资金拥挤结构脆弱，低于＝结构分散更健康'}},{series:'站上30日线_副图2',type:'add',axis:5,value:CFG.addLine30,label:"上穿加仓线 "+CFG.addLine30+"%",slabel:"上穿加仓",tip:{t:'上穿加仓线 50%',text:'高于50%＝中期广度转强确认，按规则加仓'}},{series:'站上30日线_副图2',type:'bottom',axis:5,value:CFG.bottomLine,label:"下穿抄底线 "+CFG.bottomLine+"%",slabel:"下穿抄底",tip:{t:'下穿抄底线 15%',text:'低于15%＝深度恐慌区，常有超跌反弹'}},{series:'恐慌指标_副图2',type:'hv',axis:5,value:CFG.hvWarnLine,label:"恐慌 "+CFG.hvWarnLine+"%",slabel:"恐慌",tip:{t:'恐慌线 40%（年化波动）',text:'高于40%＝高波动恐慌，多见于暴跌后'}}]
 };
+// v7.8：窄屏图内标注注册表（type:value → {text,pos}），复用 REF_TAGS 的 slabel 短文案；refMarkData 构建 markLine label 时读取（拥挤线 45% 特判线下方，避让加仓线 50% 的线上方标注）
+const REF_LINE_LABELS={};
+Object.values(REF_TAGS).flat().forEach(t=>{REF_LINE_LABELS[t.type+':'+t.value]={text:t.slabel||t.label,pos:t.lpos||((t.type==='bottom'||t.type==='reduce')?'insideEndBottom':'insideEndTop')}});
 // v7.2：图例指标一句话简介注册表（相对强度 v6.15 起，其余六指标 v7.2 追加）——点击图例按钮右侧 ⓘ 弹出；t=指标名·定位词，text=一句话读法（阈值语义由参考线药丸 tip 承担，不重复）
 const SERIES_TIPS={
   '融资强度':{t:'融资强度 · 杠杆温度计',text:'上行＝杠杆加码、下行＝杠杆退潮、持续高位＝情绪过热'},
@@ -1109,6 +1118,7 @@ function applyVisibility(){
   const axFs=innerWidth<640?10:11; // v7.5：窄屏纵轴刻度字号 10px（桌面 11px 不变）
   // v7.7：手机右轴全变左轴（两融/纳指窄屏移左），家数轴全端迁左（方案二）；甲方案——窄屏两根左轴同开时左距 52→84px 动态撑开
   const narrow=innerWidth<640;
+  const axSplit=narrow?2:5; // v7.8：窄屏 Y 轴简化为 3 档刻度（min/中/max），轴名同步隐藏（养基宝式极简图风）；桌面 5 档+轴名不变
   const needWideLeft=narrow&&((mainBalanceOn&&mainIndexOn)||(s1CntOn&&(sub1RatioOn||sub1AmtOn)));
   CFG.gridMargin=narrow?(needWideLeft?84:52):(innerWidth<900?72:84);
   document.documentElement.style.setProperty('--grid-margin',CFG.gridMargin+'px');
@@ -1120,13 +1130,13 @@ function applyVisibility(){
     dataZoom:[{},{height:innerWidth<640?24:16,bottom:innerWidth<640?7:9,moveHandleSize:innerWidth<640?26:20}], // v7.5：窄屏滑块加高、把手放大（触控命中区）
     series:[{id:'ghostMain',data:mainIndexOn?nulls():rawSh},{name:'_rzAxis',data:ghostRzData},{name:'_ndxAxis',data:selected['纳指100']?nulls():sNdx}],
     yAxis:[
-      {show:mainBalanceOn,position:rzPos,offset:rzOffset,axisLabel:{show:mainBalanceOn,align:rzAlign,fontSize:axFs},nameTextStyle:{color:SERIES_COLOR['两融余额'],align:rzAlign}},
-      {show:mainIndexOn,axisLabel:{show:mainIndexOn,align:'right',fontSize:axFs},nameTextStyle:{color:'#1d1d1f',align:'right'}},
-      {show:sub1RatioOn,axisLabel:{show:sub1RatioOn,align:'right',fontSize:axFs},nameTextStyle:{color:sub1RatioColor,align:'right'}},
-      {show:s1CntOn,position:'left',offset:cntOffset,axisLabel:{show:s1CntOn,align:'right',fontSize:axFs},nameTextStyle:{color:'#1d1d1f',align:'right'}},
-      {show:sub1AmtOn,axisLabel:{show:sub1AmtOn,align:'right',fontSize:axFs},nameTextStyle:{color:SERIES_COLOR['成交额'],align:'right'}},
-      {show:sub2RatioOn,axisLabel:{show:sub2RatioOn,align:'right',fontSize:axFs},nameTextStyle:{color:sub2RatioColor,align:'right'}},
-      {show:s2RsOn,axisLabel:{show:s2RsOn,align:'right',fontSize:axFs},nameTextStyle:{color:SERIES_COLOR['相对强度'],align:'right'}},
+      {show:mainBalanceOn,position:rzPos,offset:rzOffset,name:narrow?'':'两融余额',splitNumber:axSplit,axisLabel:{show:mainBalanceOn,align:rzAlign,fontSize:axFs},nameTextStyle:{color:SERIES_COLOR['两融余额'],align:rzAlign}},
+      {show:mainIndexOn,name:narrow?'':'指数',splitNumber:axSplit,axisLabel:{show:mainIndexOn,align:'right',fontSize:axFs},nameTextStyle:{color:'#1d1d1f',align:'right'}},
+      {show:sub1RatioOn,name:narrow?'':'比例',splitNumber:axSplit,axisLabel:{show:sub1RatioOn,align:'right',fontSize:axFs},nameTextStyle:{color:sub1RatioColor,align:'right'}},
+      {show:s1CntOn,position:'left',offset:cntOffset,name:narrow?'':'家数',splitNumber:axSplit,axisLabel:{show:s1CntOn,align:'right',fontSize:axFs},nameTextStyle:{color:'#1d1d1f',align:'right'}},
+      {show:sub1AmtOn,name:narrow?'':'成交额',splitNumber:axSplit,axisLabel:{show:sub1AmtOn,align:'right',fontSize:axFs},nameTextStyle:{color:SERIES_COLOR['成交额'],align:'right'}},
+      {show:sub2RatioOn,name:narrow?'':'比例',splitNumber:axSplit,axisLabel:{show:sub2RatioOn,align:'right',fontSize:axFs},nameTextStyle:{color:sub2RatioColor,align:'right'}},
+      {show:s2RsOn,name:narrow?'':'比值',splitNumber:axSplit,axisLabel:{show:s2RsOn,align:'right',fontSize:axFs},nameTextStyle:{color:SERIES_COLOR['相对强度'],align:'right'}},
       {show:!!selected['纳指100'],position:narrow?'left':'right',offset:narrow?0:66,name:innerWidth<640?'':'纳指100',axisLabel:{show:!!selected['纳指100']&&innerWidth>=640,align:narrow?'right':'left',fontSize:axFs},nameTextStyle:{color:SERIES_COLOR['纳指100'],align:narrow?'right':'left'}}
     ]
   });
