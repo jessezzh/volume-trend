@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<!-- 量价趋势 · v7.10（2026-10-15）：手机端 UI 六轮微调（Jesse 验收 V7.9 后拍板"主图有彩带当底自然成框，副图1/副图2 各加一个黑框"；大小/边距/数据零改动，变化只进 ≤640 断点）——副图1/副图2 的 pane-frame 加 pane-sub 类，窄屏 border 恢复四边 1px #1d1d1f 墨黑实框（主图 (a) 维持无框+极浅顶线，色带即底）；桌面维持灰色三边框不变。V7.9 已归档正式版本线 -->
 <!-- 量价趋势 · v7.9（2026-10-15）：手机端 UI 五轮优化（Jesse 验收 V7.8 右侧后拍板"左边的轴也内化到图里面"；变化只进 ≤640 断点与窄屏 JS 分支，桌面零改动）——①左轴锚点内化（养基宝同款）：窄屏左边距 52→10px，每面板主轴刻度（min/中/max 3 档）画进绘图区左缘（axisLabel margin 负值+align left+白描边 2px 压线可读，随 dataZoom 实时更新）；②副轴刻度隐藏走 tooltip：两融余额（与指数同开时）、家数轴（与比例/成交额同开时）只留曲线，独开时升为主轴照常内化——needWideLeft 双轴堆叠/offset 42 机制退役，axLab 三分支（pri/hid/桌面显式复位 margin:8+textBorderWidth:0 防 merge 残留）；③面板编号 (a)(b)(c) 挪各面板右上角避开左上锚点；④桌面分支轴补丁显式带 margin/textBorder 复位，跨断点旋屏不残留。iPhone 390pt 绘图区约 283→324px（较 v7.7 累计 +37%）。已知代价：两融/家数与主轴同开时左缘无量级刻度（tooltip 十字线读数）；工程版 V7.8.html 已由 Jesse 删除，本轮起以桌面主文件为权威源 -->
 <!-- 量价趋势 · v7.8（2026-10-15）：手机端 UI 四轮优化（参考养基宝 App 极简图风，Jesse 拍板"去框+轴简化+胶囊融进图内"；变化只进 ≤640 断点与窄屏 JS 分支，桌面零改动）——①窄屏去面板框：pane-frame 去左右边框，只留极浅顶部分隔线（面板编号 (a)(b)(c) 保留，图注引用不变）；②轴简化：Y 轴刻度 5~6 档→3 档（splitNumber 2）、轴名（两融余额/指数/比例/家数/成交额/比值/纳指100）窄屏隐藏；③胶囊融进图内：11 条参考线短文案改挂 markLine label（insideEndTop/Bottom 贴线端 9px 同语义色，拥挤线 45% 特判 insideEndBottom 避让加仓线 50% 标注），框外 DOM 药丸窄屏整体退场（.ref-tags display:none），右侧留白 56→10px——iPhone 390pt 绘图区约 237→283px（+19%），彻底根治 v7.7 药丸被 overflow-x:clip 裁切问题；代价（已知）：参考线"高于/低于"点击简介窄屏暂不可达（ref-info 随药丸隐藏），简介并入图例抽屉留待下轮 -->
 <!-- 量价趋势 · v7.7（2026-10-10）：手机端 UI 三轮优化（Jesse 四项指令，方案A/甲拍板；桌面仅动家数轴，其余变化只进 ≤640 断点与窄屏 JS 分支；本地定稿待确认后发布）——①指标摘要药丸改编号列表：「1.主图指标 2.副图1指标 3.副图2指标」按面板编号列出已开指标名（同组、连接，未开显"点选指标"，超宽省略号截断），去掉"已开"计数与彩点（方案）；②涨跌停家数竖轴由右侧迁至左侧（全端，与比例/成交额轴同侧堆叠，offset 随同开轴动态 0/46 桌面、0/42 手机；对称轴±家数、参考线、tooltip 不变）（方案）；③「● 市场状态」标签与「指标」按钮同排（方案A：按钮居左弹性宽+标签贴右，窄屏省一行；弹层右锚定防溢出；DOM 由 head-timeline 内迁出为 card-head 直接子项，桌面 tabs+标签同排版式不变）（诉求）；④手机右轴全变左轴（诉求）：两融/纳指轴窄屏移左（纳指刻度仍隐藏走 tooltip），参考线药丸移回框外右侧不遮曲线，左距动态 52/84px（甲：两根左轴同开时撑开，绘图区随之收窄）；同日自检修复：legend-toggle flex 基尺寸 1 1 0%（长摘要不再把状态标签挤到第二排、弹层不再左溢出）。数据契约/阈值/参考线语义零改动 -->
@@ -259,6 +260,8 @@ body{background-color:var(--parchment);background-image:radial-gradient(1100px 5
   /* v7.8：参考线改 markLine 图内标注（融胶囊），框外药丸窄屏整体退场；面板框去左右边框只留极浅顶分隔（对齐养基宝式极简图风） */
   .ref-tags{display:none}
   .pane-frame{border-left:none;border-right:none;border-top:1px solid rgba(16,16,20,.07)}
+  /* v7.10：主图有色带当底自然成框，副图1/副图2 加黑框衬底（大小/边距不动，仅框线）；桌面维持灰色三边框不变 */
+  .pane-frame.pane-sub{border:1px solid #1d1d1f}
   /* v7.9：左轴锚点内化——面板编号 (a)(b)(c) 挪右上角，避开图内左缘顶部锚点值 */
   .pane-label{left:auto;right:7px}
   .fig-caption{margin-top:12px;padding-top:10px}
@@ -364,8 +367,8 @@ body{background-color:var(--parchment);background-image:radial-gradient(1100px 5
     <div class="chart-stage">
       <div id="mainChart"></div>
       <div class="pane-frame" style="top:5.2%;bottom:71.3%"><span class="pane-label">(a)</span></div>
-      <div class="pane-frame" style="top:35.3%;bottom:42.1%"><span class="pane-label">(b)</span></div>
-      <div class="pane-frame" style="top:64.8%;bottom:11.8%"><span class="pane-label">(c)</span></div>
+      <div class="pane-frame pane-sub" style="top:35.3%;bottom:42.1%"><span class="pane-label">(b)</span></div>
+      <div class="pane-frame pane-sub" style="top:64.8%;bottom:11.8%"><span class="pane-label">(c)</span></div>
       <div id="chartStatus" class="chart-status" role="status" aria-live="polite" hidden></div>
     </div>
     <div class="fig-caption">
