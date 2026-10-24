@@ -2,7 +2,7 @@
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
-<!-- 量价趋势 · v8.2（2026-10-24 功能改版，Jesse 定三件事）：① 参考线胶囊退役后回收右侧留白——gridMarginR 桌面 150→116、平板 120→108（右侧只余两融/指数/纳指三根右轴的刻度与轴名，绘图区加宽约 34px），CSS --grid-margin-r 回退值同步；② 新增「底板主题」切换——初版为题头四色点（羊皮纸/素白/晨雾/墨夜），**同日按 Jesse 指示改为单按钮三档循环**：墨夜砍掉，按钮=小长方形（.regime-tag 同款胶囊语言），置于市场状态胶囊「底部修复」之后，按钮文字即当前主题名，点击按 羊皮纸→素白→晨雾 轮换，localStorage（键 lvt-theme）记忆、防闪脚本只白名单 clean/mist（旧存的 night 自动回落羊皮纸）；③ 表 2「未来趋势展望」整块移除（Jesse：没有什么用处）——模块二 JS/RegimeAPI 契约/outlook 系列 CSS/markup 全删，模块一（市场状态机胶囊+主图阶段色带）与表 1 保留，.stat-table td 25% 规则随之简化。版本由 V8.1 升级为本文件 V8.2（V8.1 已归档至历史版本/正式版本线，md5 f7c6f89e…；原搁置版股债比价 V8.2 移至历史版本目录、改名 量价趋势V8.2_搁置_股债比价.html）。数据/rawData/阈值/图表交互零改动。**同日晚间追加（Jesse）④轴显示策略**：主图右侧两融余额+纳指100 同开时**共用一列刻度**——只显示两融余额（右侧本来双列 116px 太宽），纳指点位经十字提示读取，单开时各显示自己刻度，右边距随右轴状态动态 64/20；副图1 家数+成交额同开时反向处理——原先两轴刻度 interleaved 挤在一列，现家数外移 58px 干净分两列、左边距动态 100；表格/图注口径同步。⑤合并漂移加固：grid/xAxis/yAxis 全部组件加显式 id（g0-2、x0-2、yRz/yIdx/yRatio1/yCnt/yAmt/yRatio2/yRs/yNdx），applyVisibility/layoutPanes 部分更新按 id 匹配——压测中捕获一次长序列后纳指轴组件在内部列表挪位、按位合并把 gridIndex 错排致三根轴挂错面板的非确定性问题（刷新即愈），按 ECharts 官方建议以 id 匹配根治。⑥URL hash 状态持久化——图例选中(s=索引)/缩放窗口(z=起止%)/主题(t=p|c|m)/测距开关(m=0|1)写入网址，lvtSyncHash 250ms 防抖 + replaceState（不污染前进/后退历史），加载分层恢复：图例在 selected 初始化后、主题走防闪脚本与主题 IIFE（hash 优先于 localStorage）、窗口与测距在图表就绪后经 dispatch/click 触发既有联动链——刷新或分享链接即还原现场，清参数回默认；⑦参考线点击 tie-break 改按 |Δy| 最近者命中（原按注册表顺序，2万亿线与涨停过热线像素同高时固定返回前者）；⑧素白/晨雾主题滚动条配平（原暖色滚动条在冷色底板上违和）。⑨副图1 轴制重排（Jesse）——融资强度移右侧独立轴 #8（yRzStr，效仿主图两融余额：独占右列、幽灵序列 _rzStrAxis 撑刻度、可与任意左侧指标共存、退出旧互斥组）；涨跌停家数与指数乖离率按副图2 相对强度的样式独立成图——副图1 左侧四指标（站上20日线/涨跌停/乖离率/成交额）互斥单选、恒单轴，④中的 cntOffset 46/58 两列与 bothCnt 左边距机制随之退役；右边距判定并入融资强度（任意右轴 64/全关 20）；hash 恢复对旧链接的同开组合作「只留最后点亮」归一化。 -->
+<!-- 量价趋势 · v8.2（2026-10-24 功能改版，Jesse 定三件事）：① 参考线胶囊退役后回收右侧留白——gridMarginR 桌面 150→116、平板 120→108（右侧只余两融/指数/纳指三根右轴的刻度与轴名，绘图区加宽约 34px），CSS --grid-margin-r 回退值同步；② 新增「底板主题」切换——初版为题头四色点（羊皮纸/素白/晨雾/墨夜），**同日按 Jesse 指示改为单按钮三档循环**：墨夜砍掉，按钮=小长方形（.regime-tag 同款胶囊语言），置于市场状态胶囊「底部修复」之后，按钮文字即当前主题名，点击按 羊皮纸→素白→晨雾 轮换，localStorage（键 lvt-theme）记忆、防闪脚本只白名单 clean/mist（旧存的 night 自动回落羊皮纸）；③ 表 2「未来趋势展望」整块移除（Jesse：没有什么用处）——模块二 JS/RegimeAPI 契约/outlook 系列 CSS/markup 全删，模块一（市场状态机胶囊+主图阶段色带）与表 1 保留，.stat-table td 25% 规则随之简化。版本由 V8.1 升级为本文件 V8.2（V8.1 已归档至历史版本/正式版本线，md5 f7c6f89e…；原搁置版股债比价 V8.2 移至历史版本目录、改名 量价趋势V8.2_搁置_股债比价.html）。数据/rawData/阈值/图表交互零改动。**同日晚间追加（Jesse）④轴显示策略**：主图右侧两融余额+纳指100 同开时**共用一列刻度**——只显示两融余额（右侧本来双列 116px 太宽），纳指点位经十字提示读取，单开时各显示自己刻度，右边距随右轴状态动态 64/20；副图1 家数+成交额同开时反向处理——原先两轴刻度 interleaved 挤在一列，现家数外移 58px 干净分两列、左边距动态 100；表格/图注口径同步。⑤合并漂移加固：grid/xAxis/yAxis 全部组件加显式 id（g0-2、x0-2、yRz/yIdx/yRatio1/yCnt/yAmt/yRatio2/yRs/yNdx），applyVisibility/layoutPanes 部分更新按 id 匹配——压测中捕获一次长序列后纳指轴组件在内部列表挪位、按位合并把 gridIndex 错排致三根轴挂错面板的非确定性问题（刷新即愈），按 ECharts 官方建议以 id 匹配根治。⑥URL hash 状态持久化——图例选中(s=索引)/缩放窗口(z=起止%)/主题(t=p|c|m)/测距开关(m=0|1)写入网址，lvtSyncHash 250ms 防抖 + replaceState（不污染前进/后退历史），加载分层恢复：图例在 selected 初始化后、主题走防闪脚本与主题 IIFE（hash 优先于 localStorage）、窗口与测距在图表就绪后经 dispatch/click 触发既有联动链——刷新或分享链接即还原现场，清参数回默认；⑦参考线点击 tie-break 改按 |Δy| 最近者命中（原按注册表顺序，2万亿线与涨停过热线像素同高时固定返回前者）；⑧素白/晨雾主题滚动条配平（原暖色滚动条在冷色底板上违和）。⑨副图1 轴制重排（Jesse）——融资强度移右侧独立轴 #8（yRzStr，效仿主图两融余额：独占右列、幽灵序列 _rzStrAxis 撑刻度、可与任意左侧指标共存、退出旧互斥组）；涨跌停家数与指数乖离率按副图2 相对强度的样式独立成图——副图1 左侧四指标（站上20日线/涨跌停/乖离率/成交额）互斥单选、恒单轴，④中的 cntOffset 46/58 两列与 bothCnt 左边距机制随之退役；右边距判定并入融资强度（任意右轴 64/全关 20）；hash 恢复对旧链接的同开组合作「只留最后点亮」归一化。⑩多指标测距（Jesse 报 bug：多开只显示最上面一条）——测量对象由单一焦点曲线改为全部点亮的主图曲线：单开沿用旧焦点卡，多开改紧凑对照表（每行色点+名称｜起止值｜涨跌额｜涨跌幅），每条曲线各自向区间内吸附有效收盘（科创50 拖到上市前只是少一行），选带起止点按各曲线各画一枚本色点、数量随指标动态增删；全部无有效收盘才提示。 -->
 <!-- 量价趋势 · v8.1d（2026-10-24 视觉改版·参考线标注，Jesse 定）：参考线说明胶囊（.ref-tags 框外药丸，桌面右侧一列最多 13 枚）全端退役，统一改用窄屏同款「图内线端短标注」——refMarkData 的 label 显隐由 `isNarrow()&&lab` 改为 `!!lab`，全部端点短文案/避让位随 REF_TAGS 注册表全端生效（冰点/过热/下穿减仓/2万亿/过热130/恐慌50/超买/超卖/拥挤/上穿加仓/下穿抄底/恐慌40）；健康区色带右端补「健康」小字（markArea item label，与线端标注同语言）。胶囊的点击简介不丢失：新增 zrender 画布层参考线命中（|Δy|≤7px），点击图内任意参考线弹出原胶囊同款语义卡，健康区=色带内右侧 25% 区域命中——窄屏由此补回 v7.8 起不可达的参考线简介。buildRefTags/syncRefTagLabels/.ref-tags CSS 整体移除，positionRefTags 退化为仅收起简介卡。另修：跌停零轴 markLine 项补 label:{show:false}（ECharts 默认标签在零轴右端渲染孤立「0」）。网格几何/面板边距/gridMarginR/数据/阈值零改动。 -->
 <!-- 量价趋势 · v8.1c（2026-10-24 审计修复②）：只修 bug，数据/阈值/布局/配色零改动。C1 表 2 环境警示改运行时现算——「历史 8 次，后 20 日中位 −6.2%」为手写快照（A9 同类残留，全量审计复算为 27 次触发/后 20 日中位 −3.0%），现算口径＝每个「恐慌下跌」段取首个「站上20日线自 ≥45% 下穿」日为锚（段内反复下穿不重复计），后 20 日收益按表 2 当前所选指数收盘计算，末段未来未实现自然剔除；C2 图 1 图注「2005–2026」改由数据首末年现拼（当期输出不变，2027 年起不再过期；「XX 年以来」语义恒真不动）；C3 Esc 新增收起图例ⓘ简介卡与回撤详情卡（此前键盘开窗后只能点击空白关闭）；C4 KPI 拥挤胶囊「偏冷 35%」阈值入 CFG.crowdCool，与图注同源。同日数据核验（全部澄清、非错误）：中证2000 2023-09-12 官方平盘 2375.71（中证官网 index-perf）；沪深300 2010-05-25/26 实际收盘 2813.943/2813.944（腾讯K线，2 位小数舍入后同值）；sNdx 末 4 槽与纳斯达克官方 API 逐位一致（28958.69/29822.52/29490.28/29529.34）。 -->
 <!-- 量价趋势 · v8.1b（2026-10-20 数据校正）：sNdx 全序列改为「A 股交易日前最后一个美股收盘」。原 2005-01-04~2026-09-30 用的是同日历日的美股收盘——A 股收盘时那场美股还没开盘，属未来函数；2026-10-08 起管线新行已是前一交易日，两段口径互不一致。本次按「iFinD 原值 + 新浪 .NDX + 纳斯达克官方」三源投票重建 5291 个槽位（iFinD 5274 个交易日、新浪补 222、纳指补 175，剔除 33 处停更/错位分歧）：5102 行左移一个美股交易日，末 9 行不变。另修 cyb 2016-02-04（2126.53→2126.64）、2016-02-29（1880.66→1880.15）。 -->
@@ -367,6 +367,14 @@ body[data-theme="mist"] ::-webkit-scrollbar-thumb:hover{background:#aeb8c5;backg
 .ms-tip .rows>b.w{grid-column:2 / -1}
 /* 单位降权：数字吃主体，单位小一号、灰一档——右对齐时数字不会被单位挤得忽长忽短 */
 .ms-tip .u{font-style:normal;font-size:10px;font-weight:600;color:#8c8875;margin-left:2px;letter-spacing:.02em}
+/* v8.2f 多指标测距对照表：每行＝色点+名称｜起止值｜涨跌额｜涨跌幅（红涨绿跌，tabular 对齐） */
+.ms-tip.ms-multi{width:auto;min-width:252px}
+.ms-tip .ms-mrows{display:flex;flex-direction:column;gap:1px;margin-top:2px}
+.ms-tip .ms-mrow{display:grid;grid-template-columns:minmax(78px,auto) minmax(0,1fr) auto minmax(58px,auto);column-gap:10px;align-items:baseline;font-size:11px;line-height:1.9;white-space:nowrap;font-variant-numeric:tabular-nums}
+.ms-tip .ms-mrow .n{display:inline-flex;align-items:center;gap:5px;color:#3b382c;font-weight:600}
+.ms-tip .ms-mrow .v{color:#45423a;text-align:right;overflow:hidden;text-overflow:ellipsis}
+.ms-tip .ms-mrow .c{text-align:right;color:#6e6a58}
+.ms-tip .ms-mrow .p{font-weight:700;text-align:right}
 @media(max-width:640px){.ms-toggle{display:none}} /* 窄屏不做测距（触控拖动仍是平移），不占版面 */
 </style>
 </head>
@@ -449,7 +457,7 @@ body[data-theme="mist"] ::-webkit-scrollbar-thumb:hover{background:#aeb8c5;backg
         <p>· 涨跌停家数＝收盘价等于当日限价（前收盘价×(1±板块涨跌幅比例)，四舍五入到分）且盘中未越线；主板 ±10%（ST ±5%）、创业板注册制后与科创板 ±20%、北交所 ±30%；上市首日与无涨跌幅限制窗口内的新股不计入。副图 1 中涨停正向（红）绘制、跌停负向（绿）绘制，左侧家数轴显示绝对家数</p>
         <p>· 相对强度＝中证2000/沪深300 收盘比值（2013-12-31 起，中证2000 基数日）</p>
         <b>交互</b>
-        <p>· 拖动测距——绘图区内按住拖动，读出该区间「焦点曲线」（最近一次点亮的主图曲线，含两融余额）的起止值、涨跌幅与交易日数；涨跌幅＝(末−首)/首，红涨绿跌。缩放、切页签、切图例、改窗口尺寸或按 Esc 即清除；关闭页签右侧「测距」后恢复拖动平移。窄屏（≤640px）不提供测距，「测距」开关隐藏，单指拖动即平移</p>
+        <p>· 拖动测距——绘图区内按住拖动，读出该区间<b>全部点亮主图曲线</b>（含两融余额）各自的起止值、涨跌额与涨跌幅：单开为焦点卡，多开为对照表，选带起止点按各曲线各标一枚本色点；涨跌幅＝(末−首)/首，红涨绿跌。缩放、切页签、切图例、改窗口尺寸或按 Esc 即清除；关闭页签右侧「测距」后恢复拖动平移。窄屏（≤640px）不提供测距，「测距」开关隐藏，单指拖动即平移</p>
       <p>· 参考线——图内线端小字标注该线语义（冰点/健康/过热、上穿加仓/下穿抄底、下穿减仓、拥挤、恐慌、超买/超卖、2万亿、过热 130 家）；点击图内参考线或健康区右段，弹出高于/低于说明（v8.1d 起胶囊改线端标注，点击简介保留）</p>
       <p>· 状态记忆——图例选中、缩放窗口、底板主题与测距开关写入网址（#后参数），刷新页面或把链接发给别人即可还原当前现场；清掉网址参数即回默认</p>
       </div>
@@ -1499,10 +1507,10 @@ ddFocus=MAIN_SERIES.find(n=>n in DD_AXIS&&selected[n])||null;
 //   起点/终点＝拖选落在可视窗口内的两个交易日（四舍五入到最近交易日；该日该曲线为 null 时向区间内吸附到最近有效值）；
 //   涨跌幅＝(末收盘−首收盘)/首收盘×100%，涨跌额＝末−首，红涨绿跌（全页语义色）；
 //   交易日＝两下标之差，与回撤详情卡「区间（510日）」同口径，不是自然日。
-// 焦点曲线＝最近一次点亮的主图曲线，**含两融余额**——余额的百分比变化对存量指标同样成立，
-//   这与「回撤标尺不含两融」不冲突（回撤必须是价格序列，涨跌幅不必）。卡片标题固定带曲线名+本色圆点，
-//   多曲线同开时也能一眼确认算的是哪条。
-// 交互：拖动接管原来的「拖动平移」（dataZoom.moveOnMouseMove 关闭），右上「测距」开关可切回平移；
+// 测量对象＝全部点亮的主图曲线（v8.2f，Jesse：多指标时只显示最上面一条不对），**含两融余额**——余额的百分比变化对存量指标同样成立，
+//   这与「回撤标尺不含两融」不冲突（回撤必须是价格序列，涨跌幅不必）。单开沿用焦点卡（标题带曲线名+本色圆点），
+//   多开为对照表（每行一条、各带本色圆点），选带起止点按各曲线各画一枚本色点。
+// 交互：拖动接管原来的「拖动平移」（dataZoom.moveOnMouseMove 关闭），右上「测距」开关可切回；
 //   清除＝新一次拖动、缩放/平移、切页签、切图例、窗口尺寸变化、Esc。
 const MS_AXIS={'两融余额':0,'上证指数':1,'沪深300':1,'中证2000':1,'创业板指':1,'科创50':1,'纳指100':7};
 const MS_VALS=Object.assign({'两融余额':sRzYi},DD_VALS); // 价格序列复用回撤标尺那一份，不另立第二套真源
@@ -1516,8 +1524,7 @@ let msHinted=false;   // v8.1：无主图焦点时的提示每次会话只说一
 let msHintTimer=0;
 const msBand=document.createElement('div');
 msBand.className='ms-band';msBand.hidden=true;
-msBand.innerHTML='<span class="ms-dot"></span><span class="ms-dot"></span>';
-const msDots=[...msBand.children];
+msBand.innerHTML='<span class="ms-dot"></span><span class="ms-dot"></span>'; // 初始 2 枚；v8.2f 起 msDraw 按点亮曲线数动态增删
 chartEl.parentElement.appendChild(msBand);
 const msTipEl=document.createElement('div');
 msTipEl.className='ref-tip ms-tip';
@@ -1554,8 +1561,10 @@ function msInside(x,y){
   return false;
 }
 // 区间统计：两端向区间内吸附到最近有效收盘（节假日/停牌 null 不会把区间算空）
-function msMeasure(i0,i1){
-  const name=msFocus,vals=name&&MS_VALS[name];
+// v8.2f（Jesse）：多指标同开时测距**全部列出**（原只显示焦点一条）。单开沿用旧卡；多开改紧凑表格。
+// 每条曲线各自向区间内吸附有效收盘（科创50 拖到上市前只是少一行，不整卡判空）；选带起止点按各曲线各画一枚本色点。
+function msMeasureOne(name,i0,i1){
+  const vals=name&&MS_VALS[name];
   if(!vals||i1-i0<1)return null;
   let a=i0;while(a<=i1&&vals[a]==null)a++;
   let b=i1;while(b>=a&&vals[b]==null)b--;
@@ -1564,39 +1573,70 @@ function msMeasure(i0,i1){
   if(!(v0>0)||!Number.isFinite(v1))return null;
   return {name,from:a,to:b,v0,v1,pct:(v1/v0-1)*100,chg:v1-v0,days:b-a};
 }
+function msMeasure(i0,i1){
+  const list=MAIN_SERIES.filter(n=>selected[n]).map(n=>msMeasureOne(n,i0,i1)).filter(Boolean); // 行序＝MAIN_SERIES 序（两融→五指数→纳指）
+  return list.length?{list,wFrom:i0,wTo:i1,days:i1-i0}:null;
+}
 function msDraw(){
   const d=msOpen;
-  if(!d){msBand.hidden=true;return}
+  if(!d||!d.list.length){msBand.hidden=true;return}
   const r=msBandRect();
-  const x0=mainChart.convertToPixel({xAxisIndex:0},d.from),x1=mainChart.convertToPixel({xAxisIndex:0},d.to);
+  const x0=mainChart.convertToPixel({xAxisIndex:0},d.wFrom),x1=mainChart.convertToPixel({xAxisIndex:0},d.wTo); // 选带边缘＝拖选窗口（各曲线吸附日只影响圆点）
   if(!r||!Number.isFinite(x0)||!Number.isFinite(x1)){msBand.hidden=true;return}
-  const left=Math.min(x0,x1),col=SERIES_COLOR[d.name]||DD_COLOR;
+  const left=Math.min(x0,x1);
   msBand.style.left=left+'px';
   msBand.style.width=Math.max(2,Math.abs(x1-x0))+'px';
   msBand.style.top=r.top+'px';
   msBand.style.height=(r.bottom-r.top)+'px';
-  [[d.from,d.v0],[d.to,d.v1]].forEach(([i,v],k)=>{
-    let p=null;
-    try{p=mainChart.convertToPixel({xAxisIndex:0,yAxisIndex:MS_AXIS[d.name]},[i,v])}catch(e){}
-    const el=msDots[k];
-    if(!p||!Number.isFinite(p[0])||!Number.isFinite(p[1])){el.style.display='none';return}
-    el.style.display='';el.style.left=(p[0]-left)+'px';el.style.top=(p[1]-r.top)+'px';el.style.color=col;
+  // 起止点：每条点亮曲线各一枚（挂各自轴、色随线），数量随指标增减动态增删（v8.2f）
+  const need=d.list.length*2;
+  while(msBand.children.length<need){const s=document.createElement('span');s.className='ms-dot';msBand.appendChild(s)}
+  while(msBand.children.length>need)msBand.lastChild.remove();
+  const dots=[...msBand.children];
+  d.list.forEach((m,j)=>{
+    [[m.from,m.v0],[m.to,m.v1]].forEach(([i,v],k)=>{
+      const el=dots[j*2+k];
+      let p=null;
+      try{p=mainChart.convertToPixel({xAxisIndex:0,yAxisIndex:MS_AXIS[m.name]},[i,v])}catch(e){}
+      if(!p||!Number.isFinite(p[0])||!Number.isFinite(p[1])){el.style.display='none';return}
+      el.style.display='';el.style.left=(p[0]-left)+'px';el.style.top=(p[1]-r.top)+'px';el.style.color=SERIES_COLOR[m.name]||DD_COLOR;
+    });
   });
   msBand.hidden=false;
 }
-// 读数卡：标题行＝曲线名（左）＋涨跌幅（右，主数 14px 语义色）；表体三列，数值列右对齐
+// 读数卡：单指标＝旧版式（标题名+大号涨跌幅+四行）；多指标＝紧凑表格（v8.2f，每行＝色点+名称｜起止值｜涨跌额｜涨跌幅）
 function msCard(d){
-  const fmt=msFmt(d.name),U='<em class="u">'+msUnit(d.name)+'</em>';
-  const col=Math.abs(d.pct)<0.005?C.grey:(d.pct>0?C.red:C.green);
-  const chgTxt=(d.chg>0?'+':d.chg<0?'−':'')+fmt(Math.abs(d.chg))+U;
-  msTipEl.innerHTML='<b><span class="ms-name"><span class="ms-hd" style="background:'+(SERIES_COLOR[d.name]||DD_COLOR)+'"></span>区间测距 · '+d.name+'</span>'
-    +'<span class="ms-big" style="color:'+col+'">'+msPctS(d.pct)+'</span></b>'
-    +'<div class="rows">'
-    +'<i>起点</i><span>'+dates[d.from]+'</span><b>'+fmt(d.v0)+U+'</b>'
-    +'<i>终点</i><span>'+dates[d.to]+'</span><b>'+fmt(d.v1)+U+'</b>'
-    +'<i>涨跌额</i><b class="w" style="color:'+col+'">'+chgTxt+'</b>'
-    +'<i>区间</i><b class="w">'+d.days+'<em class="u">个交易日</em></b>'
-    +'</div>';
+  const pctCol=p=>Math.abs(p)<0.005?C.grey:(p>0?C.red:C.green);
+  if(d.list.length===1){
+    const m=d.list[0];
+    const fmt=msFmt(m.name),U='<em class="u">'+msUnit(m.name)+'</em>';
+    const col=pctCol(m.pct);
+    const chgTxt=(m.chg>0?'+':m.chg<0?'−':'')+fmt(Math.abs(m.chg))+U;
+    msTipEl.innerHTML='<b><span class="ms-name"><span class="ms-hd" style="background:'+(SERIES_COLOR[m.name]||DD_COLOR)+'"></span>区间测距 · '+m.name+'</span>'
+      +'<span class="ms-big" style="color:'+col+'">'+msPctS(m.pct)+'</span></b>'
+      +'<div class="rows">'
+      +'<i>起点</i><span>'+dates[m.from]+'</span><b>'+fmt(m.v0)+U+'</b>'
+      +'<i>终点</i><span>'+dates[m.to]+'</span><b>'+fmt(m.v1)+U+'</b>'
+      +'<i>涨跌额</i><b class="w" style="color:'+col+'">'+chgTxt+'</b>'
+      +'<i>区间</i><b class="w">'+m.days+'<em class="u">个交易日</em></b>'
+      +'</div>';
+    msTipEl.classList.remove('ms-multi');
+    return;
+  }
+  const rows=d.list.map(m=>{
+    const fmt=msFmt(m.name),U='<em class="u">'+msUnit(m.name)+'</em>';
+    const col=pctCol(m.pct);
+    const chgTxt=(m.chg>0?'+':m.chg<0?'−':'')+fmt(Math.abs(m.chg))+U;
+    return '<div class="ms-mrow">'
+      +'<span class="n"><span class="ms-hd" style="background:'+(SERIES_COLOR[m.name]||DD_COLOR)+'"></span>'+m.name+'</span>'
+      +'<span class="v">'+fmt(m.v0)+' → '+fmt(m.v1)+'</span>'
+      +'<span class="c" style="color:'+col+'">'+chgTxt+'</span>'
+      +'<span class="p" style="color:'+col+'">'+msPctS(m.pct)+'</span>'
+      +'</div>';
+  }).join('');
+  msTipEl.innerHTML='<b><span class="ms-name">区间测距</span><span class="ms-big">'+dates[d.wFrom].slice(2)+' → '+dates[d.wTo].slice(2)+' · '+d.days+'日</span></b>'
+    +'<div class="ms-mrows">'+rows+'</div>';
+  msTipEl.classList.add('ms-multi');
 }
 // 卡片贴光标：优先右上，越界翻向左/下；垂直越顶翻到光标下方
 function msPlace(cx,cy){
@@ -1637,7 +1677,7 @@ function msMove(e){
   const i0=Math.min(a,b),i1=Math.max(a,b);
   if(i1-i0<1){msClear();return} // 不足一个交易日间隔＝还没形成区间
   const d=msMeasure(i0,i1);
-  if(!d){ // 焦点曲线在该区间没有有效收盘（如科创50 拖到上市前）：给一句提示，不静默
+  if(!d){ // 全部点亮曲线在该区间都没有有效收盘（如全部拖到各自上市前）：给一句提示，不静默
     msOpen=null;msBand.hidden=true;
     if(!msDrag.hinted){msDrag.hinted=true;msHint(e.clientX,e.clientY,'该区间无有效收盘数据');}
     else{msPlace(e.clientX,e.clientY)}
