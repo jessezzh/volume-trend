@@ -2,7 +2,7 @@
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
-<!-- 量价趋势 · v8.3c（2026-11-05，Jesse 定）：最大回撤标尺改「历史回测」开关制——市场状态胶囊前新增圆按钮（复用测距开关同款样式，窄屏保留显示），默认熄灭。总闸设在 applyDrawdown 入口：页签点击/缩放联动/hash 恢复三条路径一处拦截，关＝段线/荧光/圆点/曲线小字/详情卡一律不出现；开＝按当前窗口立即绘制，且图内小字（最大回撤 −x%／收复前高 +n日）直显——v7.11h「窗口一变小字复位隐藏」改为复位到开关意愿（ddLabelsOn=ddGate），开关开着时新窗口小字默认显示，双击段线临时收回的交互保留。开关状态不写入 hash（Jesse 定：不持久化），刷新回默认关。数据/口径/阈值零改动 -->
+<!-- 量价趋势 · v8.3c（2026-11-05，Jesse 定）：最大回撤标尺改「历史回撤」开关制——市场状态胶囊前新增圆按钮（复用测距开关同款样式，窄屏保留显示），默认熄灭。总闸设在 applyDrawdown 入口：页签点击/缩放联动/hash 恢复三条路径一处拦截，关＝段线/荧光/圆点/曲线小字/详情卡一律不出现；开＝按当前窗口立即绘制，且图内小字（最大回撤 −x%／收复前高 +n日）直显——v7.11h「窗口一变小字复位隐藏」改为复位到开关意愿（ddLabelsOn=ddGate），开关开着时新窗口小字默认显示，双击段线临时收回的交互保留。开关状态不写入 hash（Jesse 定：不持久化），刷新回默认关。数据/口径/阈值零改动 -->
 <!-- 量价趋势 · v8.3a（2026-10-27，Jesse 定）：①「上涨家数占比」全链改名「上涨占比」（序列键/图例/tooltip/ⓘ/图注/注册表；hash 按位置索引，旧链接不受影响）；②50% 多空分界线保留但线端四字标注撤下——改为区块标注：上半区中部靠右框标「多」（红）、下半区对称位置标「空」（绿），实现为 y=75/25 两根透明色（rgba alpha=0，不可用 lineStyle.opacity:0——标签随线元素同透明）辅助 markLine 的端点单字标签，offset:[-14,-8] 修正本内联 ECharts 横向 markLine insideEndTop 锚点偏出框缘的裁切；随曲线开关显隐、随缩放联动；不入 REF_TAGS 命中注册表故无点击卡。50% 线本体与点击简介「多空分界线 50%」保留。数据/其他阈值/交互零改动 -->
 <!-- 量价趋势 · v8.3b（2026-10-28，全量化审计修复，Jesse 定「优化」）：①宽屏触屏（>640px 平板）单指死区——pointerdown 触控分支在测距模式下临时恢复 dataZoom.moveOnMouseMove 交还单指平移（触控指针计数归零后还原），鼠标测距不受影响；②「测距」开关偏好恢复改以 LVT.msOn 为真源（原读 aria-pressed＝「当前是否实际接管拖动」，空主图/窄屏下恢复被跳过，点亮曲线/拉宽窗口后测距反向自动打开）；③参考线点击命中按所属面板 grid 矩形做横竖双向包含校验（原只比纵向 ±7px，绘图区外同高度点击误弹简介卡；健康区分支原误用主图 grid0 矩形，一并改回副图1 自身面板）。数据/rawData/阈值/管线零改动 -->
 <!-- 量价趋势 · v8.3（2026-10-26 新增两项，Jesse 定）：①副图2 新增「上涨家数占比」——rawData 既有字段 upRatio（管线每日产出，2005-01-04 起 5295 交易日全量无空值）此前从未上图，本次纯前端接线：sAdv 序列（×100 保留 1 位小数）、玫红 #D6336C、挂副图2 比例轴 #5 与拥挤度/站上30日线/恐慌指标同组共存（与相对强度比值轴的槽位互斥不变，SUB2_RATIO 增员）、50% 多空分界参考线（新 REF_STYLE.adv 中性墨线 + 线端短标注「多空分界」+ 点击简介 + 图例 ⓘ 一句话读法 + tooltip/图注口径）；新键追加在 SUB2_SERIES 尾部保持 hash 索引（s=）兼容，旧链接不受影响。②新增「市场温度计」——六成分（拥挤度/站上20日线/指数乖离率/融资强度/恐慌指标取反向/涨跌停净家数）各自对全史做分位（并列值取中位名次，二分实现）后等权均值，0–100：≥80 过热、60–79 偏热、40–59 中性、20–39 偏凉、<20 冰点；表 1 由四列扩为五列（.stat-table td 25%→20%，移动端胶囊 padding 收紧），第五胶囊与既有四胶囊同语言（大字状态词+点击弹状态谱），另附全史分布直方图（24 桶、当前档琥珀高亮）与六成分当前分位条（各取自己最后一个非空值，title 带截至日）；温度序列自六项齐备日起算（中证2000 自 2013-12-31 起 → 约 2014-01，图注起算日运行时现算），全史分位与参考线定标同口径（描述性，无样本外承诺）。图注「指标口径」补两条。数据/rawData/既有阈值/管线零改动 -->
@@ -398,7 +398,7 @@ body[data-theme="mist"] ::-webkit-scrollbar-thumb:hover{background:#aeb8c5;backg
 .ms-tip .ms-mrow .c{text-align:right;color:#6e6a58}
 .ms-tip .ms-mrow .p{font-weight:700;text-align:right}
 @media(max-width:640px){.ms-toggle{display:none}} /* 窄屏不做测距（触控拖动仍是平移），不占版面 */
-@media(max-width:640px){#ddToggle{display:inline-flex}} /* v8.3c：历史回测窄屏保留——页签联动标尺的唯一入口，藏掉则手机永远开不了 */
+@media(max-width:640px){#ddToggle{display:inline-flex}} /* v8.3c：历史回撤窄屏保留——页签联动标尺的唯一入口，藏掉则手机永远开不了 */
 </style>
 </head>
 <body>
@@ -435,8 +435,8 @@ body[data-theme="mist"] ::-webkit-scrollbar-thumb:hover{background:#aeb8c5;backg
       <div class="regime-wrap">
         <!-- 区间测距开关（2026-10-20）：按下＝图内拖动测区间涨跌幅；抬起＝拖动平移（旧行为） -->
         <button type="button" class="ms-toggle" id="msToggle" aria-pressed="true" aria-label="拖动测距模式"><i aria-hidden="true"></i>测距</button>
-        <!-- 历史回测开关（v8.3c，2026-11-05）：按下＝最大回撤标尺（段线/圆点/曲线小字/详情卡）才允许出现；默认熄灭，不持久化 -->
-        <button type="button" class="ms-toggle" id="ddToggle" aria-pressed="false" aria-label="历史回测（最大回撤标尺开关）"><i aria-hidden="true"></i>历史回测</button>
+        <!-- 历史回撤开关（v8.3c，2026-11-05）：按下＝最大回撤标尺（段线/圆点/曲线小字/详情卡）才允许出现；默认熄灭，不持久化 -->
+        <button type="button" class="ms-toggle" id="ddToggle" aria-pressed="false" aria-label="历史回撤（最大回撤标尺开关）"><i aria-hidden="true"></i>历史回撤</button>
         <button type="button" class="regime-tag" id="regimePill" aria-expanded="false" aria-controls="regimePop"><span class="regime-dot" aria-hidden="true"></span><span id="regimePillTxt">--</span></button>
         <!-- 底板主题单按钮（v8.2）：羊皮纸/素白/晨雾三档循环，按钮文字=当前主题名 -->
         <button type="button" class="regime-tag" id="themeToggle" title="底板：羊皮纸（点击切换）" aria-label="底板主题切换，当前羊皮纸">羊皮纸</button>
@@ -1377,7 +1377,7 @@ let ddWinKey='none';// 当前标尺窗口签名：'tab:244'／'rng:from-to'／'n
 let ddLastAxis=null;// 当前标尺所在数值轴；焦点换轴时清空上一轴的一对序列
 const ddState={on:false,axis:1,name:'',color:DD_COLOR,label:'',from:0,to:0,endI:0,dd:0,peakI:0,peakV:0,troughI:0,troughV:0,recI:-1,recV:null,ongoing:true,mp:null};
 let ddLabelsOn=false; // v7.11h：图内两处小字（最大回撤／收复前高）默认隐藏，双击段线才显示；v8.3c 起窗口/焦点一变复位到开关意愿（ddLabelsOn=ddGate）
-let ddGate=false; // v8.3c 历史回测总闸（2026-11-05）：默认关。applyDrawdown 是唯一绘制入口，此处拦截＝页签/缩放/hash 三路径全覆盖；开关状态不持久化
+let ddGate=false; // v8.3c 历史回撤总闸（2026-11-05）：默认关。applyDrawdown 是唯一绘制入口，此处拦截＝页签/缩放/hash 三路径全覆盖；开关状态不持久化
 // 详情弹窗：复用 ref-tip 玻璃配方，可交互（点空白/滚轮/缩放/切页签/切图例收起）
 const ddTipEl=document.createElement('div');
 ddTipEl.className='ref-tip dd-tip';
@@ -1417,7 +1417,7 @@ function clearDrawdown(){
 // 渲染标尺。days>0＝页签窗口（末 N 个交易日）；days<=0 且 from/to 有效＝缩放自定义窗口；days<=0 且无 from/to＝「全部」清除。
 // 幂等：页签点击直调与 dataZoom 回写双路径共用，窗口+焦点未变则只重定位药丸不重绘。
 function applyDrawdown(days,label,from,to){
-  if(!ddGate){clearDrawdown();return} // v8.3c：历史回测总闸关闭＝标尺一律不出现（页签/缩放/hash 恢复三路径在此一处拦截）
+  if(!ddGate){clearDrawdown();return} // v8.3c：历史回撤总闸关闭＝标尺一律不出现（页签/缩放/hash 恢复三路径在此一处拦截）
   const n=dates.length;
   let f,t,lab,key;
   if(days>0){f=Math.max(0,n-days);t=n-1;lab=label;key='tab:'+days}
@@ -1500,7 +1500,7 @@ function syncDrawdownToZoom(){
 }
 const scheduleDrawdown=()=>{if(ddSyncFrame)return;ddSyncFrame=requestAnimationFrame(()=>{ddSyncFrame=0;syncDrawdownToZoom()})};
 mainChart.on('datazoom',scheduleDrawdown);
-// v8.3c 历史回测开关（2026-11-05，Jesse 定）：开＝按当前窗口立即出标尺、小字直显；关＝段线/荧光/圆点/小字/详情卡全收。
+// v8.3c 历史回撤开关（2026-11-05，Jesse 定）：开＝按当前窗口立即出标尺、小字直显；关＝段线/荧光/圆点/小字/详情卡全收。
 // 状态不写 hash（Jesse 定：不持久化），刷新回默认关。
 const ddToggleBtn=document.getElementById('ddToggle');
 ddToggleBtn.addEventListener('click',()=>{
