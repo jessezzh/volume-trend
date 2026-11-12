@@ -2,6 +2,7 @@
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
+<!-- 量价趋势 · v8.3f（2026-11-12，Jesse 定「这不还是纸黄吗…把调节羊皮纸/素白/晨雾的去掉，背景就用晨雾，把中间纸黄改掉」）：①删除底板主题切换——按钮(themeToggle)、防闪主题脚本、lvtSyncHash 的 t 参数、整个主题 IIFE、#themeToggle CSS、body[data-theme] 规则、分主题滚动条规则全部移除，底板唯一。②底板固定晨雾：background-color:#edeff2 + 顶部冷白辉光 rgba(255,255,255,.72) + 底部 rgba(48,66,96,.05)。③去掉中间纸黄：卡片/纸面由暖纸(#fffdf6/#faf8f0/#f1ede0/#f2eee1/#f4f0e2/#f5f2e6/#fbf9f2/#f3f0e4 等)整体转冷调——--paper:#fbfcfe、--paper-2:#f2f5f9、.chart-card 冷白渐变 rgba(252,253,255,.90)→rgba(244,247,251,.78)、--line 系 #d3d8e0/#e6e1cf→#e2e6ed/#eef1f5、hover #bfc7d2，图例/胶囊/tooltip 同步冷调；滚动条改晨雾灰 #c5cdd7/#aeb8c5。温墨字阶(#1c1a13 等)/藏馆赭金 accent(#8f6b23)/主图矿物曲线色(SERIES_COLOR)零改动。数据/布局/交互零改。 -->
 <!-- 量价趋势 · v8.3e（2026-11-12，Jesse 定「不要羊皮纸了，换成白色，但不要那么突兀」）：默认底板羊皮纸→素白。①新素白底 #f5f4ed——同色相族降饱和提亮的「新纸」白：顶部暖白辉光 rgba(255,255,252,.55)，底部压暗 .02→.015；纸纹噪点/温墨/藏馆赭金/卡片纸白全部不动，白而不冷。②羊皮纸降为可选项：主题循环重排为 素白→晨雾→羊皮纸；localStorage 旧存 'parchment' 自动迁移为 'clean'（老用户打开即白），hash t=p 链接仍可显式还原羊皮纸；防闪脚本与 lvtSyncHash 默认主题同步 parchment→clean。③滚动条配平：默认滚动条改中性暖灰 #d9d8d3/hover #c2c1bc，羊皮纸主题保留旧暖色值 #d5cfbc/#b9b193。v8.3d 藏馆矿物色对新底板对比只升不降（底板更亮）。数据/布局/交互/曲线色零改动 -->
 <!-- 量价趋势 · v8.3d（2026-11-11，Jesse 定「主图 K 线颜色优化」）：只换主图 7 条曲线的颜色值，副图 1/副图 2、参考线、语义红绿、布局、数据、阈值、交互一律不动。旧色是 iOS 亮色荧光系（#0071E3/#E1352B/#5B52D6/#F07D00/#2DB04E/#9F3FD6/#0C7CC4），与 v8.0 起的暖纸底（#efede3）+ 温墨（#1c1a13）打架：中证2000 橙 2.70:1、创业板指绿 2.78:1 在白纸上远低于 3:1，两融蓝与纳指蓝同为亮蓝、沪深300 靛与副图2 相对强度靛 ΔE 仅 3.8（tooltip 同屏几乎同色）。新色＝同色相降饱和降明度的「藏馆矿物色」，与副图色板（本来就好的那套）同一明度带（L* 35–55）：两融余额 #2E6395 / 上证指数 #AC4A2C / 沪深300 #4E4F9A / 中证2000 #9E6620 / 创业板指 #457B3E / 科创综指 #8A4677 / 纳指100 #2A7A78。全部 7 色对纸面 ≥4.7:1、对底板 ≥4.0:1（原 4 色不达 3:1）；主图内最接近一对 ΔE 23.3（原 23.8，不低于原值）；沪深300 与副图2 相对强度由 ΔE 3.8 拉到 36.4；纳指100 由蓝改青（#2A7A78），与两融余额 ΔE 36.0，两条蓝线不再难分。**历史回测/历史回撤（ddSeg + DD_HALO 两级荧光）零改动**：段线仍取 SERIES_COLOR 原色（自动跟随新色）、芯线 2.4px、光晕 op .42/blur9 与 .19/blur26、DD_GLOW 3 全原值；图内小字与圆点仍走 neon() 提亮（新底色提亮后对纸面对比 1.95–3.23，与旧色 1.36–3.97 同档，未变差）。唯一变化：neon() 的提亮对象是新底色，回撤段荧光随之整体换色（这是换色板的必然结果，不是配方改动）。SERIES_COLOR 仍是唯一色源，图例/tooltip/轴名/测距卡/回撤卡/参考线 hit 测试全部按 key 取色，无需逐处改。 -->
 <!-- 量价趋势 · v8.3c（2026-11-05，Jesse 定）：最大回撤标尺改「历史回撤」开关制——市场状态胶囊前新增圆按钮（复用测距开关同款样式，窄屏保留显示），默认熄灭。总闸设在 applyDrawdown 入口：页签点击/缩放联动/hash 恢复三条路径一处拦截，关＝段线/荧光/圆点/曲线小字/详情卡一律不出现；开＝按当前窗口立即绘制，且图内小字（最大回撤 −x%／收复前高 +n日）直显——v7.11h「窗口一变小字复位隐藏」改为复位到开关意愿（ddLabelsOn=ddGate），开关开着时新窗口小字默认显示，双击段线临时收回的交互保留。开关状态不写入 hash（Jesse 定：不持久化），刷新回默认关。数据/口径/阈值零改动 -->
@@ -113,12 +114,12 @@ var Vr={},Br={};var Fr=function(){function t(t,e,n){var i=this;this._sleepAfterS
   --ink-5:#aba793;
 
   /* 暖纸与线 */
-  --paper:#fffdf6;
-  --paper-2:#faf8f0;
+  --paper:#fbfcfe;
+  --paper-2:#f2f5f9;
   --parchment:#efede3;
-  --line:#d9d3c0;     /* 外框 hairline */
-  --line-2:#e6e1cf;   /* 内分隔 */
-  --line-3:#f0ecdd;   /* 极浅分隔（图注上方） */
+  --line:#d3d8e0;     /* 外框 hairline */
+  --line-2:#e2e6ed;   /* 内分隔 */
+  --line-3:#eef1f5;   /* 极浅分隔（图注上方） */
 
   /* 点缀：藏馆赭金——只用于焦点环/文字选中等极小面积 */
   --accent:#8f6b23;
@@ -139,26 +140,15 @@ var Vr={},Br={};var Fr=function(){function t(t,e,n){var i=this;this._sleepAfterS
 }
 *{margin:0;padding:0;box-sizing:border-box}
 html,body{height:100%}
-body{background-color:#f5f4ed;background-image:radial-gradient(1100px 520px at 50% -12%,rgba(255,255,252,.55),rgba(255,255,252,0) 72%),linear-gradient(180deg,rgba(28,26,19,0) 55%,rgba(28,26,19,.015) 100%);background-attachment:fixed;color:var(--apple-ink);font-family:var(--font-sans);min-height:100vh;line-height:1.5;font-feature-settings:'tnum';-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+body{background-color:#edeff2;background-image:radial-gradient(1100px 520px at 50% -12%,rgba(255,255,255,.72),rgba(255,255,255,0) 72%),linear-gradient(180deg,rgba(48,66,96,0) 55%,rgba(48,66,96,.05) 100%);background-attachment:fixed;color:var(--apple-ink);font-family:var(--font-sans);min-height:100vh;line-height:1.5;font-feature-settings:'tnum';-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
 /* v8.0 纸纹噪点：内联 SVG feTurbulence（零外部依赖、离线可用），5% 乘算、覆于全局含图面——白卡因此读作纸而非玻璃 */
 body::before{content:'';position:fixed;inset:0;z-index:999;pointer-events:none;opacity:.05;mix-blend-mode:multiply;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.82' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23n)'/%3E%3C/svg%3E");background-size:180px 180px}
-/* v8.2 底板主题（羊皮纸/素白/晨雾三档，单按钮循环；原墨夜按 Jesse 指示移除）：卡片永远纸白浮起，仅底板色/题头/三线表/滚动条随主题换装。v8.3e 起素白为默认底板（＝body 基础规则），羊皮纸降为可选项 */
-body[data-theme="parchment"]{background-color:var(--parchment);background-image:radial-gradient(1100px 520px at 50% -12%,rgba(255,255,253,.92),rgba(255,255,253,0) 72%),linear-gradient(180deg,rgba(28,26,19,0) 55%,rgba(28,26,19,.02) 100%)}
-body[data-theme="mist"]{background-color:#edeff2;background-image:radial-gradient(1100px 520px at 50% -12%,rgba(255,255,255,.72),rgba(255,255,255,0) 72%),linear-gradient(180deg,rgba(48,66,96,0) 55%,rgba(48,66,96,.05) 100%)}
-/* 主题切换按钮（小长方形，置于市场状态胶囊后；文字=当前主题名，点击三档循环） */
-#themeToggle{appearance:none;border:1px solid var(--line);background:linear-gradient(180deg,#fffdf6,#f1ede0);color:var(--ink-2);font-family:var(--font-sans);font-size:11px;font-weight:600;letter-spacing:.02em;padding:3px 10px;border-radius:6px;cursor:pointer;box-shadow:var(--sh-1);transition:transform .12s ease}
-#themeToggle:hover{color:var(--ink);border-color:#c8c2ae}
-#themeToggle:active{transform:scale(.98)}
+/* v8.3f：底板固定晨雾 #edeff2（只此一档，无切换）；卡片改冷调纸白，去掉中间纸黄 */
 ::selection{background:rgba(143,107,35,.20)}
 ::-webkit-scrollbar{width:8px;height:8px}
-::-webkit-scrollbar-thumb{background:#d9d8d3;border-radius:8px;border:2px solid transparent;background-clip:content-box}
-::-webkit-scrollbar-thumb:hover{background:#c2c1bc;background-clip:content-box}
+::-webkit-scrollbar-thumb{background:#c5cdd7;border-radius:8px;border:2px solid transparent;background-clip:content-box}
+::-webkit-scrollbar-thumb:hover{background:#aeb8c5;background-clip:content-box}
 ::-webkit-scrollbar-track{background:transparent}
-/* v8.2 分主题滚动条：暖色滚动条在冷色底板（素白/晨雾）上违和，各自配平（v8.3e 起素白为默认，滚动条取中性暖灰） */
-body[data-theme="mist"] ::-webkit-scrollbar-thumb{background:#c5cdd7;background-clip:content-box}
-body[data-theme="mist"] ::-webkit-scrollbar-thumb:hover{background:#aeb8c5;background-clip:content-box}
-body[data-theme="parchment"] ::-webkit-scrollbar-thumb{background:#d5cfbc;background-clip:content-box}
-body[data-theme="parchment"] ::-webkit-scrollbar-thumb:hover{background:#b9b193;background-clip:content-box}
 .wrap{position:relative;z-index:1;max-width:1500px;margin:0 auto;padding:40px 32px 56px}
 
 /* Topbar：藏馆题头——宋体宽字距（v8.0），下方细分隔线 */
@@ -171,15 +161,15 @@ body[data-theme="parchment"] ::-webkit-scrollbar-thumb:hover{background:#b9b193;
 .stat-table table{width:100%;border-collapse:collapse;border-top:1.5px solid var(--ink);border-bottom:1.5px solid var(--ink)}
 /* 状态胶囊（v7.1 驱动不变 · v8.0 哑光蜡封化）：显示内容由当日数据驱动，与图 1 曲线/参考线同源；点击弹出该指标完整状态谱。去糖：削彩色投影／降饱和／细墨边／加宽字距 */
 .stat-val td{position:relative;text-align:center;vertical-align:middle;padding:18px 4px 20px}
-.kpi-pill{--sc:#8e8e93;appearance:none;cursor:pointer;font-family:var(--font-sans);font-size:16px;font-weight:700;letter-spacing:.06em;line-height:1;white-space:nowrap;color:color-mix(in srgb,var(--sc) 66%,#1c1a13);padding:9px 22px;border-radius:999px;border:1px solid color-mix(in srgb,var(--sc) 38%,rgba(28,26,19,.14));background:linear-gradient(180deg,color-mix(in srgb,var(--sc) 9%,#fffdf6),color-mix(in srgb,var(--sc) 4%,#f4f0e2));backdrop-filter:blur(20px) saturate(160%);-webkit-backdrop-filter:blur(20px) saturate(160%);box-shadow:inset 0 1px 0 rgba(255,255,253,.9),inset 0 -1px 0 rgba(28,26,19,.04),0 1px 2px rgba(28,26,19,.07);transition:transform .2s cubic-bezier(.22,1,.36,1),box-shadow .2s cubic-bezier(.22,1,.36,1),border-color .2s cubic-bezier(.22,1,.36,1)}
+.kpi-pill{--sc:#8e8e93;appearance:none;cursor:pointer;font-family:var(--font-sans);font-size:16px;font-weight:700;letter-spacing:.06em;line-height:1;white-space:nowrap;color:color-mix(in srgb,var(--sc) 66%,#1c1a13);padding:9px 22px;border-radius:999px;border:1px solid color-mix(in srgb,var(--sc) 38%,rgba(28,26,19,.14));background:linear-gradient(180deg,color-mix(in srgb,var(--sc) 9%,#fbfcfe),color-mix(in srgb,var(--sc) 4%,#eef2f7));backdrop-filter:blur(20px) saturate(160%);-webkit-backdrop-filter:blur(20px) saturate(160%);box-shadow:inset 0 1px 0 rgba(255,255,253,.9),inset 0 -1px 0 rgba(28,26,19,.04),0 1px 2px rgba(28,26,19,.07);transition:transform .2s cubic-bezier(.22,1,.36,1),box-shadow .2s cubic-bezier(.22,1,.36,1),border-color .2s cubic-bezier(.22,1,.36,1)}
 .kpi-pill:hover{transform:translateY(-1px);border-color:color-mix(in srgb,var(--sc) 55%,rgba(28,26,19,.18))}
 .kpi-pill:active{transform:translateY(0) scale(.97)}
 .kpi-pill:focus-visible{outline:3px solid rgba(143,107,35,.30);outline-offset:2px}
 /* 状态谱弹层：分段控件语言（暖槽＋纸白玻璃），当前态按状态色着色高亮，其余中性 */
-.kpi-pop{position:absolute;bottom:calc(100% + 8px);left:50%;transform:translateX(-50%);z-index:30;display:flex;gap:3px;padding:3px;border-radius:999px;background:rgba(226,221,203,.85);backdrop-filter:blur(20px) saturate(160%);-webkit-backdrop-filter:blur(20px) saturate(160%);border:1px solid var(--line-2);box-shadow:inset 0 1px 3px rgba(28,26,19,.07),0 8px 24px -12px rgba(28,26,19,.22)}
+.kpi-pop{position:absolute;bottom:calc(100% + 8px);left:50%;transform:translateX(-50%);z-index:30;display:flex;gap:3px;padding:3px;border-radius:999px;background:rgba(222,228,236,.85);backdrop-filter:blur(20px) saturate(160%);-webkit-backdrop-filter:blur(20px) saturate(160%);border:1px solid var(--line-2);box-shadow:inset 0 1px 3px rgba(28,26,19,.07),0 8px 24px -12px rgba(28,26,19,.22)}
 .kpi-pop[hidden]{display:none}
 .kpi-pop span{--sc:#8e8e93;font-family:var(--font-sans);font-size:11px;font-weight:600;color:var(--ink-3);padding:5px 12px;border-radius:999px;line-height:1;white-space:nowrap}
-.kpi-pop span.cur{color:color-mix(in srgb,var(--sc) 68%,#1c1a13);background:linear-gradient(180deg,#fffdf6,#f1ede0);box-shadow:inset 0 1px 0 rgba(255,255,253,.95),0 1px 3px rgba(28,26,19,.15),0 4px 10px -4px rgba(28,26,19,.11)}
+.kpi-pop span.cur{color:color-mix(in srgb,var(--sc) 68%,#1c1a13);background:linear-gradient(180deg,#fbfcfe,#e9edf3);box-shadow:inset 0 1px 0 rgba(255,255,253,.95),0 1px 3px rgba(28,26,19,.15),0 4px 10px -4px rgba(28,26,19,.11)}
 /* v8.3 市场温度计富弹层：状态谱之下加全史分布直方图与六成分分位条；:not([hidden]) 压住上方 [hidden]{display:none}（同特异性，后者在前） */
 .kpi-pop.pop-rich:not([hidden]){display:block;padding:10px 14px 12px;border-radius:14px;min-width:272px;max-width:304px;text-align:left}
 .kpi-pop.pop-rich:not([hidden])>span{padding:5px 10px} /* 五枚状态胶囊单行放下，不再换行 */
@@ -202,20 +192,20 @@ body[data-theme="parchment"] ::-webkit-scrollbar-thumb:hover{background:#b9b193;
 .stat-table td:first-child{padding-left:2px}
 
 /* Chart card：暖白纸卡 + 克制的浮起层次（左右 padding 不变以免图幅位移） */
-.chart-card{position:relative;background:linear-gradient(180deg,rgba(255,253,246,.90) 0%,rgba(250,248,240,.78) 100%);backdrop-filter:blur(36px) saturate(160%);-webkit-backdrop-filter:blur(36px) saturate(160%);border:1px solid rgba(255,255,252,.6);border-radius:14px;padding:26px 24px 22px;box-shadow:inset 0 1px 0 rgba(255,255,253,.95),var(--sh-2),0 28px 64px -32px rgba(28,26,19,.14)}
+.chart-card{position:relative;background:linear-gradient(180deg,rgba(252,253,255,.90) 0%,rgba(244,247,251,.78) 100%);backdrop-filter:blur(36px) saturate(160%);-webkit-backdrop-filter:blur(36px) saturate(160%);border:1px solid rgba(255,255,255,.6);border-radius:14px;padding:26px 24px 22px;box-shadow:inset 0 1px 0 rgba(255,255,253,.95),var(--sh-2),0 28px 64px -32px rgba(28,26,19,.14)}
 /* 1px 渐变边缘光（顶部纸白高光 → 底部淡墨），mask 只留描边环，不挡内容不改盒模型 */
 .chart-card::before{content:'';position:absolute;inset:0;border-radius:14px;padding:1px;background:linear-gradient(180deg,rgba(255,255,253,.95),rgba(255,255,253,.28) 22%,rgba(28,26,19,.10) 62%,rgba(28,26,19,.16));-webkit-mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);-webkit-mask-composite:xor;mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);mask-composite:exclude;pointer-events:none}
 #mainChart{width:100%;height:clamp(660px,calc(100vh - 148px),1000px);touch-action:pan-y}
 .chart-stage{position:relative}
-.chart-status{position:absolute;inset:0;z-index:2;display:flex;align-items:center;justify-content:center;padding:24px;text-align:center;background:rgba(252,250,243,.88);color:var(--apple-muted-strong);font-size:14px;line-height:1.7;border-radius:var(--r-md);backdrop-filter:blur(20px) saturate(160%);-webkit-backdrop-filter:blur(20px) saturate(160%);box-shadow:0 1px 2px rgba(28,26,19,.05),0 8px 24px -12px rgba(28,26,19,.18)}
+.chart-status{position:absolute;inset:0;z-index:2;display:flex;align-items:center;justify-content:center;padding:24px;text-align:center;background:rgba(250,252,255,.88);color:var(--apple-muted-strong);font-size:14px;line-height:1.7;border-radius:var(--r-md);backdrop-filter:blur(20px) saturate(160%);-webkit-backdrop-filter:blur(20px) saturate(160%);box-shadow:0 1px 2px rgba(28,26,19,.05),0 8px 24px -12px rgba(28,26,19,.18)}
 .chart-status[hidden]{display:none}
 .chart-status strong{display:block;color:var(--apple-ink);margin-bottom:4px}
 
 /* 面板闭合边框（论文图幅）：与 grid 百分比/边距精确对齐，补上/左/右三边（下边=各图 x 轴线）；不拦截鼠标
    ⚠ left/right 必须与 CFG.gridMargin/gridMarginR 保持一致（v7.1 起由 JS 注入 --grid-margin 变量同步，勿在 CSS 写死；v7.4 右侧加纳指轴，右边距独立变量） */
-.pane-frame{position:absolute;left:var(--grid-margin,84px);right:var(--grid-margin-r,64px);border:1px solid #c8c2ae;border-bottom:none;pointer-events:none;z-index:1}
+.pane-frame{position:absolute;left:var(--grid-margin,84px);right:var(--grid-margin-r,64px);border:1px solid #bfc7d2;border-bottom:none;pointer-events:none;z-index:1}
 .pane-label{position:absolute;top:3px;left:7px;font-family:var(--font-serif);font-size:11px;letter-spacing:.05em;color:var(--ink-4);line-height:1} /* v8.0：去斜体（中文伪斜体伤读），upright 宋体编号如馆藏编号 */
-.ref-tip{position:fixed;z-index:99;max-width:280px;display:none;pointer-events:none;user-select:none;-webkit-user-select:none;background:rgba(252,250,243,.88);backdrop-filter:blur(20px) saturate(160%);-webkit-backdrop-filter:blur(20px) saturate(160%);border:1px solid rgba(255,255,253,.6);border-radius:10px;padding:9px 12px 7px;font-family:'Helvetica Neue',Arial,'PingFang SC',sans-serif;font-size:12px;line-height:1.62;color:#45423a;box-shadow:0 1px 2px rgba(28,26,19,.05),0 8px 24px -12px rgba(28,26,19,.18)}
+.ref-tip{position:fixed;z-index:99;max-width:280px;display:none;pointer-events:none;user-select:none;-webkit-user-select:none;background:rgba(250,252,255,.88);backdrop-filter:blur(20px) saturate(160%);-webkit-backdrop-filter:blur(20px) saturate(160%);border:1px solid rgba(255,255,253,.6);border-radius:10px;padding:9px 12px 7px;font-family:'Helvetica Neue',Arial,'PingFang SC',sans-serif;font-size:12px;line-height:1.62;color:#45423a;box-shadow:0 1px 2px rgba(28,26,19,.05),0 8px 24px -12px rgba(28,26,19,.18)}
 .ref-tip>b{display:block;font-size:11.5px;font-weight:700;color:#1c1a13;margin-bottom:4px}
 .ref-tip p{margin:0 0 3px}
 .ref-tip i{font-style:normal;font-weight:700;color:#8e8e93;margin-right:5px;font-size:10.5px}
@@ -233,11 +223,11 @@ body[data-theme="parchment"] ::-webkit-scrollbar-thumb:hover{background:#b9b193;
 .fig-title-row{display:flex;justify-content:space-between;align-items:baseline;gap:10px}
 .fig-title{font-size:12px;font-weight:700;color:var(--apple-ink);margin-bottom:6px;letter-spacing:.01em}
 /* 口径说明按钮（v7.1 · v8.0 反色悬停：墨底纸字，藏馆标签语言） */
-.fig-note-btn{flex:none;appearance:none;cursor:pointer;font-family:var(--font-sans);font-size:10px;font-weight:600;letter-spacing:.08em;color:var(--ink-3);padding:2px 10px;border-radius:999px;border:1px solid rgba(28,26,19,.16);background:linear-gradient(180deg,rgba(255,253,246,.75),rgba(246,243,232,.55));backdrop-filter:blur(20px) saturate(160%);-webkit-backdrop-filter:blur(20px) saturate(160%);box-shadow:inset 0 1px 0 rgba(255,255,253,.85),0 1px 2px rgba(28,26,19,.04);transition:color .18s ease,border-color .18s ease,background .18s ease}
-.fig-note-btn:hover{color:#f5f2e6;border-color:var(--ink);background:var(--ink)}
-.fig-note-btn[aria-expanded="true"]{color:var(--ink);border-color:rgba(28,26,19,.3);background:linear-gradient(180deg,#fffdf6,#f1ede0);box-shadow:inset 0 1px 0 rgba(255,255,253,.95),0 1px 3px rgba(28,26,19,.12),0 4px 10px -4px rgba(28,26,19,.12)}
+.fig-note-btn{flex:none;appearance:none;cursor:pointer;font-family:var(--font-sans);font-size:10px;font-weight:600;letter-spacing:.08em;color:var(--ink-3);padding:2px 10px;border-radius:999px;border:1px solid rgba(28,26,19,.16);background:linear-gradient(180deg,rgba(252,253,255,.75),rgba(240,244,250,.55));backdrop-filter:blur(20px) saturate(160%);-webkit-backdrop-filter:blur(20px) saturate(160%);box-shadow:inset 0 1px 0 rgba(255,255,253,.85),0 1px 2px rgba(28,26,19,.04);transition:color .18s ease,border-color .18s ease,background .18s ease}
+.fig-note-btn:hover{color:#eef2f7;border-color:var(--ink);background:var(--ink)}
+.fig-note-btn[aria-expanded="true"]{color:var(--ink);border-color:rgba(28,26,19,.3);background:linear-gradient(180deg,#fbfcfe,#e9edf3);box-shadow:inset 0 1px 0 rgba(255,255,253,.95),0 1px 3px rgba(28,26,19,.12),0 4px 10px -4px rgba(28,26,19,.12)}
 /* 图注面板（v7.1）：点击「注 ⓘ」才出现；毛玻璃卡，分层小标题+条目 */
-.fig-notes{margin-top:4px;padding:11px 13px 9px;border:1px solid rgba(255,255,252,.6);border-radius:10px;background:linear-gradient(180deg,rgba(255,253,246,.78) 0%,rgba(250,248,240,.64) 100%);backdrop-filter:blur(20px) saturate(160%);-webkit-backdrop-filter:blur(20px) saturate(160%);box-shadow:inset 0 1px 0 rgba(255,255,253,.92),0 1px 2px rgba(28,26,19,.04),0 10px 26px -18px rgba(28,26,19,.16);font-family:var(--font-mix);font-size:10.5px;color:var(--ink-3);line-height:1.7}
+.fig-notes{margin-top:4px;padding:11px 13px 9px;border:1px solid rgba(255,255,255,.6);border-radius:10px;background:linear-gradient(180deg,rgba(252,253,255,.78) 0%,rgba(244,247,251,.64) 100%);backdrop-filter:blur(20px) saturate(160%);-webkit-backdrop-filter:blur(20px) saturate(160%);box-shadow:inset 0 1px 0 rgba(255,255,253,.92),0 1px 2px rgba(28,26,19,.04),0 10px 26px -18px rgba(28,26,19,.16);font-family:var(--font-mix);font-size:10.5px;color:var(--ink-3);line-height:1.7}
 .fig-notes[hidden]{display:none}
 .fig-notes b{display:block;font-size:11px;font-weight:700;color:var(--apple-ink);margin:7px 0 3px;letter-spacing:.03em}
 .fig-notes b:first-of-type{margin-top:0}
@@ -250,11 +240,11 @@ body[data-theme="parchment"] ::-webkit-scrollbar-thumb:hover{background:#b9b193;
 .card-head>.regime-wrap{order:3;flex:0 0 auto}
 
 /* Range tabs：内嵌浅槽的分段控件，选中态纸白浮起（v8.0 暖槽暖影） */
-.range-tabs{display:flex;gap:2px;background:rgba(226,221,203,.8);backdrop-filter:blur(20px) saturate(160%);-webkit-backdrop-filter:blur(20px) saturate(160%);border:1px solid var(--line-2);border-radius:8px;padding:3px;box-shadow:inset 0 1px 3px rgba(28,26,19,.07),inset 0 1px 0 rgba(255,255,253,.5)}
+.range-tabs{display:flex;gap:2px;background:rgba(222,228,236,.8);backdrop-filter:blur(20px) saturate(160%);-webkit-backdrop-filter:blur(20px) saturate(160%);border:1px solid var(--line-2);border-radius:8px;padding:3px;box-shadow:inset 0 1px 3px rgba(28,26,19,.07),inset 0 1px 0 rgba(255,255,253,.5)}
 .rtab{border:none;background:transparent;color:var(--ink-3);font-family:var(--font-sans);border-radius:6px;cursor:pointer;transition:background .18s ease,color .18s ease,box-shadow .18s ease;font-weight:500;letter-spacing:.01em}
-.rtab:hover{color:var(--ink);background:rgba(255,253,246,.6)}
+.rtab:hover{color:var(--ink);background:rgba(252,253,255,.6)}
 /* 选中=纸白玻璃浮起胶囊（分段控件语言），与未选的槽内凹感形成开/合对比 */
-.rtab.active{background:linear-gradient(180deg,#fffdf6,#f1ede0);color:var(--ink);font-weight:600;box-shadow:inset 0 1px 0 rgba(255,255,253,.95),0 1px 3px rgba(28,26,19,.15),0 4px 10px -4px rgba(28,26,19,.11)}
+.rtab.active{background:linear-gradient(180deg,#fbfcfe,#e9edf3);color:var(--ink);font-weight:600;box-shadow:inset 0 1px 0 rgba(255,255,253,.95),0 1px 3px rgba(28,26,19,.15),0 4px 10px -4px rgba(28,26,19,.11)}
 
 /* 图例（v5.0：中性玻璃 chip——白卡上可读的浅灰玻璃+顶部高光，仍无任何彩色；分组间渐变竖分隔线）
    v6.0：按钮统一 100×32 等大——组内不换行不拉伸（flex:0 0 auto 定宽），图例条按组整组换行
@@ -262,15 +252,15 @@ body[data-theme="parchment"] ::-webkit-scrollbar-thumb:hover{background:#b9b193;
 .legend-group{display:flex;flex:0 0 auto;align-items:center;align-content:flex-start;flex-wrap:wrap;width:415px;min-height:73px;gap:5px;padding:2px 0;background:transparent} /* 415px=4×100+3×5，每排4钮等距；min-height=73px(2+32+5+32+2) 统一组高→组间分隔线等高；align-content 钉顶→单排组首排与两排组第一排齐平 */
 .legend-group+.legend-group{position:relative;margin-left:4px}
 .legend-group+.legend-group::before{content:'';position:absolute;left:-6px;top:12%;bottom:12%;width:1px;background:linear-gradient(180deg,transparent,rgba(28,26,19,.10) 30%,rgba(28,26,19,.10) 70%,transparent)}
-.legend-item{appearance:none;display:flex;flex:0 0 auto;flex-direction:row;align-items:center;justify-content:center;gap:6px;width:100px;height:32px;padding:0;border-radius:10px;border:1px solid rgba(28,26,19,.08);background:linear-gradient(180deg,#fbf9f2,#f3f0e4);backdrop-filter:blur(20px) saturate(160%);-webkit-backdrop-filter:blur(20px) saturate(160%);box-shadow:inset 0 1px 0 rgba(255,255,253,.85),0 1px 2px rgba(28,26,19,.03);cursor:pointer;transition:transform .18s ease,box-shadow .18s ease,color .18s ease,border-color .18s ease,background .18s ease;font:inherit;font-size:10.5px;line-height:1;color:var(--ink-3);font-weight:600;white-space:nowrap;overflow:hidden}
+.legend-item{appearance:none;display:flex;flex:0 0 auto;flex-direction:row;align-items:center;justify-content:center;gap:6px;width:100px;height:32px;padding:0;border-radius:10px;border:1px solid rgba(28,26,19,.08);background:linear-gradient(180deg,#f4f7fa,#edf1f6);backdrop-filter:blur(20px) saturate(160%);-webkit-backdrop-filter:blur(20px) saturate(160%);box-shadow:inset 0 1px 0 rgba(255,255,253,.85),0 1px 2px rgba(28,26,19,.03);cursor:pointer;transition:transform .18s ease,box-shadow .18s ease,color .18s ease,border-color .18s ease,background .18s ease;font:inherit;font-size:10.5px;line-height:1;color:var(--ink-3);font-weight:600;white-space:nowrap;overflow:hidden}
 /* v8.0 去糖（on/off 语义不变）：on 态仍按系列色着色但改哑光承担——降底/边饱和、削彩色投影，蜡封而非糖果；
    off 态干净中性纸玻璃，on/off 区分由 on 态着色单方承担 */
 .legend-item .legend-line{opacity:.45;filter:saturate(.55)}
-.legend-item:not(.off){color:var(--ink);color:color-mix(in srgb,var(--sc,#1c1a13) 66%,#1c1a13);background:linear-gradient(180deg,color-mix(in srgb,var(--sc,#8e8e93) 10%,#fffdf6),color-mix(in srgb,var(--sc,#8e8e93) 5%,#f4f0e2));border-color:rgba(28,26,19,.16);border-color:color-mix(in srgb,var(--sc,#8e8e93) 40%,rgba(28,26,19,.12));box-shadow:inset 0 1px 0 rgba(255,255,253,.95),inset 0 -1px 0 rgba(28,26,19,.03),0 1px 2px rgba(28,26,19,.08)}
+.legend-item:not(.off){color:var(--ink);color:color-mix(in srgb,var(--sc,#1c1a13) 66%,#1c1a13);background:linear-gradient(180deg,color-mix(in srgb,var(--sc,#8e8e93) 10%,#fbfcfe),color-mix(in srgb,var(--sc,#8e8e93) 5%,#eef2f7));border-color:rgba(28,26,19,.16);border-color:color-mix(in srgb,var(--sc,#8e8e93) 40%,rgba(28,26,19,.12));box-shadow:inset 0 1px 0 rgba(255,255,253,.95),inset 0 -1px 0 rgba(28,26,19,.03),0 1px 2px rgba(28,26,19,.08)}
 .legend-item:not(.off) .legend-line{opacity:1;filter:none;box-shadow:0 0 4px color-mix(in srgb,var(--sc,#8e8e93) 40%,transparent)}
 .legend-item:active{transform:translateY(0) scale(.97)}
 .legend-item:focus-visible,.rtab:focus-visible{outline:3px solid rgba(143,107,35,.30);outline-offset:2px}
-.legend-item.off:hover{transform:translateY(-1px);color:var(--ink-2);background:linear-gradient(180deg,#fffdf6,#f2eee1);border-color:rgba(28,26,19,.13);box-shadow:inset 0 1px 0 rgba(255,255,253,.92),0 2px 6px -3px rgba(28,26,19,.10)}
+.legend-item.off:hover{transform:translateY(-1px);color:var(--ink-2);background:linear-gradient(180deg,#fbfcfe,#ebeff4);border-color:rgba(28,26,19,.13);box-shadow:inset 0 1px 0 rgba(255,255,253,.92),0 2px 6px -3px rgba(28,26,19,.10)}
 .legend-item:not(.off):hover{transform:translateY(-1px);border-color:rgba(28,26,19,.22);border-color:color-mix(in srgb,var(--sc,#8e8e93) 52%,rgba(28,26,19,.14));box-shadow:inset 0 1px 0 rgba(255,255,253,.95),0 4px 10px -4px rgba(28,26,19,.14)}
 .legend-line{width:14px;height:3px;border-radius:999px;flex:none}
 /* v6.15：按钮内 ⓘ 简介图标——继承按钮字色（on 态随系列色），半透明降权，悬停点亮 */
@@ -279,7 +269,7 @@ body[data-theme="parchment"] ::-webkit-scrollbar-thumb:hover{background:#b9b193;
 .legend-info:focus-visible{outline:3px solid rgba(143,107,35,.30);outline-offset:2px;opacity:1}
 .card-head .rtab{padding:5px 10px;font-size:11px}
 /* 图例折叠抽屉按钮（v7.5）：毛玻璃药丸+已开指标彩点摘要；桌面隐藏，窄屏替代 15 按钮纵排省约 200px 纵向空间 */
-.legend-toggle{order:0;display:none;align-items:center;gap:8px;width:100%;appearance:none;cursor:pointer;font-family:var(--font-sans);font-size:11px;font-weight:600;letter-spacing:.02em;color:var(--ink-2);padding:9px 12px;border-radius:10px;border:1px solid rgba(28,26,19,.10);background:linear-gradient(180deg,rgba(255,253,246,.8),rgba(246,243,232,.6));backdrop-filter:blur(20px) saturate(160%);-webkit-backdrop-filter:blur(20px) saturate(160%);box-shadow:inset 0 1px 0 rgba(255,255,253,.88),0 1px 2px rgba(28,26,19,.04);transition:box-shadow .18s ease}
+.legend-toggle{order:0;display:none;align-items:center;gap:8px;width:100%;appearance:none;cursor:pointer;font-family:var(--font-sans);font-size:11px;font-weight:600;letter-spacing:.02em;color:var(--ink-2);padding:9px 12px;border-radius:10px;border:1px solid rgba(28,26,19,.10);background:linear-gradient(180deg,rgba(252,253,255,.8),rgba(240,244,250,.6));backdrop-filter:blur(20px) saturate(160%);-webkit-backdrop-filter:blur(20px) saturate(160%);box-shadow:inset 0 1px 0 rgba(255,255,253,.88),0 1px 2px rgba(28,26,19,.04);transition:box-shadow .18s ease}
 .legend-toggle:active{transform:scale(.99)}
 .legend-toggle:focus-visible{outline:3px solid rgba(143,107,35,.30);outline-offset:2px}
 #legendToggleTxt{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;text-align:left} /* v7.7：编号列表超宽省略号截断 */
@@ -344,7 +334,7 @@ body[data-theme="parchment"] ::-webkit-scrollbar-thumb:hover{background:#b9b193;
 .regime-tag:active{background:rgba(28,26,19,.08)}
 .regime-tag:focus-visible{outline:3px solid rgba(143,107,35,.30);outline-offset:2px}
 .regime-dot{width:8px;height:8px;border-radius:50%;background:var(--sc);box-shadow:0 0 0 3px color-mix(in srgb,var(--sc) 16%,transparent);flex:none}
-.regime-pop{position:absolute;top:calc(100% + 8px);right:0;z-index:40;width:360px;padding:15px 17px 13px;border-radius:12px;background:rgba(250,248,239,.95);backdrop-filter:blur(24px) saturate(160%);-webkit-backdrop-filter:blur(24px) saturate(160%);border:1px solid var(--line-2);box-shadow:inset 0 1px 0 rgba(255,255,253,.9),0 16px 44px -18px rgba(28,26,19,.28);text-align:left}
+.regime-pop{position:absolute;top:calc(100% + 8px);right:0;z-index:40;width:360px;padding:15px 17px 13px;border-radius:12px;background:rgba(244,247,251,.95);backdrop-filter:blur(24px) saturate(160%);-webkit-backdrop-filter:blur(24px) saturate(160%);border:1px solid var(--line-2);box-shadow:inset 0 1px 0 rgba(255,255,253,.9),0 16px 44px -18px rgba(28,26,19,.28);text-align:left}
 .regime-pop[hidden]{display:none}
 .regime-pop h4{font-family:var(--font-mix);font-size:13px;font-weight:700;color:var(--ink);letter-spacing:.02em;margin-bottom:7px}
 .regime-pop p{font-family:var(--font-sans);font-size:10.5px;line-height:1.7;color:var(--ink-3);margin-top:8px}
@@ -354,14 +344,14 @@ body[data-theme="parchment"] ::-webkit-scrollbar-thumb:hover{background:#b9b193;
 .rg-row b{white-space:nowrap}
 .rg-row .rg-swatch{margin-top:3px}
 /* 色块=图内色带实际观感（同源透明度填充+饱和描边），让弹层与主图颜色直接对应 */
-.rg-swatch{width:16px;height:11px;border-radius:3px;flex:none;border:1.5px solid var(--sw);background:color-mix(in srgb,var(--sw) 22%,#fffdf6)}
+.rg-swatch{width:16px;height:11px;border-radius:3px;flex:none;border:1.5px solid var(--sw);background:color-mix(in srgb,var(--sw) 22%,#fbfcfe)}
 .rg-row.on{color:var(--ink-2)}
 .rg-row.on b{color:var(--ink)}
 .regime-toggle{margin-top:11px;display:flex;align-items:center;justify-content:space-between;border-top:1px solid var(--line-3);padding-top:10px}
 .regime-toggle label{font-family:var(--font-sans);font-size:11px;font-weight:600;color:var(--ink-2);cursor:pointer}
-.regime-switch{appearance:none;-webkit-appearance:none;width:34px;height:20px;border-radius:999px;background:#d4cebb;position:relative;cursor:pointer;transition:background .2s ease;flex:none;margin:0}
+.regime-switch{appearance:none;-webkit-appearance:none;width:34px;height:20px;border-radius:999px;background:#c9d0da;position:relative;cursor:pointer;transition:background .2s ease;flex:none;margin:0}
 .regime-switch:checked{background:#34c759}
-.regime-switch::after{content:'';position:absolute;top:2px;left:2px;width:16px;height:16px;border-radius:50%;background:#fffdf7;box-shadow:0 1px 3px rgba(28,26,19,.25);transition:left .2s ease}
+.regime-switch::after{content:'';position:absolute;top:2px;left:2px;width:16px;height:16px;border-radius:50%;background:#fbfcfe;box-shadow:0 1px 3px rgba(28,26,19,.25);transition:left .2s ease}
 .regime-switch:checked::after{left:16px}
 @media (max-width:640px){.regime-pop{width:min(330px,86vw)}} /* v7.7：随 regime-wrap 贴右，沿用基态 right:0 右锚定防溢出 */
 /* ===== 区间测距（2026-10-20 追加）：右上「测距」开关 + 图内选带 + 读数卡 =====
@@ -371,12 +361,12 @@ body[data-theme="parchment"] ::-webkit-scrollbar-thumb:hover{background:#b9b193;
 .ms-toggle:hover{background:rgba(28,26,19,.05);color:var(--ink-2)}
 .ms-toggle:active{background:rgba(28,26,19,.08)}
 .ms-toggle:focus-visible{outline:3px solid rgba(143,107,35,.30);outline-offset:2px}
-.ms-toggle[aria-pressed="true"]{color:var(--ink);background:linear-gradient(180deg,rgba(255,253,246,.92),rgba(241,237,224,.74));box-shadow:inset 0 1px 0 rgba(255,253,253,.95),0 1px 2px rgba(28,26,19,.10)}
+.ms-toggle[aria-pressed="true"]{color:var(--ink);background:linear-gradient(180deg,rgba(252,253,255,.92),rgba(236,241,247,.74));box-shadow:inset 0 1px 0 rgba(255,253,253,.95),0 1px 2px rgba(28,26,19,.10)}
 .ms-toggle i{width:7px;height:7px;border-radius:50%;border:1.4px solid currentColor;flex:none;font-style:normal;box-sizing:border-box}
 .ms-toggle[aria-pressed="true"] i{background:currentColor}
 .ms-band{position:absolute;z-index:2;pointer-events:none;background:rgba(28,26,19,.075);border-left:1px solid rgba(28,26,19,.34);border-right:1px solid rgba(28,26,19,.34);box-sizing:border-box}
 .ms-band[hidden]{display:none}
-.ms-band .ms-dot{position:absolute;width:7px;height:7px;border-radius:50%;background:#fffdf6;border:1.5px solid currentColor;transform:translate(-50%,-50%);box-sizing:border-box}
+.ms-band .ms-dot{position:absolute;width:7px;height:7px;border-radius:50%;background:#fbfcfe;border:1.5px solid currentColor;transform:translate(-50%,-50%);box-sizing:border-box}
 /* 读数卡：定宽 250px——拖动过程中卡片不随数字位数变宽变窄（原先 content 自适应，边拖边跳）；
    表体三列「标签 / 日期 / 数值」，数值列右对齐＋tabular-nums，四行的数字尾端一条线齐平 */
 .ms-tip{pointer-events:none;width:238px;max-width:calc(100vw - 24px)}
@@ -404,7 +394,6 @@ body[data-theme="parchment"] ::-webkit-scrollbar-thumb:hover{background:#b9b193;
 </style>
 </head>
 <body>
-<script>try{var __m=location.hash.match(/[?&#]t=([a-z])/);if(__m&&__m[1]==='p')document.body.setAttribute('data-theme','parchment');else if(__m&&__m[1]==='m')document.body.setAttribute('data-theme','mist');else if(!__m&&localStorage.getItem('lvt-theme')==='mist')document.body.setAttribute('data-theme','mist')}catch(e){}</script>
 <div class="wrap">
   <header class="topbar">
     <div class="brand-txt">
@@ -440,8 +429,6 @@ body[data-theme="parchment"] ::-webkit-scrollbar-thumb:hover{background:#b9b193;
         <!-- 历史回撤开关（v8.3c，2026-11-05）：按下＝最大回撤标尺（段线/圆点/曲线小字/详情卡）才允许出现；默认熄灭，不持久化 -->
         <button type="button" class="ms-toggle" id="ddToggle" aria-pressed="false" aria-label="历史回撤（最大回撤标尺开关）"><i aria-hidden="true"></i>历史回撤</button>
         <button type="button" class="regime-tag" id="regimePill" aria-expanded="false" aria-controls="regimePop"><span class="regime-dot" aria-hidden="true"></span><span id="regimePillTxt">--</span></button>
-        <!-- 底板主题单按钮（v8.2）：素白/晨雾/羊皮纸三档循环（v8.3e 起素白为默认），按钮文字=当前主题名 -->
-        <button type="button" class="regime-tag" id="themeToggle" title="底板：素白（点击切换）" aria-label="底板主题切换，当前素白">素白</button>
         <div class="regime-pop" id="regimePop" hidden>
           <h4 id="regimePopTitle">市场状态机</h4>
           <div id="regimeLegend"></div>
@@ -835,9 +822,8 @@ function lvtSyncHash(){ // 状态→网址：250ms 防抖合并高频缩放；re
   lvtSyncHash._t=setTimeout(function(){
     try{
       var s=ALL_SERIES.map(function(n,i){return selected[n]?i:null}).filter(function(v){return v!=null}).join(',');
-      var t={parchment:'p',clean:'c',mist:'m'}[document.body.getAttribute('data-theme')||'clean']||'c'; // v8.3e：默认素白
       var mm=LVT.msOn?'1':'0'; // v8.3b：真源＝msOn 用户偏好（原读 aria-pressed＝「当前是否实际接管拖动」，空主图/窄屏下会失真）
-      history.replaceState(null,'','#z='+LVT.zoom[0].toFixed(3)+'-'+LVT.zoom[1].toFixed(3)+'&s='+s+'&t='+t+'&m='+mm); // v8.2e：3 位小数——1 位会把半年窗 97.6959 舍成 97.7 跨过一个交易日，刷新后页签判定失配（count 123≠122）
+      history.replaceState(null,'','#z='+LVT.zoom[0].toFixed(3)+'-'+LVT.zoom[1].toFixed(3)+'&s='+s+'&m='+mm); // v8.2e：3 位小数——1 位会把半年窗 97.6959 舍成 97.7 跨过一个交易日，刷新后页签判定失配（count 123≠122）
     }catch(e){}
   },250);
 }
@@ -1056,7 +1042,7 @@ const xTickInterval=(i,value)=>{
   return xLabelSet.has(value);
 };
 const fmtX=v=>xUnit==='y'?v.slice(0,4):xUnit==='m'?v.slice(2,7):v.slice(5,10);
-const tipStyle={backgroundColor:'rgba(252,250,243,.76)',borderColor:'rgba(255,253,246,.7)',borderWidth:1,padding:[10,14],textStyle:{color:'#1c1a13',fontFamily:F_NUM,fontSize:12},extraCssText:'border-radius:10px;box-shadow:0 1px 2px rgba(28,26,19,.05),0 8px 24px -12px rgba(28,26,19,.18);backdrop-filter:blur(20px) saturate(160%);-webkit-backdrop-filter:blur(20px) saturate(160%);max-height:66vh;overflow-y:auto;overflow-x:hidden;max-width:88vw;pointer-events:none;'};
+const tipStyle={backgroundColor:'rgba(250,252,255,.9)',borderColor:'rgba(255,255,255,.85)',borderWidth:1,padding:[10,14],textStyle:{color:'#1c1a13',fontFamily:F_NUM,fontSize:12},extraCssText:'border-radius:10px;box-shadow:0 1px 2px rgba(28,26,19,.05),0 8px 24px -12px rgba(28,26,19,.18);backdrop-filter:blur(20px) saturate(160%);-webkit-backdrop-filter:blur(20px) saturate(160%);max-height:66vh;overflow-y:auto;overflow-x:hidden;max-width:88vw;pointer-events:none;'};
 const dateIndexByValue=new Map(dates.map((d,i)=>[d,i]));
 // chg：当日相对上一交易日的变动口径——价格/金额类用涨跌幅 %，比例类（本身已是%）用百分点 pp，家数类用绝对增减（abs）
 const METRIC_META={
@@ -2152,27 +2138,7 @@ try{
 }catch(e){console.warn('市场状态机层初始化失败（不影响主图）:',e)}
 })();
 
-// ===== v8.2 底板主题（素白/晨雾/羊皮纸三档循环，单按钮；原墨夜四色点按 Jesse 指示移除；v8.3e 起素白为默认）=====
-(function(){
-'use strict';
-var THEMES=[['clean','素白'],['mist','晨雾'],['parchment','羊皮纸']];
-function apply(t){
-  var i=0;for(var k=0;k<THEMES.length;k++){if(THEMES[k][0]===t)i=k}
-  document.body.setAttribute('data-theme',THEMES[i][0]);
-  var btn=document.getElementById('themeToggle');
-  if(btn){btn.textContent=THEMES[i][1];btn.title='底板：'+THEMES[i][1]+'（点击切换）';btn.setAttribute('aria-label','底板主题切换，当前'+THEMES[i][1])}
-  try{localStorage.setItem('lvt-theme',THEMES[i][0])}catch(e){}
-  try{lvtSyncHash()}catch(e){} // v8.2：主题写入网址（hash 优先于 localStorage，两者始终一致）
-}
-var themeBtn=document.getElementById('themeToggle');
-if(themeBtn){themeBtn.addEventListener('click',function(){
-  var cur=document.body.getAttribute('data-theme')||'clean',i=0;
-  for(var k=0;k<THEMES.length;k++){if(THEMES[k][0]===cur)i=k}
-  apply(THEMES[(i+1)%THEMES.length][0]);
-});}
-var saved=null;try{var hm=location.hash.match(/[?&#]t=([a-z])/);if(hm&&{p:'parchment',c:'clean',m:'mist'}[hm[1]])saved={p:'parchment',c:'clean',m:'mist'}[hm[1]];if(!saved){saved=localStorage.getItem('lvt-theme');if(saved==='parchment')saved='clean'}}catch(e){} // v8.3e：旧默认 parchment 迁移为 clean——老用户打开即素白；hash t=p 仍可显式还原羊皮纸
-apply(saved||'clean');
-})();
+// v8.3f：底板固定晨雾，已移除主题切换（按钮/三档循环/localStorage/hash t 参数）
 
 // ===== v8.2 URL hash 状态恢复：缩放窗口与测距开关（图例已在上文 selected 初始化处恢复、主题随防闪脚本与本块上方 IIFE 恢复） =====
 (function(){
