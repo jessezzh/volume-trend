@@ -2,6 +2,7 @@
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
+<!-- 量价趋势 · v8.3h（2026-11-13，Jesse 走查：「解释按钮好难看太大了，做成正常的样子；纳斯达克100 不需要解释」）：①图例 ⓘ 改回正常小图标——14px 圆环、无衬线正体 9px、半透明随按钮色，不再 24px 凸出药丸；命中区用 ::after inset:-6px 扩到 26px 但不撑大外观。②删除 SERIES_TIPS['纳指100'] 注册——纳指100 图例不再渲染 ⓘ（指标开关保留）。数据/逻辑/其余交互零改动。 -->
 <!-- 量价趋势 · v8.3g（2026-11-13，Jesse 定「像 Linear 官网/苹果备忘录一样干净」，经 V1/V2/V3 三轮试验后选定 V2）：UI 清爽改版，只动呈现不动数据/逻辑/交互。①去装饰：纸纹噪点、玻璃 backdrop-filter、暖墨落影、宋体宽字距渐变题头全删；题头改系统字 16px/600 左对齐小标；卡片纯白+1px 发丝边+极浅落影；body 平铺 #f7f8fa。②色板中性化：温墨→#18181b 系、金 accent→墨色、--paper #ffffff、--line #e4e7eb 系；主图 7 色换清爽版（两融 #1F6FA8/上证 #C94F35/沪深300 #4E4F9A/中证2000 #A9770F/创业板 #2E9147/科创 #A8498F/纳指 #12848C），白底对比 3.9–7.2:1、主图内部 21 对 ΔE≥20；副图 iOS 色板/语义红绿不动。③图表质感：主图线 2.4–2.6→2px 去发光去面积填充、副图 1.8px；十字标签奶油→深色 chip(#18181b 白字)；坐标轴/刻度/网格/tooltip 暖墨→中性灰、tooltip 白底细边去玻璃；缩放滑块暖灰重底→浅轨+细窗+白把手；参考线 1.5 实线→1 虚线。④可读性补丁：ⓘ 对比度提至 4.8:1+24px 命中区、移动端页签/图例开关字号 12、注ⓘ/测距/历史回撤 min-height 24。数据/rawData/阈值/交互契约零改动。 -->
 <!-- 量价趋势 · v8.3f（2026-11-12，Jesse 定「这不还是纸黄吗…把调节羊皮纸/素白/晨雾的去掉，背景就用晨雾，把中间纸黄改掉」）：①删除底板主题切换——按钮(themeToggle)、防闪主题脚本、lvtSyncHash 的 t 参数、整个主题 IIFE、#themeToggle CSS、body[data-theme] 规则、分主题滚动条规则全部移除，底板唯一。②底板固定晨雾：background-color:#edeff2 + 顶部冷白辉光 rgba(255,255,255,.72) + 底部 rgba(48,66,96,.05)。③去掉中间纸黄：卡片/纸面由暖纸(#ffffff/#faf8f0/#f1ede0/#f2eee1/#f4f0e2/#f5f2e6/#fbf9f2/#f3f0e4 等)整体转冷调——--paper:#fbfcfe、--paper-2:#f2f5f9、.chart-card 冷白渐变 rgba(252,253,255,.90)→rgba(244,247,251,.78)、--line 系 #d3d8e0/#e6e1cf→#e2e6ed/#eef1f5、hover #bfc7d2，图例/胶囊/tooltip 同步冷调；滚动条改晨雾灰 #c5cdd7/#aeb8c5。温墨字阶(#18181b 等)/藏馆赭金 accent(#8f6b23)/主图矿物曲线色(SERIES_COLOR)零改动。数据/布局/交互零改。 -->
 <!-- 量价趋势 · v8.3e（2026-11-12，Jesse 定「不要羊皮纸了，换成白色，但不要那么突兀」）：默认底板羊皮纸→素白。①新素白底 #f5f4ed——同色相族降饱和提亮的「新纸」白：顶部暖白辉光 rgba(255,255,252,.55)，底部压暗 .02→.015；纸纹噪点/温墨/藏馆赭金/卡片纸白全部不动，白而不冷。②羊皮纸降为可选项：主题循环重排为 素白→晨雾→羊皮纸；localStorage 旧存 'parchment' 自动迁移为 'clean'（老用户打开即白），hash t=p 链接仍可显式还原羊皮纸；防闪脚本与 lvtSyncHash 默认主题同步 parchment→clean。③滚动条配平：默认滚动条改中性暖灰 #d9d8d3/hover #c2c1bc，羊皮纸主题保留旧暖色值 #d5cfbc/#b9b193。v8.3d 藏馆矿物色对新底板对比只升不降（底板更亮）。数据/布局/交互/曲线色零改动 -->
@@ -392,12 +393,23 @@ body{background-color:#f7f8fa;color:var(--apple-ink);font-family:var(--font-sans
 @media(max-width:640px){#ddToggle{display:inline-flex}} /* v8.3c：历史回撤窄屏保留——页签联动标尺的唯一入口，藏掉则手机永远开不了 */
 </style>
 <style id="a11y">
-/* 可读性补丁（不改观感）：ⓘ 对比度+命中区、移动端控件字号 */
-.legend-info{display:inline-flex;align-items:center;justify-content:center;min-width:24px;min-height:24px;padding:0;margin:-6px;opacity:1;color:#6b7280;font-size:11px;border-radius:50%}
+/* 可读性补丁：ⓘ 视觉 14px 小圆环但 24px 命中+足够对比；移动端控件字号/对比 */
+.legend-info{position:relative;width:24px;height:24px;min-width:24px;min-height:24px;margin:-5px -5px;padding:0;border:none;background:none;opacity:1;color:#6b7280;font-size:0;line-height:1;flex:none}
+.legend-info::before{content:'i';position:absolute;inset:5px;display:flex;align-items:center;justify-content:center;border:1px solid currentColor;border-radius:50%;font-family:var(--font-sans);font-style:normal;font-weight:600;font-size:9px;line-height:1}
 .legend-info:hover{color:#18181b}
 .fig-note-btn{font-size:12px;min-height:24px}
-.ms-toggle{min-height:24px}
-@media(max-width:640px){.card-head .rtab{font-size:12px}.legend-toggle{font-size:12px}.legend-toggle .lt-arrow{font-size:12px;color:#6b7280}}
+.ms-toggle{min-height:24px;color:#6b7280;font-size:12px}
+.rtab{color:#52525b}
+.card-head .rtab{font-size:12px}
+.regime-tag{min-height:28px;font-size:12px}
+.legend-item{font-size:12px}
+@media(max-width:640px){
+  .card-head .rtab{font-size:12px;color:#52525b}
+  .legend-toggle{font-size:12px}
+  .legend-toggle .lt-arrow{font-size:12px;color:#6b7280}
+  .ms-toggle{font-size:12px;color:#6b7280;min-height:28px}
+  .regime-tag{font-size:12px;min-height:28px}
+}
 </style>
 </head>
 <body>
@@ -900,8 +912,7 @@ const SERIES_TIPS={
   '恐慌指标':{t:'恐慌指标 · 波动率温度',text:'升高＝恐慌升温、极高＝恐慌极值、回落＝情绪修复'},
   '站上30日线':{t:'站上30日线 · 中期趋势',text:'上行＝中期趋势转强、下行＝中期趋势走弱、极低位＝恐慌超跌'},
   '上涨占比':{t:'上涨占比 · 当日动量广度',text:'上行＝上涨面扩散、下行＝赚钱效应收缩，与站上20日线互为当日流量/存量位置两面'},
-  '相对强度':{t:'相对强度 · 大小盘风格计',text:'上行小盘占优、下行大盘占优、拐头风格切换'},
-  '纳指100':{t:'纳指100 · 美股科技风向',text:'上行＝美股科技走强、下行＝美股科技转弱，与A股联动为参考而非同步'}
+  '相对强度':{t:'相对强度 · 大小盘风格计',text:'上行小盘占优、下行大盘占优、拐头风格切换'}
 };
 // 参考线简介卡（v6.5 胶囊点击 → v8.1d 图内参考线点击）：单例毛玻璃浮层，展示"高于/低于"语义；点击空白、滚轮、缩放、图例切换（positionRefTags）、Esc 自动关闭
 let refTipEl=null,refTipAnchor=null;
