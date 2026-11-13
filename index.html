@@ -2,6 +2,7 @@
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
+<!-- 量价趋势 · v8.3i（2026-11-13，Jesse 走查「上面按钮全部变小2号，好腾出更多空间看趋势图」）：桌面紧凑工具栏——图例胶囊 32→24px 高、字号 12→11、宽度改自适应（17 个指标芯片压成两排）；legend-group 去固定 415px/73px 改自适应；时间页签/测距/历史回撤/状态胶囊字号 11、内边距收紧；topbar 与卡片内边距同步收紧。图表高度 clamp 底部偏移 148→116px、下限 660→680px，把回收的纵向空间给主图（1440×900 下主图约 +32px）。仅 ≥641px 生效，移动端布局不变。11px 字号为按 Jesse 要求的「变小2号」有意结果。数据/逻辑/交互零改。 -->
 <!-- 量价趋势 · v8.3h（2026-11-13，Jesse 走查：「解释按钮好难看太大了，做成正常的样子；纳斯达克100 不需要解释」）：①图例 ⓘ 改回正常小图标——14px 圆环、无衬线正体 9px、半透明随按钮色，不再 24px 凸出药丸；命中区用 ::after inset:-6px 扩到 26px 但不撑大外观。②删除 SERIES_TIPS['纳指100'] 注册——纳指100 图例不再渲染 ⓘ（指标开关保留）。数据/逻辑/其余交互零改动。 -->
 <!-- 量价趋势 · v8.3g（2026-11-13，Jesse 定「像 Linear 官网/苹果备忘录一样干净」，经 V1/V2/V3 三轮试验后选定 V2）：UI 清爽改版，只动呈现不动数据/逻辑/交互。①去装饰：纸纹噪点、玻璃 backdrop-filter、暖墨落影、宋体宽字距渐变题头全删；题头改系统字 16px/600 左对齐小标；卡片纯白+1px 发丝边+极浅落影；body 平铺 #f7f8fa。②色板中性化：温墨→#18181b 系、金 accent→墨色、--paper #ffffff、--line #e4e7eb 系；主图 7 色换清爽版（两融 #1F6FA8/上证 #C94F35/沪深300 #4E4F9A/中证2000 #A9770F/创业板 #2E9147/科创 #A8498F/纳指 #12848C），白底对比 3.9–7.2:1、主图内部 21 对 ΔE≥20；副图 iOS 色板/语义红绿不动。③图表质感：主图线 2.4–2.6→2px 去发光去面积填充、副图 1.8px；十字标签奶油→深色 chip(#18181b 白字)；坐标轴/刻度/网格/tooltip 暖墨→中性灰、tooltip 白底细边去玻璃；缩放滑块暖灰重底→浅轨+细窗+白把手；参考线 1.5 实线→1 虚线。④可读性补丁：ⓘ 对比度提至 4.8:1+24px 命中区、移动端页签/图例开关字号 12、注ⓘ/测距/历史回撤 min-height 24。数据/rawData/阈值/交互契约零改动。 -->
 <!-- 量价趋势 · v8.3f（2026-11-12，Jesse 定「这不还是纸黄吗…把调节羊皮纸/素白/晨雾的去掉，背景就用晨雾，把中间纸黄改掉」）：①删除底板主题切换——按钮(themeToggle)、防闪主题脚本、lvtSyncHash 的 t 参数、整个主题 IIFE、#themeToggle CSS、body[data-theme] 规则、分主题滚动条规则全部移除，底板唯一。②底板固定晨雾：background-color:#edeff2 + 顶部冷白辉光 rgba(255,255,255,.72) + 底部 rgba(48,66,96,.05)。③去掉中间纸黄：卡片/纸面由暖纸(#ffffff/#faf8f0/#f1ede0/#f2eee1/#f4f0e2/#f5f2e6/#fbf9f2/#f3f0e4 等)整体转冷调——--paper:#fbfcfe、--paper-2:#f2f5f9、.chart-card 冷白渐变 rgba(252,253,255,.90)→rgba(244,247,251,.78)、--line 系 #d3d8e0/#e6e1cf→#e2e6ed/#eef1f5、hover #bfc7d2，图例/胶囊/tooltip 同步冷调；滚动条改晨雾灰 #c5cdd7/#aeb8c5。温墨字阶(#18181b 等)/藏馆赭金 accent(#8f6b23)/主图矿物曲线色(SERIES_COLOR)零改动。数据/布局/交互零改。 -->
@@ -409,6 +410,24 @@ body{background-color:#f7f8fa;color:var(--apple-ink);font-family:var(--font-sans
   .legend-toggle .lt-arrow{font-size:12px;color:#6b7280}
   .ms-toggle{font-size:12px;color:#6b7280;min-height:28px}
   .regime-tag{font-size:12px;min-height:28px}
+}
+</style>
+<style id="compact">
+/* v8.3i 紧凑工具栏（桌面）：整体收小，回收纵向空间给趋势图 */
+@media(min-width:641px){
+  .wrap{padding:26px 32px 36px}
+  .topbar{margin:0 0 12px;padding-bottom:10px}
+  .chart-card{padding:16px 22px 16px}
+  .card-head{gap:6px;margin-bottom:8px}
+  .card-head>.legend-bar{gap:4px}
+  .legend-group{width:auto;min-height:0;gap:3px;padding:0;margin-right:12px}
+  .legend-item{width:auto;height:24px;padding:0 8px;font-size:11px;gap:5px;border-radius:6px}
+  .legend-line{width:10px;height:2px}
+  .rtab{font-size:11px;padding:3px 8px}
+  .range-tabs{padding:2px;border-radius:7px}
+  .ms-toggle{font-size:11px;padding:4px 8px;min-height:24px;gap:5px}
+  .regime-tag{font-size:11px;padding:4px 8px;min-height:24px;gap:6px}
+  #mainChart{height:clamp(680px,calc(100vh - 116px),1040px)}
 }
 </style>
 </head>
