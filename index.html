@@ -2,6 +2,7 @@
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
+<!-- 量价趋势 · v8.6（2026-11-19，Jesse 定「把副图1和副图2的指标合并，以后只要一个副图」）：副图1、副图2 合并为单一副图（面板数 3→2）。做法：SUB_ALL=[副图1序列+副图2序列] 统一挂 grid1，所有百分比类指标（站上20日线/指数乖离率/拥挤度/站上30日线/恐慌指标）共用一根比例轴 #2，成交额仍在独立金额轴 #4，数值全走光标提示；图例三组并为「主图 / 副图」两组；数据缩放、滚轮命中、测距取带、参考线命中、动态布局全部改为 2 面板；取消副图1 原来的"互斥单选"（站上20日线/指数乖离率/成交额），六类指标可任意叠加。数据/口径/阈值零改动。 -->
 <!-- 量价趋势 · v8.5（2026-11-19，Jesse 定「把量价趋势项目的 涨跌停家数、上涨占比、融资强度、纳斯达克100 砍掉」）：四个指标全链退役，走既有 RETIRED_SERIES 机制（同相对强度 v8.4a）：图例按钮不渲染、selected 恒 false、hash s= 按数组占位不错位、开关入口拦截——数据计算与序列/轴定义保留、rawData 与每日管线照常产出，随时可从 RETIRED_SERIES 移除即恢复。连带：①市场温度计由六成分（含融资强度、涨跌停净家数）改为四成分等权（拥挤度/站上20日线/指数乖离率/恐慌指标反向），表 1 第五胶囊保留；②图注删除涨跌停/融资强度/纳指/上涨占比的阈值与口径条目，轴位说明同步；③数据日期说明去掉融资强度与纳指。视觉与交互其余零改动。 -->
 <!-- 量价趋势 · v8.3g（2026-11-13，Jesse 定「像 Linear 官网/苹果备忘录一样干净」，经 V1/V2/V3 三轮试验后选定 V2）：UI 清爽改版，只动呈现不动数据/逻辑/交互。①去装饰：纸纹噪点、玻璃 backdrop-filter、暖墨落影、宋体宽字距渐变题头全删；题头改系统字 16px/600 左对齐小标；卡片纯白+1px 发丝边+极浅落影；body 平铺 #f7f8fa。②色板中性化：温墨→#18181b 系、金 accent→墨色、--paper #ffffff、--line #e4e7eb 系；主图 7 色换清爽版（两融 #1F6FA8/上证 #C94F35/沪深300 #4E4F9A/中证2000 #A9770F/创业板 #2E9147/科创 #A8498F/纳指 #12848C），白底对比 3.9–7.2:1、主图内部 21 对 ΔE≥20；副图 iOS 色板/语义红绿不动。③图表质感：主图线 2.4–2.6→2px 去发光去面积填充、副图 1.8px；十字标签奶油→深色 chip(#18181b 白字)；坐标轴/刻度/网格/tooltip 暖墨→中性灰、tooltip 白底细边去玻璃；缩放滑块暖灰重底→浅轨+细窗+白把手；参考线 1.5 实线→1 虚线。④可读性补丁：ⓘ 对比度提至 4.8:1+24px 命中区、移动端页签/图例开关字号 12、注ⓘ/测距/历史回撤 min-height 24。数据/rawData/阈值/交互契约零改动。 -->
 <!-- 量价趋势 · v8.3f（2026-11-12，Jesse 定「这不还是纸黄吗…把调节羊皮纸/素白/晨雾的去掉，背景就用晨雾，把中间纸黄改掉」）：①删除底板主题切换——按钮(themeToggle)、防闪主题脚本、lvtSyncHash 的 t 参数、整个主题 IIFE、#themeToggle CSS、body[data-theme] 规则、分主题滚动条规则全部移除，底板唯一。②底板固定晨雾：background-color:#edeff2 + 顶部冷白辉光 rgba(255,255,255,.72) + 底部 rgba(48,66,96,.05)。③去掉中间纸黄：卡片/纸面由暖纸(#ffffff/#faf8f0/#f1ede0/#f2eee1/#f4f0e2/#f5f2e6/#fbf9f2/#f3f0e4 等)整体转冷调——--paper:#fbfcfe、--paper-2:#f2f5f9、.chart-card 冷白渐变 rgba(252,253,255,.90)→rgba(244,247,251,.78)、--line 系 #d3d8e0/#e6e1cf→#e2e6ed/#eef1f5、hover #bfc7d2，图例/胶囊/tooltip 同步冷调；滚动条改晨雾灰 #c5cdd7/#aeb8c5。温墨字阶(#18181b 等)/藏馆赭金 accent(#8f6b23)/主图矿物曲线色(SERIES_COLOR)零改动。数据/布局/交互零改。 -->
@@ -462,8 +463,7 @@ body{background-color:#f7f8fa;color:var(--apple-ink);font-family:var(--font-sans
       <button type="button" class="legend-toggle" id="legendToggle" aria-expanded="false" aria-controls="legendBar"><span id="legendToggleTxt">点选指标</span><span class="lt-arrow" aria-hidden="true">▼</span></button>
       <div class="legend-bar" id="legendBar" role="group" aria-label="图表指标开关">
         <div class="legend-group" data-group="main" aria-label="主图指标"></div>
-        <div class="legend-group" data-group="sub1" aria-label="副图 1 指标"></div>
-        <div class="legend-group" data-group="sub2" aria-label="副图 2 指标"></div>
+        <div class="legend-group" data-group="sub" aria-label="副图指标"></div>
       </div>
       <div class="head-timeline">
         <div class="range-tabs">
@@ -498,13 +498,12 @@ body{background-color:#f7f8fa;color:var(--apple-ink);font-family:var(--font-sans
     <div class="chart-stage">
       <div id="mainChart"></div>
       <div class="pane-frame" style="top:2%;bottom:71.3%"><span class="pane-label">(a)</span></div>
-      <div class="pane-frame pane-sub" style="top:35.3%;bottom:42.1%"><span class="pane-label">(b)</span></div>
-      <div class="pane-frame pane-sub" style="top:64.8%;bottom:11.8%"><span class="pane-label">(c)</span></div>
+      <div class="pane-frame pane-sub" style="top:35.3%;bottom:11.8%"><span class="pane-label">(b)</span></div>
       <div id="chartStatus" class="chart-status" role="status" aria-live="polite" hidden></div>
     </div>
     <div class="fig-caption">
       <div class="fig-title-row">
-        <div class="fig-title">图 1　A股量价情绪综合趋势。(a) 主图；(b) 副图 1；(c) 副图 2</div>
+        <div class="fig-title">图 1　A股量价情绪综合趋势。(a) 主图；(b) 副图</div>
         <button type="button" class="fig-note-btn" id="figNoteBtn" aria-expanded="false" aria-controls="figNotes">注 ⓘ</button>
       </div>
       <div class="fig-notes" id="figNotes" hidden>
@@ -516,7 +515,7 @@ body{background-color:#f7f8fa;color:var(--apple-ink);font-family:var(--font-sans
         <p>· 恐慌指标（基于中证2000）——20 日对数收益率样本标准差×√244 年化；≥40%＝高波动恐慌区</p>
         <b>指标口径</b>
         <p>· 成交额＝剔除北交所后的沪深两市合计</p>
-        <p>· 轴位——主图右侧两融余额独占一列刻度；副图 1 左侧指标（站上20日线 / 指数乖离率 / 成交额）互斥单选、各独占左轴</p>
+        <p>· 轴位——主图右侧两融余额独占一列刻度；副图内百分比类指标（站上20日线 / 指数乖离率 / 拥挤度 / 站上30日线 / 恐慌指标）共用一根比例轴，成交额独立刻度，数值均走光标提示</p>
         <p>· 科创综指（000680，579 只全板覆盖）——2026-10-25 起替代科创50（000688，旧序列随历史版本留档）；2026-10-26 编制方案修订生效（单样本权重上限 15%、ST 剔除提前），修订前后计算口径以中证官方为准</p>
         <p id="dataAsOfNote">· 数据日期：数据空缺</p>
         <p>· 站上30日线＝收盘价高于30日均线的个股比例（当日有该均线数据的个股）</p>
@@ -845,6 +844,7 @@ const SUB2_SERIES=['拥挤度_副图2','站上30日线_副图2','恐慌指标_�
 const S3_MERGED='涨跌停家数_副图1'; // 副图1 合并图例键：一个按钮同开同关涨停/跌停两条曲线（方案B）
 // v8.2e：副图1 左侧四指标互斥单选（站上20日线/涨跌停/指数乖离率/成交额）——涨跌停与乖离率按 Jesse 指示独立成图（同副图2 相对强度）；融资强度移右轴不在此列
 const SUB1_SOLO=['站上20日线_副图1','涨停家数_副图1','指数乖离率_副图1','成交额_副图1'];
+const SUB_ALL=[...SUB1_SERIES,...SUB2_SERIES]; // v8.6：副图1/副图2 合并为单一副图，面板可见性按合并组判定
 const ALL_SERIES=[...MAIN_SERIES,...SUB1_SERIES,...SUB2_SERIES];
 // v8.4a 退役槽位：相对强度（ALL_SERIES 索引 16）保留数组占位——hash s= 按位置索引，删元素会让旧链接整体错位。
 // 退役只动呈现：图例不渲染按钮、hash 解析忽略索引 16、开关入口拦截、selected 恒 false（yRs 轴自然永不可见）。
@@ -861,8 +861,6 @@ var LVT={zoom:[0,100],msOn:true}; // 缩放窗口镜像 + v8.3b 测距偏好真�
     if(m&&m[1]){
       var on={};m[1].split(',').forEach(function(x){if(x==='')return;var i=+x;if(ALL_SERIES[i]&&!RETIRED_SERIES.has(ALL_SERIES[i]))on[ALL_SERIES[i]]=true}); // v8.4a：退役索引（16）忽略——旧链接不报错、不点亮
       // v8.2e：副图1 四指标互斥后，旧链接可能带同开组合——hash 无时间序（写入即 ALL_SERIES 数组序），保留序最大者，其余（含跌停侧）一并清除
-      var lastSolo=null;ALL_SERIES.forEach(function(n){if(on[n]&&SUB1_SOLO.indexOf(n)>=0)lastSolo=n});
-      if(lastSolo)SUB1_SOLO.forEach(function(n){if(n!==lastSolo){delete on[n];if(n==='涨停家数_副图1')delete on['跌停家数_副图1']}});
       ALL_SERIES.forEach(function(n){selected[n]=!!on[n]});
       selected[S3_MERGED]=!!(selected['涨停家数_副图1']||selected['跌停家数_副图1']);
     }
@@ -930,7 +928,7 @@ const refMarkData=(type,y)=>{
 // 面板框外药丸（值与 CFG 单一来源）：axis=对应 yAxisIndex（副图1 比例轴2/家数轴3/成交额轴4，副图2 比例轴5），y 由 convertToPixel 按线位置计算
 const REF_TAGS={
   1:[{series:'融资强度_副图1',type:'bottom',axis:8,value:CFG.rzThaw,label:"冰点",slabel:"冰点",tip:{t:'冰点',text:'杠杆退潮至冰点，2020以来未来胜率仅13%'}},{series:'融资强度_副图1',type:'health',axis:8,value:(CFG.rzThaw+CFG.rzHealthTop)/2,label:"健康",slabel:"健康",tip:{t:'健康区',text:'杠杆健康常态'}},{series:'融资强度_副图1',type:'crowd',axis:8,value:CFG.rzHot,label:"过热",slabel:"过热",tip:{t:'过热',text:'杠杆过热预警，2020年以来该档未来60日平均 -7.2'}},{series:'站上20日线_副图1',type:'reduce',axis:2,value:CFG.reduceLine20,label:"下穿减仓线 "+CFG.reduceLine20+"%",slabel:"下穿减仓",tip:{t:'下穿减仓线 45%',text:'低于45%＝多数个股跌破20日线，短线转弱按规则减仓'}},{series:'成交额_副图1',type:'amt',axis:4,value:CFG.amtLine,label:(CFG.amtLine/CFG.yiSplit).toFixed(0)+"万亿",slabel:"2万亿",tip:{t:'成交额 2万亿',text:'2万亿作近期量能参考下限；跌破提示缩量，站上不单独判为过热'}},{series:'涨停家数_副图1',type:'crowd',axis:3,value:CFG.limitUpLine,label:"过热 "+CFG.limitUpLine+"家",slabel:"过热",tip:{t:'涨停过热线 130家',text:'单日涨停≥130家＝短线情绪过热，次日分歧概率大'}},{series:'跌停家数_副图1',type:'bottom',axis:3,value:-CFG.limitDownLine,label:"恐慌 "+CFG.limitDownLine+"家",slabel:"恐慌",tip:{t:'跌停恐慌线 50家',text:'单日跌停≥50家＝恐慌抛售扩散，常临近阶段底'}},{series:'指数乖离率_副图1',type:'crowd',axis:2,value:CFG.biasExtLine,label:"超买",tip:{t:'乖离超买线 +5%',text:'高于+5%＝短期涨速过快，追高风险'}},{series:'指数乖离率_副图1',type:'bottom',axis:2,value:-CFG.biasExtLine,label:"超卖",tip:{t:'乖离超卖线 −5%',text:'低于−5%＝短期超卖，常有修复'}}],
-  2:[{series:'拥挤度_副图2',type:'crowd',lpos:'insideEndBottom',axis:5,value:CFG.crowdLine*100,label:"拥挤线 "+(CFG.crowdLine*100)+"%",slabel:"拥挤",tip:{t:'拥挤线 45%',text:'高于45%＝资金拥挤结构脆弱，低于＝结构分散更健康'}},{series:'站上30日线_副图2',type:'add',axis:5,value:CFG.addLine30,label:"上穿加仓线 "+CFG.addLine30+"%",slabel:"上穿加仓",tip:{t:'上穿加仓线 50%',text:'高于50%＝中期广度转强确认，按规则加仓'}},{series:'站上30日线_副图2',type:'bottom',axis:5,value:CFG.bottomLine,label:"下穿抄底线 "+CFG.bottomLine+"%",slabel:"下穿抄底",tip:{t:'下穿抄底线 15%',text:'低于15%＝深度恐慌区，常有超跌反弹'}},{series:'恐慌指标_副图2',type:'hv',axis:5,value:CFG.hvWarnLine,label:"恐慌 "+CFG.hvWarnLine+"%",slabel:"恐慌",tip:{t:'恐慌线 40%（年化波动）',text:'高于40%＝高波动恐慌，多见于暴跌后'}},{series:'上涨占比_副图2',type:'adv',axis:5,value:CFG.advLine,label:"多空分界 "+CFG.advLine+"%",slabel:"多空分界",tip:{t:'多空分界线 50%',text:'高于50%＝多数个股上涨（普涨）、低于＝上涨缩圈，赚钱效应收缩'}}]
+  2:[{series:'拥挤度_副图2',type:'crowd',lpos:'insideEndBottom',axis:2,value:CFG.crowdLine*100,label:"拥挤线 "+(CFG.crowdLine*100)+"%",slabel:"拥挤",tip:{t:'拥挤线 45%',text:'高于45%＝资金拥挤结构脆弱，低于＝结构分散更健康'}},{series:'站上30日线_副图2',type:'add',axis:2,value:CFG.addLine30,label:"上穿加仓线 "+CFG.addLine30+"%",slabel:"上穿加仓",tip:{t:'上穿加仓线 50%',text:'高于50%＝中期广度转强确认，按规则加仓'}},{series:'站上30日线_副图2',type:'bottom',axis:2,value:CFG.bottomLine,label:"下穿抄底线 "+CFG.bottomLine+"%",slabel:"下穿抄底",tip:{t:'下穿抄底线 15%',text:'低于15%＝深度恐慌区，常有超跌反弹'}},{series:'恐慌指标_副图2',type:'hv',axis:2,value:CFG.hvWarnLine,label:"恐慌 "+CFG.hvWarnLine+"%",slabel:"恐慌",tip:{t:'恐慌线 40%（年化波动）',text:'高于40%＝高波动恐慌，多见于暴跌后'}},{series:'上涨占比_副图2',type:'adv',axis:2,value:CFG.advLine,label:"多空分界 "+CFG.advLine+"%",slabel:"多空分界",tip:{t:'多空分界线 50%',text:'高于50%＝多数个股上涨（普涨）、低于＝上涨缩圈，赚钱效应收缩'}}]
 };
 // v7.8：窄屏图内标注注册表（type:value → {text,pos}），复用 REF_TAGS 的 slabel 短文案；refMarkData 构建 markLine label 时读取（拥挤线 45% 特判线下方，避让加仓线 50% 的线上方标注）
 const REF_LINE_LABELS={};
@@ -1118,8 +1116,8 @@ const METRIC_META={
 };
 const tooltipSeries=[
   ...MAIN_SERIES.map(name=>({key:name,group:'主图',label:name,color:SERIES_COLOR[name],...METRIC_META[name]})),
-  ...SUB1_SERIES.map(name=>{const base=ratioBaseName(name);return {key:name,group:'副图 1',label:base,color:SERIES_COLOR[base],...METRIC_META[base]};}),
-  ...SUB2_SERIES.map(name=>{const base=ratioBaseName(name);return {key:name,group:'副图 2',label:base,color:SERIES_COLOR[base],...METRIC_META[base]};})
+  ...SUB1_SERIES.map(name=>{const base=ratioBaseName(name);return {key:name,group:'副图',label:base,color:SERIES_COLOR[base],...METRIC_META[base]};}),
+  ...SUB2_SERIES.map(name=>{const base=ratioBaseName(name);return {key:name,group:'副图',label:base,color:SERIES_COLOR[base],...METRIC_META[base]};})
 ];
 // 当日涨跌幅列：pct=相对上一交易日百分比，pp=比例指标的百分点差，abs=家数类绝对增减；红涨绿跌，空值/首日输出等宽占位
 const chgHtml=(m,index)=>{
@@ -1187,7 +1185,7 @@ function makeSubSeries(name,xAxisIdx,ratioYAxis){
   if(base==='跌停家数')return {...line,yAxisIndex:3,data:sLimitDownNeg,areaStyle:glowDown(color),z:4,markLine:{silent:true,symbol:'none',lineStyle:{color:'rgba(60,60,67,.22)',width:1,type:'solid'},data:[{yAxis:0,label:{show:false}},refMarkData('bottom',-CFG.limitDownLine)]}}; // v8.1d：零轴项补 label:{show:false}——ECharts 默认标签会在零轴右端渲染孤立「0」
   // 指数乖离率（副图1 比例轴 #2）；恐慌指标/相对强度（副图2，波动率归比例轴 #5，相对强度独占比值轴 #6）
   if(base==='指数乖离率')return {...line,yAxisIndex:2,data:sBias,areaStyle:glow(color),z:4,markLine:{silent:true,symbol:'none',data:[refMarkData('crowd',CFG.biasExtLine),refMarkData('bottom',-CFG.biasExtLine)]}};
-  if(base==='恐慌指标')return {...line,yAxisIndex:5,data:sHv,areaStyle:glow(color),z:4,markLine:{silent:true,symbol:'none',data:[refMarkData('hv',CFG.hvWarnLine)]}};
+  if(base==='恐慌指标')return {...line,yAxisIndex:ratioYAxis,data:sHv,areaStyle:glow(color),z:4,markLine:{silent:true,symbol:'none',data:[refMarkData('hv',CFG.hvWarnLine)]}};
   return {...line,yAxisIndex:6,data:sRs,areaStyle:glow(color),z:4};
 }
 // v7.11 回撤标尺专用常量（逻辑实现见文末「最大回撤标尺」模块）
@@ -1210,12 +1208,10 @@ mainChart.setOption({
     // 三个网格采用同一左右留白，给两侧刻度与居中的轴标题预留独立空间。v8.2：全部组件加显式 id，多轮 setOption 按 id 匹配，杜绝按位合并漂移
     {id:'g0',left:CFG.gridMargin,right:CFG.gridMarginR,top:'2%',bottom:'71.3%',containLabel:false},
     {id:'g1',left:CFG.gridMargin,right:CFG.gridMarginR,top:'35.3%',bottom:'42.1%',containLabel:false},
-    {id:'g2',left:CFG.gridMargin,right:CFG.gridMarginR,top:'64.8%',bottom:'11.8%',containLabel:false}
   ],
   xAxis:[
     {id:'x0',type:'category',gridIndex:0,boundaryGap:false,data:dates,axisLine:{onZero:false,lineStyle:{color:C.border}},axisLabel:{show:false,color:C.label,fontFamily:F_NUM,fontSize:11,hideOverlap:true,formatter:fmtX,interval:xTickInterval},axisTick:{show:true,inside:true,length:3,lineStyle:{color:'#d4d7dd'}},splitLine:{show:false},axisPointer:{show:true,label:{show:false}}},
     {id:'x1',type:'category',gridIndex:1,boundaryGap:false,data:dates,axisLine:{onZero:false,lineStyle:{color:C.border}},axisLabel:{show:false,color:C.label,fontFamily:F_NUM,fontSize:11,hideOverlap:true,formatter:fmtX,interval:xTickInterval},axisTick:{show:true,inside:true,length:3,lineStyle:{color:'#d4d7dd'}},splitLine:{show:false},axisPointer:{show:true,label:{show:false}}},
-    {id:'x2',type:'category',gridIndex:2,boundaryGap:false,data:dates,axisLine:{onZero:false,lineStyle:{color:C.border}},axisLabel:{show:true,color:C.label,fontFamily:F_NUM,fontSize:11,hideOverlap:true,formatter:fmtX,interval:xTickInterval},axisTick:{show:true,inside:true,length:3,lineStyle:{color:'#d4d7dd'}},splitLine:{show:false},axisPointer:{show:true,label:{show:false}}}
   ],
   yAxis:[
     // 左侧标题和数字均右对齐；右侧标题和数字均左对齐，统一所有纵轴的视觉基准线。
@@ -1227,9 +1223,9 @@ mainChart.setOption({
     {id:'yCnt',type:'value',gridIndex:1,show:['涨停家数_副图1','跌停家数_副图1'].some(n=>selected[n]),name:'',nameLocation:'end',nameRotate:0,nameGap:8,position:'left',min:s3AxisMin,max:s3AxisMax,nameTextStyle:{color:'#18181b',fontSize:11,align:'right'},axisLine:{show:false},axisTick:{show:false},axisLabel:{show:false},axisPointer:{label:{show:false,formatter:p=>Math.abs(Math.round(p.value))}},splitLine:{show:false}},
     {id:'yAmt',type:'value',gridIndex:1,show:!!selected['成交额_副图1'],name:'',nameLocation:'end',nameRotate:0,nameGap:8,position:'left',scale:true,nameTextStyle:{color:SERIES_COLOR['成交额'],fontSize:11,align:'right'},axisLine:{show:false},axisTick:{show:false},axisLabel:{show:false},axisPointer:{label:{show:false,formatter:p=>p.value>=10000?(p.value/10000).toFixed(2)+'万亿':Math.round(p.value)+'亿'}},splitLine:{show:false}},
     // 副图2 比例轴：拥挤度/站上30日线/恐慌指标/上涨占比（v8.3、v8.3a 改名；单一指标随线色，多指标时黑色）。
-    {id:'yRatio2',type:'value',gridIndex:2,show:['拥挤度_副图2','站上30日线_副图2','恐慌指标_副图2','上涨占比_副图2'].some(n=>selected[n]),name:'',nameLocation:'end',nameRotate:0,nameGap:8,position:'left',scale:true,nameTextStyle:{color:ratioAxisColor(['拥挤度_副图2','站上30日线_副图2','恐慌指标_副图2','上涨占比_副图2']),fontSize:11,align:'right'},axisLine:{show:false},axisTick:{show:false},axisLabel:{show:false},splitLine:{show:false}},
+    {id:'yRatio2',type:'value',gridIndex:1,show:false,name:'',nameLocation:'end',nameRotate:0,nameGap:8,position:'left',scale:true,nameTextStyle:{color:'#18181b',fontSize:11,align:'right'},axisLine:{show:false},axisTick:{show:false},axisLabel:{show:false},splitLine:{show:false}},
     // 副图2 比值轴（相对强度）：与比例轴槽位互斥，同一时刻仅一个可见
-    {id:'yRs',type:'value',gridIndex:2,show:!!selected['相对强度_副图2'],name:'',nameLocation:'end',nameRotate:0,nameGap:8,position:'left',scale:true,nameTextStyle:{color:SERIES_COLOR['相对强度'],fontSize:11,align:'right'},axisLine:{show:false},axisTick:{show:false},axisLabel:{show:false},splitLine:{show:false}},
+    {id:'yRs',type:'value',gridIndex:1,show:false,name:'',nameLocation:'end',nameRotate:0,nameGap:8,position:'left',scale:true,nameTextStyle:{color:SERIES_COLOR['相对强度'],fontSize:11,align:'right'},axisLine:{show:false},axisTick:{show:false},axisLabel:{show:false},splitLine:{show:false}},
     // v7.4 主图纳指轴；v8.2：与两融同开时共用一列刻度（纳指隐藏刻度/轴名，点位走十字提示），offset 恒 0；窄屏隐藏刻度，仅曲线+tooltip
     {id:'yNdx',type:'value',gridIndex:0,show:!!selected['纳指100'],name:'',nameLocation:'end',nameRotate:0,nameGap:8,position:'right',offset:0,scale:true,nameTextStyle:{color:SERIES_COLOR['纳指100'],fontSize:11,align:'left'},axisLine:{show:false},axisTick:{show:false},axisLabel:{show:false},axisPointer:{label:{show:false,formatter:p=>Math.round(p.value).toLocaleString()}},splitLine:{show:false}},
     // v8.2e：副图1 融资强度右轴（效仿主图两融余额——独占右列、可与任意左侧指标共存；幽灵序列 _rzStrAxis 撑刻度）
@@ -1238,8 +1234,8 @@ mainChart.setOption({
   dataZoom:[
     // v8.1 注：本内联 ECharts 5.4.3 不含 moveOnTouch / zoomOnTouch（全文 0 命中），这两项是无效配置。
     // 触控单指平移实际由 moveOnMouseMove 控制、双指捏合由内置 pinch 处理；所以测距模式关 moveOnMouseMove 会连手机平移一起关掉。
-    {type:'inside',start:0,end:100,zoomLock:false,zoomOnMouseWheel:false,moveOnMouseWheel:false,moveOnMouseMove:true,zoomOnTouch:true,moveOnTouch:true,throttle:32,xAxisIndex:[0,1,2],filterMode:'filter',preventDefaultMouseMove:false},
-    {type:'slider',start:0,end:100,height:16,bottom:9,xAxisIndex:[0,1,2],filterMode:'filter',throttle:16,
+    {type:'inside',start:0,end:100,zoomLock:false,zoomOnMouseWheel:false,moveOnMouseWheel:false,moveOnMouseMove:true,zoomOnTouch:true,moveOnTouch:true,throttle:32,xAxisIndex:[0,1],filterMode:'filter',preventDefaultMouseMove:false},
+    {type:'slider',start:0,end:100,height:16,bottom:9,xAxisIndex:[0,1],filterMode:'filter',throttle:16,
       /* 直接操控：加厚轨道与把手，图面横向拖动平移；滚轮仍由指针锚定缩放接管。 */
       zoomLock:false,brushSelect:false,realtime:true,animation:false,showDetail:true,minSpan:Math.max(100/dates.length,.1),
       handleSize:'150%',moveHandleSize:20,
@@ -1282,7 +1278,7 @@ mainChart.setOption({
     ...[1,7].flatMap(ax=>DD_HALO.map((h,i)=>({id:ddHaloId(ax,i),name:'_'+ddHaloId(ax,i),type:'line',xAxisIndex:0,yAxisIndex:ax,data:nulls(),smooth:false,symbol:'none',connectNulls:false,silent:true,emphasis:{disabled:true},tooltip:{show:false},z:9-i,lineStyle:{width:2,color:DD_COLOR,opacity:h.op,cap:'round',join:'round',shadowBlur:h.blur,shadowColor:hexA(DD_COLOR,.95)}}))),
     // ===== 副图 grid1~2：指标差异化，工厂函数统一生成 =====
     ...SUB1_SERIES.map(name=>makeSubSeries(name,1,2)),
-    ...SUB2_SERIES.map(name=>makeSubSeries(name,2,5)),
+    ...SUB2_SERIES.map(name=>makeSubSeries(name,1,2)),
   ]
 });
 
@@ -1330,7 +1326,7 @@ const wheelIsInsideTrendPlot=event=>{
   const rect=chartEl.getBoundingClientRect();
   const point=[event.clientX-rect.left,event.clientY-rect.top];
   // 只有曲线绘图区接管滚轮；标题、留白、坐标轴和时间滑块区域保留给页面滚动。
-  return [0,1,2].some(gridIndex=>mainChart.containPixel({gridIndex},point));
+  return [0,1].some(gridIndex=>mainChart.containPixel({gridIndex},point));
 };
 chartEl.addEventListener('wheel',event=>{
   // 保留 Ctrl/⌘ + 滚轮的浏览器缩放语义；绘图区以外的普通滚轮仍用于页面上下滚动。
@@ -1363,18 +1359,18 @@ function positionRefTags(){
   hideRefTip();
 }
 const figTitleEl=document.querySelector('.fig-title');
-const PANE_NAMES=['主图','副图 1','副图 2'];
+const PANE_NAMES=['主图','副图'];
 function layoutPanes(){
-  const visGrid=[MAIN_SERIES,SUB1_SERIES,SUB2_SERIES].map(g=>g.some(n=>selected[n]));
+const visGrid=[MAIN_SERIES,SUB_ALL].map(g=>g.some(n=>selected[n]));
   const visibleIdx=[];visGrid.forEach((v,i)=>{if(v)visibleIdx.push(i)});
   // v7.5 窄屏图高按可见面板数动态（1面板480/2面板600/3面板700px）；桌面走 CSS clamp 不设内联值
-  const narrowH=isNarrow()?({1:480,2:600,3:700}[visibleIdx.length]||700):null;
+const narrowH=isNarrow()?({1:480,2:640}[visibleIdx.length]||640):null;
   const hCss=narrowH?narrowH+'px':'';
   if(chartEl.style.height!==hCss){chartEl.style.height=hCss;if(!mainChart.isDisposed())mainChart.resize()} // v7.11j：高度切换后立即同步画布，随后 positionRefTags 用的是新几何（此前差 1~2 帧，药丸瞬移）
   // 按可见面板数量分配几何，可见面板从上到下依次取位；隐藏面板压缩为零高度
-  const GEOM_FIX={1:[['2%','11.8%']],2:[['2%','52.8%'],['53.8%','11.8%']],3:[['2%','71.3%'],['35.3%','42.1%'],['64.8%','11.8%']]}; // v8.4a：主图 top 5.2→2%——yAxis 轴名/刻度全隐后回收顶部预留留白，1/2/3 面板三套一致；副图几何、底边框与 x 轴标签留白不动
-  const GEOM=GEOM_FIX[visibleIdx.length]||GEOM_FIX[3]; // 面板数上限 3（主图+两副图）
-  const grids=[0,1,2].map(i=>{
+const GEOM_FIX={1:[['2%','11.8%']],2:[['2%','52.8%'],['53.8%','11.8%']]}; // v8.6：主图+单副图两面板几何
+const GEOM=GEOM_FIX[visibleIdx.length]||GEOM_FIX[2];
+const grids=[0,1].map(i=>{
     const pos=visibleIdx.indexOf(i);
     const g=pos>=0?GEOM[pos]:['88.2%','11.8%'];
     return {id:'g'+i,left:CFG.gridMargin,right:CFG.gridMarginR,top:g[0],bottom:g[1],containLabel:false};
@@ -1382,7 +1378,7 @@ function layoutPanes(){
   const bottomGrid=visibleIdx.length?visibleIdx[visibleIdx.length-1]:-1;
   mainChart.setOption({
     grid:grids,
-    xAxis:[0,1,2].map(i=>({id:'x'+i,axisLine:{show:visGrid[i],onZero:false},axisTick:{show:visGrid[i]},axisLabel:{show:bottomGrid===i},axisPointer:{show:visGrid[i],label:{show:bottomGrid===i}}}))
+    xAxis:[0,1].map(i=>({id:'x'+i,axisLine:{show:visGrid[i],onZero:false},axisTick:{show:visGrid[i]},axisLabel:{show:bottomGrid===i},axisPointer:{show:visGrid[i],label:{show:bottomGrid===i}}}))
   });
   // 面板框与图注按显示顺序重编号 (a)~(c)，与学术图注规范一致
   const labels=['(a)','(b)','(c)'];let li=0;
@@ -1716,9 +1712,9 @@ function msIdxAt(x){
 }
 // 可见面板的竖向并集：选带跨面板一条贯通；隐藏面板的 grid rect 高为 0，跳过
 function msBandRect(){
-  const vis=[MAIN_SERIES,SUB1_SERIES,SUB2_SERIES].map(g=>g.some(n=>selected[n]));
+const vis=[MAIN_SERIES,SUB_ALL].map(g=>g.some(n=>selected[n]));
   let top=Infinity,bottom=-Infinity;
-  for(let i=0;i<3;i++){
+  for(let i=0;i<2;i++){
     if(!vis[i])continue;
     let r=null;
     try{r=mainChart.getModel().getComponent('grid',i).coordinateSystem.getRect()}catch(e){}
@@ -1728,7 +1724,7 @@ function msBandRect(){
   return top<bottom?{top,bottom}:null;
 }
 function msInside(x,y){
-  for(let i=0;i<3;i++){try{if(mainChart.containPixel({gridIndex:i},[x,y]))return true}catch(e){}}
+  for(let i=0;i<2;i++){try{if(mainChart.containPixel({gridIndex:i},[x,y]))return true}catch(e){}}
   return false;
 }
 // 区间统计：两端向区间内吸附到最近有效收盘（节假日/停牌 null 不会把区间算空）
@@ -1915,12 +1911,9 @@ function applyVisibility(){
   const mainIndexOn=MAIN_IDX.some(n=>selected[n]);
   // 同步两融轴幽灵序列：主图余额隐藏时仍保留 invisible 序列以稳定刻度范围
   const ghostRzData=mainBalanceOn?nulls():sRzYi;
-  const sub1RatioKeys=['站上20日线_副图1','指数乖离率_副图1']; // v8.2e：融资强度移右轴，左侧比例槽只剩此二者（互斥共用）
-  const sub2RatioKeys=['拥挤度_副图2','站上30日线_副图2','恐慌指标_副图2','上涨占比_副图2']; // v8.3：增员上涨占比（v8.3a 改名）
-  const sub1RatioOn=sub1RatioKeys.some(n=>selected[n]);
-  const sub2RatioOn=sub2RatioKeys.some(n=>selected[n]);
-  const sub1RatioColor=ratioAxisColor(sub1RatioKeys);
-  const sub2RatioColor=ratioAxisColor(sub2RatioKeys);
+  const subRatioKeys=['站上20日线_副图1','指数乖离率_副图1','拥挤度_副图2','站上30日线_副图2','恐慌指标_副图2','上涨占比_副图2']; // v8.6：合并副图，全部百分比类共用比例轴
+  const subRatioOn=subRatioKeys.some(n=>selected[n]);
+  const subRatioColor=ratioAxisColor(subRatioKeys);
   const sub1AmtOn=!!selected['成交额_副图1'];
   const rzStrOn=!!selected['融资强度_副图1']; // v8.2e：融资强度移副图1 右轴（效仿主图两融余额）
   const s1CntOn=['涨停家数_副图1','跌停家数_副图1'].some(n=>selected[n]);
@@ -1937,7 +1930,7 @@ function applyVisibility(){
   document.documentElement.style.setProperty('--grid-margin-r',CFG.gridMarginR+'px');
   const rzPos=narrow?'left':'right',rzAlign=narrow?'right':'left';
   const rzStrPos=narrow?'left':'right',rzStrAlign=narrow?'right':'left'; // v8.2e：副图1 融资强度右轴（窄屏移左，同两融惯例）
-  const sub1LeftAny=sub1RatioOn||s1CntOn||sub1AmtOn; // 窄屏下副图1 左侧有指标时，融资强度刻度让位走 tooltip
+  const subLeftAny=subRatioOn||s1CntOn||sub1AmtOn;
   // v7.9：轴标签三分支——pri=主轴锚点内化（margin 负值把标签推到绘图区左缘内侧+白描边压线可读）；hid=副轴（与主轴同开时只留曲线）；桌面分支显式复位 margin/align/textBorder，防跨断点 setOption merge 残留窄屏值
   const axLab=(show,align,mode)=>narrow
     ?(mode==='pri'?{show:show,align:'left',fontSize:axFs,margin:-(CFG.gridMargin-4),textBorderColor:'rgba(255,255,255,.92)',textBorderWidth:2}:{show:false})
@@ -1952,7 +1945,7 @@ function applyVisibility(){
     dataZoom:[{},{height:isNarrow()?24:16,bottom:isNarrow()?7:9,moveHandleSize:isNarrow()?26:20}], // v7.5：窄屏滑块加高、把手放大（触控命中区）
     series:[{id:'ghostMain',data:mainIndexOn?nulls():rawSh},{name:'_rzAxis',data:ghostRzData},{name:'_ndxAxis',data:selected['纳指100']?nulls():sNdx},{name:'_rzStrAxis',data:rzStrOn?nulls():sRzStrength},
       ...[...SUB1_SERIES,...SUB2_SERIES].map(name=>{
-        const sub2=SUB2_SERIES.includes(name),def=makeSubSeries(name,sub2?2:1,sub2?5:2);
+        const def=makeSubSeries(name,1,2);
         return def.markLine?{name,markLine:def.markLine}:null;
       }).filter(Boolean)], // 断点变化时同步重建参考线短标签，避免初始桌面/手机状态残留
     yAxis:[
@@ -1961,11 +1954,11 @@ function applyVisibility(){
       // 窄屏再叠一层：Y 刻度已内嵌绘图区左缘（v7.9），指针标签正好压在同一位置，故窄屏一律不画 Y 指针标签。
       {id:'yRz',gridIndex:0,show:mainBalanceOn,position:rzPos,offset:rzOffset,name:'',splitNumber:axSplit,axisPointer:{label:{show:false,formatter:p=>p.value>=10000?(p.value/10000).toFixed(2)+'万亿':Math.round(p.value).toLocaleString()+'亿'}},axisTick:{show:false},axisLabel:{show:false},nameTextStyle:{color:SERIES_COLOR['两融余额'],align:rzAlign}},
       {id:'yIdx',gridIndex:0,show:mainIndexOn,name:'',splitNumber:axSplit,axisPointer:{label:{show:false}},axisTick:{show:false},axisLabel:{show:false},splitLine:{show:false},nameTextStyle:{color:'#18181b',align:'right'}},
-      {id:'yRatio1',gridIndex:1,show:sub1RatioOn,name:'',splitNumber:axSplit,axisPointer:{label:{show:false}},axisLabel:{show:false},nameTextStyle:{color:sub1RatioColor,align:'right'}},
+      {id:'yRatio1',gridIndex:1,show:subRatioOn,name:'',splitNumber:axSplit,axisPointer:{label:{show:false}},axisLabel:{show:false},nameTextStyle:{color:subRatioColor,align:'right'}},
       {id:'yCnt',gridIndex:1,show:s1CntOn,position:'left',offset:0,name:'',splitNumber:axSplit,axisPointer:{label:{show:false}},axisLabel:{show:false},nameTextStyle:{color:'#18181b',align:'right'}},
       {id:'yAmt',gridIndex:1,show:sub1AmtOn,name:'',splitNumber:axSplit,axisPointer:{label:{show:false,formatter:p=>p.value>=10000?(p.value/10000).toFixed(2)+'万亿':Math.round(p.value)+'亿'}},axisLabel:{show:false},nameTextStyle:{color:SERIES_COLOR['成交额'],align:'right'}},
-      {id:'yRatio2',gridIndex:2,show:sub2RatioOn,name:'',splitNumber:axSplit,axisPointer:{label:{show:false}},axisLabel:{show:false},nameTextStyle:{color:sub2RatioColor,align:'right'}},
-      {id:'yRs',gridIndex:2,show:s2RsOn,name:'',splitNumber:axSplit,axisPointer:{label:{show:false}},axisLabel:{show:false},nameTextStyle:{color:SERIES_COLOR['相对强度'],align:'right'}},
+      {id:'yRatio2',gridIndex:1,show:false,name:'',splitNumber:axSplit,axisPointer:{label:{show:false}},axisLabel:{show:false},nameTextStyle:{color:'#18181b',align:'right'}},
+      {id:'yRs',gridIndex:1,show:false,name:'',splitNumber:axSplit,axisPointer:{label:{show:false}},axisLabel:{show:false},nameTextStyle:{color:SERIES_COLOR['相对强度'],align:'right'}},
       {id:'yNdx',gridIndex:0,show:ndxOn,position:narrow?'left':'right',offset:0,name:'',axisPointer:{label:{show:false,formatter:p=>Math.round(p.value).toLocaleString()}},axisTick:{show:false},axisLabel:{show:false},nameTextStyle:{color:SERIES_COLOR['纳指100'],align:narrow?'right':'left'}},
       {id:'yRzStr',gridIndex:1,show:rzStrOn,position:rzStrPos,offset:0,name:'',splitNumber:axSplit,axisPointer:{label:{show:false}},axisLabel:{show:false},nameTextStyle:{color:SERIES_COLOR['融资强度'],align:rzStrAlign}}
     ]
@@ -1985,7 +1978,6 @@ function toggleSeries(name){
   if(name===S3_MERGED){ // 合并开关：两条真实曲线状态同步，轴/面板显隐仍由真实键 some(selected) 驱动
     const on=selected[name]=!selected[name];
     ['涨停家数_副图1','跌停家数_副图1'].forEach(n=>selected[n]=on);
-    if(on)SUB1_SOLO.forEach(n=>{if(n!=='涨停家数_副图1')selected[n]=false}); // v8.2e：涨跌停独立成图，点亮即熄灭其余副图1 左侧指标
     applyVisibility();
     return;
   }
@@ -2008,9 +2000,7 @@ function toggleSeries(name){
   // 槽位互斥（v8.2e 重排）：副图1 左侧四指标单选（站上20日线/涨跌停/指数乖离率/成交额）——涨跌停与乖离率按 Jesse 指示
   // 独立成图；融资强度已移右轴（效仿主图两融余额），可与任意左侧指标共存，不再参与互斥。
   // v8.4a：副图2 相对强度退役（RETIRED_SERIES），原「相对强度↔比例类」两条互斥规则摘除——比例类四项同轴共存。
-  if(on){
-    if(SUB1_SOLO.includes(name))SUB1_SOLO.forEach(n=>{if(n!==name){selected[n]=false;if(n==='涨停家数_副图1'){selected['跌停家数_副图1']=false;selected[S3_MERGED]=false}}});
-  }
+  // v8.6：副图1/副图2 合并成单副图后取消"互斥单选"——站上20日线/指数乖离率/成交额/拥挤度/站上30日线/恐慌指标可任意叠加。
   applyVisibility();
 }
 
