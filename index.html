@@ -970,7 +970,7 @@ function renderLegend(){
     if(!container)return;
     container.innerHTML='';
     // v7.6：图组名小字（主图/副图 1/副图 2），窄屏显示、桌面 CSS 隐藏——指标归属一眼可辨
-    const cap=document.createElement('span');cap.className='legend-group-cap';cap.textContent=group==='main'?'主图':group==='sub1'?'副图 1':'副图 2';container.appendChild(cap);
+    const cap=document.createElement('span');cap.className='legend-group-cap';cap.textContent=group==='main'?'主图':'副图';container.appendChild(cap);
     names.forEach(name=>{
       if(RETIRED_SERIES.has(name))return; // v8.4a：退役指标不渲染按钮（数组占位保留，hash 索引不移位）
       if(name===S3_MERGED){ // 涨跌停合并按钮：红绿双色点 + 单开关，点击同开同关两条曲线
