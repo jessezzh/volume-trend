@@ -2,7 +2,7 @@
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
-<!-- 量价趋势 · v8.3h（2026-11-13，Jesse 走查：「解释按钮好难看太大了，做成正常的样子；纳斯达克100 不需要解释」）：①图例 ⓘ 改回正常小图标——14px 圆环、无衬线正体 9px、半透明随按钮色，不再 24px 凸出药丸；命中区用 ::after inset:-6px 扩到 26px 但不撑大外观。②删除 SERIES_TIPS['纳指100'] 注册——纳指100 图例不再渲染 ⓘ（指标开关保留）。数据/逻辑/其余交互零改动。 -->
+<!-- 量价趋势 · v8.5（2026-11-19，Jesse 定「把量价趋势项目的 涨跌停家数、上涨占比、融资强度、纳斯达克100 砍掉」）：四个指标全链退役，走既有 RETIRED_SERIES 机制（同相对强度 v8.4a）：图例按钮不渲染、selected 恒 false、hash s= 按数组占位不错位、开关入口拦截——数据计算与序列/轴定义保留、rawData 与每日管线照常产出，随时可从 RETIRED_SERIES 移除即恢复。连带：①市场温度计由六成分（含融资强度、涨跌停净家数）改为四成分等权（拥挤度/站上20日线/指数乖离率/恐慌指标反向），表 1 第五胶囊保留；②图注删除涨跌停/融资强度/纳指/上涨占比的阈值与口径条目，轴位说明同步；③数据日期说明去掉融资强度与纳指。视觉与交互其余零改动。 -->
 <!-- 量价趋势 · v8.3g（2026-11-13，Jesse 定「像 Linear 官网/苹果备忘录一样干净」，经 V1/V2/V3 三轮试验后选定 V2）：UI 清爽改版，只动呈现不动数据/逻辑/交互。①去装饰：纸纹噪点、玻璃 backdrop-filter、暖墨落影、宋体宽字距渐变题头全删；题头改系统字 16px/600 左对齐小标；卡片纯白+1px 发丝边+极浅落影；body 平铺 #f7f8fa。②色板中性化：温墨→#18181b 系、金 accent→墨色、--paper #ffffff、--line #e4e7eb 系；主图 7 色换清爽版（两融 #1F6FA8/上证 #C94F35/沪深300 #4E4F9A/中证2000 #A9770F/创业板 #2E9147/科创 #A8498F/纳指 #12848C），白底对比 3.9–7.2:1、主图内部 21 对 ΔE≥20；副图 iOS 色板/语义红绿不动。③图表质感：主图线 2.4–2.6→2px 去发光去面积填充、副图 1.8px；十字标签奶油→深色 chip(#18181b 白字)；坐标轴/刻度/网格/tooltip 暖墨→中性灰、tooltip 白底细边去玻璃；缩放滑块暖灰重底→浅轨+细窗+白把手；参考线 1.5 实线→1 虚线。④可读性补丁：ⓘ 对比度提至 4.8:1+24px 命中区、移动端页签/图例开关字号 12、注ⓘ/测距/历史回撤 min-height 24。数据/rawData/阈值/交互契约零改动。 -->
 <!-- 量价趋势 · v8.3f（2026-11-12，Jesse 定「这不还是纸黄吗…把调节羊皮纸/素白/晨雾的去掉，背景就用晨雾，把中间纸黄改掉」）：①删除底板主题切换——按钮(themeToggle)、防闪主题脚本、lvtSyncHash 的 t 参数、整个主题 IIFE、#themeToggle CSS、body[data-theme] 规则、分主题滚动条规则全部移除，底板唯一。②底板固定晨雾：background-color:#edeff2 + 顶部冷白辉光 rgba(255,255,255,.72) + 底部 rgba(48,66,96,.05)。③去掉中间纸黄：卡片/纸面由暖纸(#ffffff/#faf8f0/#f1ede0/#f2eee1/#f4f0e2/#f5f2e6/#fbf9f2/#f3f0e4 等)整体转冷调——--paper:#fbfcfe、--paper-2:#f2f5f9、.chart-card 冷白渐变 rgba(252,253,255,.90)→rgba(244,247,251,.78)、--line 系 #d3d8e0/#e6e1cf→#e2e6ed/#eef1f5、hover #bfc7d2，图例/胶囊/tooltip 同步冷调；滚动条改晨雾灰 #c5cdd7/#aeb8c5。温墨字阶(#18181b 等)/藏馆赭金 accent(#8f6b23)/主图矿物曲线色(SERIES_COLOR)零改动。数据/布局/交互零改。 -->
 <!-- 量价趋势 · v8.3e（2026-11-12，Jesse 定「不要羊皮纸了，换成白色，但不要那么突兀」）：默认底板羊皮纸→素白。①新素白底 #f5f4ed——同色相族降饱和提亮的「新纸」白：顶部暖白辉光 rgba(255,255,252,.55)，底部压暗 .02→.015；纸纹噪点/温墨/藏馆赭金/卡片纸白全部不动，白而不冷。②羊皮纸降为可选项：主题循环重排为 素白→晨雾→羊皮纸；localStorage 旧存 'parchment' 自动迁移为 'clean'（老用户打开即白），hash t=p 链接仍可显式还原羊皮纸；防闪脚本与 lvtSyncHash 默认主题同步 parchment→clean。③滚动条配平：默认滚动条改中性暖灰 #d9d8d3/hover #c2c1bc，羊皮纸主题保留旧暖色值 #d5cfbc/#b9b193。v8.3d 藏馆矿物色对新底板对比只升不降（底板更亮）。数据/布局/交互/曲线色零改动 -->
@@ -170,7 +170,7 @@ body{background-color:#f7f8fa;color:var(--apple-ink);font-family:var(--font-sans
 .kpi-pop[hidden]{display:none}
 .kpi-pop span{--sc:#8e8e93;font-family:var(--font-sans);font-size:11px;font-weight:600;color:var(--ink-3);padding:5px 12px;border-radius:999px;line-height:1;white-space:nowrap}
 .kpi-pop span.cur{color:color-mix(in srgb,var(--sc) 68%,#18181b);background:linear-gradient(180deg,#ffffff,#f3f4f6);box-shadow:inset 0 1px 0 rgba(255,255,255,.95),0 1px 3px rgba(24,24,27,.15),0 4px 10px -4px rgba(24,24,27,.11)}
-/* v8.3 市场温度计富弹层：状态谱之下加全史分布直方图与六成分分位条；:not([hidden]) 压住上方 [hidden]{display:none}（同特异性，后者在前） */
+/* v8.3 市场温度计富弹层：状态谱之下加全史分布直方图与成分分位条；:not([hidden]) 压住上方 [hidden]{display:none}（同特异性，后者在前） */
 .kpi-pop.pop-rich:not([hidden]){display:block;padding:10px 14px 12px;border-radius:14px;min-width:272px;max-width:304px;text-align:left}
 .kpi-pop.pop-rich:not([hidden])>span{padding:5px 10px} /* 五枚状态胶囊单行放下，不再换行 */
 .kpi-temp-head{font-family:var(--font-sans);font-size:11px;font-weight:600;color:var(--ink-2);margin:6px 2px 2px;white-space:nowrap}
@@ -508,29 +508,23 @@ body{background-color:#f7f8fa;color:var(--apple-ink);font-family:var(--font-sans
         <button type="button" class="fig-note-btn" id="figNoteBtn" aria-expanded="false" aria-controls="figNotes">注 ⓘ</button>
       </div>
       <div class="fig-notes" id="figNotes" hidden>
-        <b>参考阈值</b><span style="font-size:11px;font-weight:400;color:var(--ink-4);margin-left:2px">（统计截至 <span id="statAsOf">—</span>；两融项截至 <span id="statRzAsOf">—</span>）</span>
+        <b>参考阈值</b><span style="font-size:11px;font-weight:400;color:var(--ink-4);margin-left:2px">（统计截至 <span id="statAsOf">—</span>）</span>
         <p>· 拥挤线 45%（CR5% 固定阈值）——2005 年以来 <span id="statCrowd">—</span> 交易日触及；≥45%＝结构过热，&lt;35%＝偏冷</p>
         <p>· 成交额 2 万亿——2005 年以来 <span id="statAmt">—</span> 交易日触及（首触 <span id="statAmtFirst">—</span>）；<span id="statYear">—</span> 年以来 <span id="statAmt2026">—</span> 交易日位于其上方，宜作<b style="display:inline;font-size:inherit;color:var(--ink-2)">缩量下限</b>而非过热上限解读</p>
         <p>· 站上30日线——50%＝上穿加仓线、15%＝下穿抄底线；站上20日线 45%＝下穿减仓线（均为参考阈值）</p>
-        <p>· 涨跌停——单日涨停 ≥130 家＝短线情绪过热；跌停 ≥50 家＝恐慌抛售扩散（常临近阶段底）</p>
         <p>· 指数乖离率（基于中证2000）——(收盘−20日均线)/20日均线×100%；+5%＝超买、−5%＝超卖</p>
         <p>· 恐慌指标（基于中证2000）——20 日对数收益率样本标准差×√244 年化；≥40%＝高波动恐慌区</p>
-        <p>· 融资强度（两融余额÷流通市值）——2.2%＝冰点（低于＝杠杆退潮至冰点档）、2.2~2.6%＝健康区，占 2016 年以来 <span id="statRzHealth">—</span> 交易日、2.8%＝过热（2016 年以来 <span id="statRzHot">—</span>触及）；2.6~2.8 为偏热档（未标线）</p>
         <b>指标口径</b>
         <p>· 成交额＝剔除北交所后的沪深两市合计</p>
-        <p>· 轴位——主图右侧两融余额与纳指100 同开时共用一列刻度（显示两融余额，纳指点位走十字提示）；副图1 融资强度独占右侧轴（效仿主图两融余额，可与任意指标同开），左侧四指标（站上20日线/涨跌停家数/指数乖离率/成交额）互斥单选、各独占左轴——涨跌停与乖离率同相对强度一样独立成图</p>
+        <p>· 轴位——主图右侧两融余额独占一列刻度；副图 1 左侧指标（站上20日线 / 指数乖离率 / 成交额）互斥单选、各独占左轴</p>
         <p>· 科创综指（000680，579 只全板覆盖）——2026-10-25 起替代科创50（000688，旧序列随历史版本留档）；2026-10-26 编制方案修订生效（单样本权重上限 15%、ST 剔除提前），修订前后计算口径以中证官方为准</p>
-        <p>· 融资强度＝两融余额÷流通市值×100%</p>
         <p id="dataAsOfNote">· 数据日期：数据空缺</p>
-        <p>· 纳指100＝NDX 指数收盘点位（美股），取「该 A 股交易日之前最后一个美股收盘」——即前一美股交易日的夜间收盘，A 股收盘时已确定，不使用当日尚未收盘的美股数据。日期轴仅含真实 A 股交易日，国庆假期不设占位。</p>
         <p>· 站上30日线＝收盘价高于30日均线的个股比例（当日有该均线数据的个股）</p>
-        <p>· 涨跌停家数＝收盘价等于当日限价（前收盘价×(1±板块涨跌幅比例)，四舍五入到分）且盘中未越线；主板 ±10%（ST ±5%）、创业板注册制后与科创板 ±20%、北交所 ±30%；上市首日与无涨跌幅限制窗口内的新股不计入。副图 1 中涨停正向（红）绘制、跌停负向（绿）绘制，左侧家数轴显示绝对家数</p>
         <p>· 相对强度＝中证2000/沪深300 收盘比值（2013-12-31 起，中证2000 基数日）</p>
-        <p>· 上涨占比＝当日上涨（涨幅&gt;0）个股占全市场个股比例；50%＝多空分界（上半区标「多」、下半区标「空」），高于＝普涨、低于＝上涨缩圈</p>
-        <p>· 市场温度计＝拥挤度、站上20日线、指数乖离率、融资强度、恐慌指标（反向）、涨跌停净家数六成分各自对全史分位的等权均值（0–100）；≥80 过热、60–79 偏热、40–59 中性、20–39 偏凉、&lt;20 冰点；自六项齐备的交易日起算（<span id="statTempAsOf">—</span> 起，描述性视角、无样本外承诺）</p>
+        <p>· 市场温度计＝拥挤度、站上20日线、指数乖离率、恐慌指标（反向）四成分各自对全史分位的等权均值（0–100）；≥80 过热、60–79 偏热、40–59 中性、20–39 偏凉、&lt;20 冰点；自各项齐备的交易日起算（<span id="statTempAsOf">—</span> 起，描述性视角、无样本外承诺）</p>
         <b>交互</b>
         <p>· 拖动测距——绘图区内按住拖动，读出该区间<b>全部点亮主图曲线</b>（含两融余额）各自的起止值、涨跌额与涨跌幅：单开为焦点卡，多开为对照表，选带起止点按各曲线各标一枚本色点；涨跌幅＝(末−首)/首，红涨绿跌。缩放、切页签、切图例、改窗口尺寸或按 Esc 即清除；关闭页签右侧「测距」后恢复拖动平移。窄屏（≤640px）不提供测距，「测距」开关隐藏，单指拖动即平移</p>
-      <p>· 参考线——图内线端小字标注该线语义（冰点/健康/过热、上穿加仓/下穿抄底、下穿减仓、拥挤、恐慌、超买/超卖、2万亿、过热 130 家）；点击图内参考线或健康区右段，弹出高于/低于说明（v8.1d 起胶囊改线端标注，点击简介保留）</p>
+      <p>· 参考线——图内线端小字标注该线语义（上穿加仓/下穿抄底、下穿减仓、拥挤、恐慌、超买/超卖、2万亿）；点击图内参考线弹出高于/低于说明（v8.1d 起胶囊改线端标注，点击简介保留）</p>
       <p>· 状态记忆——图例选中、缩放窗口、底板主题与测距开关写入网址（#后参数），刷新页面或把链接发给别人即可还原当前现场；清掉网址参数即回默认</p>
       </div>
     </div>
@@ -650,7 +644,7 @@ const asOfNote=document.getElementById('dataAsOfNote');
 // v8.1 A10：中证2000 是三个派生指标的底座（乖离率/恐慌/相对强度）。它缺一天，这三个值就静默停在上一交易日，
 // 而原文只写「A股指标截至 X」，会让人误以为表 1 四个胶囊都是当日值——缺值时把截至日显式写出来。
 const zzLag=rawZz[rawZz.length-1]==null?'（中证2000 及派生指标 乖离率/恐慌/相对强度 截至 '+asOfText(rawZz)+'）':'';
-if(asOfNote)asOfNote.textContent='· 数据日期：A股指标截至 '+dates[dates.length-1]+zzLag+'；两融余额截至 '+asOfText(sRzYi)+'，融资强度截至 '+asOfText(alignRaw(d=>d.rzStrength))+'；纳指最近有效对齐日 '+asOfText(sNdx)+(sNdx[dates.length-1]==null?'，最新对齐日数据空缺':'')+'。纳指日期为A股交易日对齐日，并非美股收盘日；仅展示已取得的数据，不外推填充。';
+if(asOfNote)asOfNote.textContent='· 数据日期：A股指标截至 '+dates[dates.length-1]+zzLag+'；两融余额截至 '+asOfText(sRzYi)+'。仅展示已取得的数据，不外推填充。';
 const sCrowd=alignRaw(d=>d.crowd==null?null:+(d.crowd*100).toFixed(1));
 const sAmt=alignRaw(d=>d.amt==null?null:+d.amt.toFixed(1));
 const sRzStrength=alignRaw(d=>d.rzStrength==null?null:+d.rzStrength.toFixed(2));
@@ -723,19 +717,17 @@ const sHv=(()=>{
 // 相对强度（v6.0 名"大小盘相对强弱"）：中证2000/沪深300 收盘比值（2013-12-31 起）
 const sRs=rawZz.map((v,i)=>v==null||rawHs[i]==null?null:+(v/rawHs[i]).toFixed(4));
 
-// ===== v8.3 市场温度计：六成分全史分位等权（0-100）=====
+// ===== v8.3 市场温度计：四成分全史分位等权（0-100；v8.5 由六成分减为四成分）=====
 // 成分：拥挤度、站上20日线、指数乖离率、融资强度、恐慌指标（反向）、涨跌停净家数（涨停−跌停）。
 // 分位＝该值在全史非空样本中的中位名次（并列值各计 0.5，二分实现，5300×6 次查找即时完成）；
-// 恐慌取反向（100−分位，高波动＝低贡献）；六项全部有值才计温度——中证2000 自 2013-12-31 起，
+// 恐慌取反向（100−分位，高波动＝低贡献）；各项全部有值才计温度——中证2000 自 2013-12-31 起，
 // 故温度序列约 2014-01 起（起算日运行时现算，不写死）。全史分位与参考线定标同口径：描述性视角，不做样本外承诺。
 const TEMP_COMPONENTS=[
   {name:'拥挤度',data:sCrowd,inv:false},
   {name:'站上20日线',data:sAbove20,inv:false},
   {name:'指数乖离率',data:sBias,inv:false},
-  {name:'融资强度',data:sRzStrength,inv:false},
-  {name:'恐慌指标',data:sHv,inv:true},
-  {name:'涨跌停净家数',data:sLimitUp.map((v,i)=>v==null||sLimitDown[i]==null?null:v-sLimitDown[i]),inv:false}
-];
+  {name:'恐慌指标',data:sHv,inv:true}
+]; // v8.5：融资强度、涨跌停净家数退役——温度计由六成分改为四成分等权（其余口径不变）
 const TEMP_BINS=24; // 弹层直方图桶数
 const tempRank=(sorted,v)=>{ // v 在升序样本中的百分位（0-100，并列取中位名次）
   if(v==null||!sorted.length)return null;
@@ -787,8 +779,8 @@ if(tempNow!=null){KPI_PILLS[4].cur=tempState(tempNow);KPI_PILLS[4].score=tempNow
 // 页面上的「数据日期」却按 A 股全量写——把日期挂到 title，至少能查出这个值是哪天的。
 [asOfText(sBias),asOfText(sCrowd),asOfText(sHv),asOfText(sRs)].forEach((d,i)=>{KPI_PILLS[i].asOf=d});
 KPI_PILLS[4].asOf=asOfText(sTemp); // v8.3：温度计自己的截至日（六项齐备日口径，与 A 股全量日期可能不同）
-// v8.3 温度计弹层附加内容：全史分布直方图（当前档高亮）+ 六成分分位条（**取温度读数同日**——
-// 各成分若各取自己最后一个非空日（拥挤度等到 T 日、融资强度只到 T−1），六个分位的均值就对不上总分，会被读成算错）
+// v8.3 温度计弹层附加内容：全史分布直方图（当前档高亮）+ 成分分位条（**取温度读数同日**——
+// 各成分若各取自己最后一个非空日，各成分分位的均值就对不上总分，会被读成算错）
 const tempPopHtml=p=>{
   const valid=sTemp.filter(v=>v!=null);
   if(!valid.length||p.score==null)return '';
@@ -801,7 +793,7 @@ const tempPopHtml=p=>{
   let li=sTemp.length-1;while(li>=0&&sTemp[li]==null)li--; // 温度读数日下标（末位向前找首个非空）
   let comps='';
   TEMP_COMPONENTS.forEach((c,k)=>{
-    const pv=tempRank(tempSorted[k],c.data[li]); // 读数日六项恒齐备，pv 理论不为 null
+    const pv=tempRank(tempSorted[k],c.data[li]); // 读数日各项恒齐备，pv 理论不为 null
     const shown=pv==null?null:(c.inv?100-pv:pv);
     comps+=`<span class="nm"${c.inv?' title="反向计贡献（100−分位）"':''}>${c.name}${c.inv?'（反向）':''}</span><span class="bar">${shown==null?'':`<b style="width:${Math.max(2,shown).toFixed(0)}%"></b>`}</span><b class="pv">${shown==null?'--':shown.toFixed(0)}</b>`;
   });
@@ -857,7 +849,7 @@ const ALL_SERIES=[...MAIN_SERIES,...SUB1_SERIES,...SUB2_SERIES];
 // v8.4a 退役槽位：相对强度（ALL_SERIES 索引 16）保留数组占位——hash s= 按位置索引，删元素会让旧链接整体错位。
 // 退役只动呈现：图例不渲染按钮、hash 解析忽略索引 16、开关入口拦截、selected 恒 false（yRs 轴自然永不可见）。
 // 恢复方法：从本集合移除该键即可——数据计算 sRs、序列定义、SUB2_RATIO 注册表全程未动。
-const RETIRED_SERIES=new Set(['相对强度_副图2']);
+const RETIRED_SERIES=new Set(['相对强度_副图2','融资强度_副图1','涨停家数_副图1','跌停家数_副图1','涨跌停家数_副图1','上涨占比_副图2','纳指100']); // v8.5：融资强度/涨跌停家数/上涨占比/纳指100 退役（同相对强度机制——ALL_SERIES 占位保 hash 索引、图例不渲染、selected 恒 false、开关拦截；数据计算与序列定义保留，可随时恢复）
 const DEFAULT_ON=new Set(); // 打开默认全不选：图表区空白，点图例按需生长面板（v4.11 起替代旧的默认点亮规则）
 const selected={};ALL_SERIES.forEach(n=>selected[n]=DEFAULT_ON.has(n)&&!RETIRED_SERIES.has(n)); // v8.4a：退役指标恒 false
 selected[S3_MERGED]=DEFAULT_ON.has(S3_MERGED); // 合并键仅驱动图例态，真实显隐由 toggleSeries 同步到涨停/跌停两条曲线
