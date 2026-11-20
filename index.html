@@ -2,6 +2,7 @@
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
+<!-- 量价趋势 · v8.11（2026-11-20，Jesse 定「中间竖线没居中→去掉竖线；中间两个按钮间距改为普通间隙的 5 倍」）：桌面图例去掉主副之间的竖线分格；主副组之间 margin = 5×--lg-gap，中间间隙＝普通间隙 5 倍（1440=40px、901~1199=25px）；组内间隙、外缘 padding、12 键等宽不变，整体对称。数据/交互零改动。 -->
 <!-- 量价趋势 · v8.10（2026-11-20，Jesse 定「主图/副图内部间距一致、主副之间也一致；科创与站上20日线之间竖线处空隙做成普通间隙的 2 倍且对称」）：桌面图例改固定等距 --lg-gap（≥1200=8px，901~1199=5px）；组内间隙一律 = --lg-gap；主副组之间 margin=2×--lg-gap、竖线居中（两侧各一倍）；外缘 padding 同 --lg-gap；两组等宽、12 按钮 flex 等分完全等宽。实测 1440：组内 8 / 分隔 16 / 左右外缘 8 对称 / 按钮全 101.2px；1180、1024：5 / 10 / 5，按钮 83、70px 全等。数据/交互零改动。 -->
 <!-- 量价趋势 · v8.9（2026-11-20，Jesse 定「按钮再缩小一点点更宽松；副图顺序改为 站上20日线/站上30日线/指数乖离率/恐慌指标/拥挤度/成交额」）：桌面单行图例按钮由 flex:1 撑满改为 flex:0 1 100px + 组内 justify-content:space-between——按钮缩小、留白更足；副图图例显示顺序改新序（新增 SUB_LEGEND_ORDER，仅显示顺序，ALL_SERIES/hash 索引不变，窄屏摘要同序）。移动/平板抽屉不变；数据/交互零改动。 -->
 <!-- 量价趋势 · v8.8（2026-11-20，Jesse 修正 v8.7「太宽了，还像之前一样，前面主图后半副图，按钮缩小成一行」）：桌面图例改回**单行**——左半主图、右半副图各占一半，组内 6 键 flex:1 等宽缩小均分、不换行；901~1199 窄桌面再收紧间距/线标，保持 11px 且 12 键单行不裁。移动/平板抽屉不变；数据/交互零改动。 -->
@@ -457,8 +458,8 @@ body{background-color:#f7f8fa;color:var(--apple-ink);font-family:var(--font-sans
   /* v8.10：固定等距——组内间隙一律 --lg-gap；主副图之间的竖线居中于 2×--lg-gap 的空档（两侧各留一倍，对称） */
   .card-head>.legend-bar{--lg-gap:8px;flex-direction:row;flex-wrap:nowrap;align-items:stretch;justify-content:flex-start;gap:0;padding-inline:var(--lg-gap)}
   .card-head>.legend-bar .legend-group{width:auto;min-height:0;flex:1 1 0;flex-wrap:nowrap;gap:var(--lg-gap);justify-content:flex-start;min-width:0}
-  .card-head>.legend-bar .legend-group+.legend-group{margin-left:calc(var(--lg-gap) * 2)}
-  .card-head>.legend-bar .legend-group+.legend-group::before{left:calc(var(--lg-gap) * -1)}
+  .card-head>.legend-bar .legend-group+.legend-group{margin-left:calc(var(--lg-gap) * 5)}
+  .card-head>.legend-bar .legend-group+.legend-group::before{display:none}
   .card-head>.legend-bar .legend-item{flex:1 1 0;width:auto;min-width:0;gap:4px;padding:0 3px;font-size:11px}
   .card-head>.legend-bar .legend-line{width:12px;height:2.5px}
 }
