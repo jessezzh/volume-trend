@@ -2,6 +2,7 @@
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
+<!-- 量价趋势 · v8.9（2026-11-20，Jesse 定「按钮再缩小一点点更宽松；副图顺序改为 站上20日线/站上30日线/指数乖离率/恐慌指标/拥挤度/成交额」）：桌面单行图例按钮由 flex:1 撑满改为 flex:0 1 100px + 组内 justify-content:space-between——按钮缩小、留白更足；副图图例显示顺序改新序（新增 SUB_LEGEND_ORDER，仅显示顺序，ALL_SERIES/hash 索引不变，窄屏摘要同序）。移动/平板抽屉不变；数据/交互零改动。 -->
 <!-- 量价趋势 · v8.8（2026-11-20，Jesse 修正 v8.7「太宽了，还像之前一样，前面主图后半副图，按钮缩小成一行」）：桌面图例改回**单行**——左半主图、右半副图各占一半，组内 6 键 flex:1 等宽缩小均分、不换行；901~1199 窄桌面再收紧间距/线标，保持 11px 且 12 键单行不裁。移动/平板抽屉不变；数据/交互零改动。 -->
 <!-- 量价趋势 · v8.7（2026-11-20，Jesse 定「主图/副图 的按钮分别变成一排，调整大小、比例调匀」）：桌面 ≥901px 图例改为两组各占一整行、组内 6 键 flex:1 等宽均分、不换行——根因是 .legend-group 原定宽 415px(=4×100+缝) 导致第 5 个必折行。仅桌面 CSS；移动端/平板原有抽屉网格不动；数据/交互零改动。 -->
 <!-- 量价趋势 · v8.6b（2026-11-20，修复 v8.6 严重回归）：v8.6 合并图例组时把 DOM 的 data-group 改成 main/sub，却漏改 SERIES_GROUP 的键（仍 sub1/sub2），导致副图两组共 6 个指标按钮 querySelector 不到、整块不渲染（用户报「指标全干没了」）。本版把 SERIES_GROUP 改为 {main, sub:[...SUB1_LEGEND,...SUB2_SERIES]}、窄屏摘要分组同步；仅此修复，其余零改动。除 Jesse 点名的涨跌停家数/上涨占比/融资强度/纳指100 外，其余指标全部恢复可见可用。 -->
@@ -453,8 +454,8 @@ body{background-color:#f7f8fa;color:var(--apple-ink);font-family:var(--font-sans
 /* v8.8：桌面图例——单行：左半主图、右半副图，各占一半，组内 6 键 flex 均分、缩小不换行（原来 .legend-group 定宽 415px=4×100 致第 5 个折行） */
 @media(min-width:901px){
   .card-head>.legend-bar{flex-direction:row;flex-wrap:nowrap;align-items:stretch;gap:6px}
-  .card-head>.legend-bar .legend-group{width:auto;min-height:0;flex:1 1 0;flex-wrap:nowrap;gap:4px}
-  .card-head>.legend-bar .legend-item{flex:1 1 0;width:auto;min-width:0;gap:4px;padding:0 3px;font-size:11px}
+  .card-head>.legend-bar .legend-group{width:auto;min-height:0;flex:1 1 0;flex-wrap:nowrap;gap:6px;justify-content:space-between}
+  .card-head>.legend-bar .legend-item{flex:0 1 100px;width:auto;min-width:0;gap:4px;padding:0 3px;font-size:11px}
   .card-head>.legend-bar .legend-line{width:12px;height:2.5px}
 }
 /* 901~1199 窄桌面：保持 11px，收紧间距与线标保证 12 键仍单行不裁 */
@@ -979,7 +980,8 @@ document.addEventListener('click',()=>{if(Date.now()-refLineClickTs<200)return;h
 addEventListener('wheel',hideRefTip,{passive:true});
 // v8.1d：参考线胶囊（.ref-tags 框外药丸）退役——线端标注全端启用 + 图内参考线点击弹简介（见 initChart 内参考线 zrender 命中）。
 // buildRefTags / syncRefTagLabels / .ref-tags CSS 同步移除；REF_TAGS 注册表保留（线端文案、避让位与点击简介的单一来源）。
-const SERIES_GROUP={main:MAIN_SERIES,sub:[...SUB1_LEGEND,...SUB2_SERIES]}; // v8.6b：图例组并为 main/sub，键必须与 DOM data-group 一致（否则副图按钮全不渲染）
+const SUB_LEGEND_ORDER=['站上20日线_副图1','站上30日线_副图2','指数乖离率_副图1','恐慌指标_副图2','拥挤度_副图2','成交额_副图1']; // v8.9：副图图例显示顺序（仅顺序，ALL_SERIES/hash 索引不变）
+const SERIES_GROUP={main:MAIN_SERIES,sub:SUB_LEGEND_ORDER}; // v8.6b：图例组并为 main/sub，键必须与 DOM data-group 一致
 function renderLegend(){
   Object.entries(SERIES_GROUP).forEach(([group,names])=>{
     const container=document.querySelector(`.legend-group[data-group="${group}"]`);
@@ -1029,7 +1031,7 @@ function syncLegendToggle(){
   legendToggleBtn.setAttribute('aria-expanded',String(legendDrawerOpen));
   // v7.7（Jesse 方案）：摘要=「N.指标名」编号列表——1=主图 2=副图1 3=副图2，同组、连接；不再显示"已开"计数与彩点
   const parts=[];
-  [MAIN_SERIES,[...SUB1_LEGEND,...SUB2_SERIES]].forEach((keys,i)=>{
+  [MAIN_SERIES,SUB_LEGEND_ORDER].forEach((keys,i)=>{
     const names=keys.filter(n=>selected[n]).map(n=>ratioBaseName(n));
     if(names.length)parts.push((i+1)+'.'+names.join('、'));
   });
