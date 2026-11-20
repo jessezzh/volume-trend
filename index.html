@@ -2,6 +2,7 @@
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
+<!-- 量价趋势 · v8.7（2026-11-20，Jesse 定「主图/副图 的按钮分别变成一排，调整大小、比例调匀」）：桌面 ≥901px 图例改为两组各占一整行、组内 6 键 flex:1 等宽均分、不换行——根因是 .legend-group 原定宽 415px(=4×100+缝) 导致第 5 个必折行。仅桌面 CSS；移动端/平板原有抽屉网格不动；数据/交互零改动。 -->
 <!-- 量价趋势 · v8.6b（2026-11-20，修复 v8.6 严重回归）：v8.6 合并图例组时把 DOM 的 data-group 改成 main/sub，却漏改 SERIES_GROUP 的键（仍 sub1/sub2），导致副图两组共 6 个指标按钮 querySelector 不到、整块不渲染（用户报「指标全干没了」）。本版把 SERIES_GROUP 改为 {main, sub:[...SUB1_LEGEND,...SUB2_SERIES]}、窄屏摘要分组同步；仅此修复，其余零改动。除 Jesse 点名的涨跌停家数/上涨占比/融资强度/纳指100 外，其余指标全部恢复可见可用。 -->
 <!-- 量价趋势 · v8.6（2026-11-19，Jesse 定「把副图1和副图2的指标合并，以后只要一个副图」）：副图1、副图2 合并为单一副图（面板数 3→2）。做法：SUB_ALL=[副图1序列+副图2序列] 统一挂 grid1，所有百分比类指标（站上20日线/指数乖离率/拥挤度/站上30日线/恐慌指标）共用一根比例轴 #2，成交额仍在独立金额轴 #4，数值全走光标提示；图例三组并为「主图 / 副图」两组；数据缩放、滚轮命中、测距取带、参考线命中、动态布局全部改为 2 面板；取消副图1 原来的"互斥单选"（站上20日线/指数乖离率/成交额），六类指标可任意叠加。数据/口径/阈值零改动。 -->
 <!-- 量价趋势 · v8.5（2026-11-19，Jesse 定「把量价趋势项目的 涨跌停家数、上涨占比、融资强度、纳斯达克100 砍掉」）：四个指标全链退役，走既有 RETIRED_SERIES 机制（同相对强度 v8.4a）：图例按钮不渲染、selected 恒 false、hash s= 按数组占位不错位、开关入口拦截——数据计算与序列/轴定义保留、rawData 与每日管线照常产出，随时可从 RETIRED_SERIES 移除即恢复。连带：①市场温度计由六成分（含融资强度、涨跌停净家数）改为四成分等权（拥挤度/站上20日线/指数乖离率/恐慌指标反向），表 1 第五胶囊保留；②图注删除涨跌停/融资强度/纳指/上涨占比的阈值与口径条目，轴位说明同步；③数据日期说明去掉融资强度与纳指。视觉与交互其余零改动。 -->
@@ -447,6 +448,14 @@ body{background-color:#f7f8fa;color:var(--apple-ink);font-family:var(--font-sans
   .legend-toggle .lt-arrow{font-size:12px;color:#6b7280}
   .ms-toggle{font-size:12px;color:#6b7280;min-height:28px}
   .regime-tag{font-size:12px;min-height:28px}
+}
+/* v8.7：桌面图例——主图 / 副图各占一整行，组内 6 个按钮等宽均分、不换行（原来 .legend-group 定宽 415px=4×100 导致第 5 个就折行） */
+@media(min-width:901px){
+  .card-head>.legend-bar{flex-direction:column;flex-wrap:nowrap;align-items:stretch;gap:6px}
+  .card-head>.legend-bar .legend-group{width:100%;min-height:0;flex:1 1 auto;flex-wrap:nowrap}
+  .card-head>.legend-bar .legend-group+.legend-group{margin-left:0}
+  .card-head>.legend-bar .legend-group+.legend-group::before{display:none}
+  .card-head>.legend-bar .legend-item{flex:1 1 0;width:auto;min-width:0}
 }
 </style>
 </head>
