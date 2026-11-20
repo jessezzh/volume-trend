@@ -2,6 +2,7 @@
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
+<!-- 量价趋势 · v8.6b（2026-11-20，修复 v8.6 严重回归）：v8.6 合并图例组时把 DOM 的 data-group 改成 main/sub，却漏改 SERIES_GROUP 的键（仍 sub1/sub2），导致副图两组共 6 个指标按钮 querySelector 不到、整块不渲染（用户报「指标全干没了」）。本版把 SERIES_GROUP 改为 {main, sub:[...SUB1_LEGEND,...SUB2_SERIES]}、窄屏摘要分组同步；仅此修复，其余零改动。除 Jesse 点名的涨跌停家数/上涨占比/融资强度/纳指100 外，其余指标全部恢复可见可用。 -->
 <!-- 量价趋势 · v8.6（2026-11-19，Jesse 定「把副图1和副图2的指标合并，以后只要一个副图」）：副图1、副图2 合并为单一副图（面板数 3→2）。做法：SUB_ALL=[副图1序列+副图2序列] 统一挂 grid1，所有百分比类指标（站上20日线/指数乖离率/拥挤度/站上30日线/恐慌指标）共用一根比例轴 #2，成交额仍在独立金额轴 #4，数值全走光标提示；图例三组并为「主图 / 副图」两组；数据缩放、滚轮命中、测距取带、参考线命中、动态布局全部改为 2 面板；取消副图1 原来的"互斥单选"（站上20日线/指数乖离率/成交额），六类指标可任意叠加。数据/口径/阈值零改动。 -->
 <!-- 量价趋势 · v8.5（2026-11-19，Jesse 定「把量价趋势项目的 涨跌停家数、上涨占比、融资强度、纳斯达克100 砍掉」）：四个指标全链退役，走既有 RETIRED_SERIES 机制（同相对强度 v8.4a）：图例按钮不渲染、selected 恒 false、hash s= 按数组占位不错位、开关入口拦截——数据计算与序列/轴定义保留、rawData 与每日管线照常产出，随时可从 RETIRED_SERIES 移除即恢复。连带：①市场温度计由六成分（含融资强度、涨跌停净家数）改为四成分等权（拥挤度/站上20日线/指数乖离率/恐慌指标反向），表 1 第五胶囊保留；②图注删除涨跌停/融资强度/纳指/上涨占比的阈值与口径条目，轴位说明同步；③数据日期说明去掉融资强度与纳指。视觉与交互其余零改动。 -->
 <!-- 量价趋势 · v8.3g（2026-11-13，Jesse 定「像 Linear 官网/苹果备忘录一样干净」，经 V1/V2/V3 三轮试验后选定 V2）：UI 清爽改版，只动呈现不动数据/逻辑/交互。①去装饰：纸纹噪点、玻璃 backdrop-filter、暖墨落影、宋体宽字距渐变题头全删；题头改系统字 16px/600 左对齐小标；卡片纯白+1px 发丝边+极浅落影；body 平铺 #f7f8fa。②色板中性化：温墨→#18181b 系、金 accent→墨色、--paper #ffffff、--line #e4e7eb 系；主图 7 色换清爽版（两融 #1F6FA8/上证 #C94F35/沪深300 #4E4F9A/中证2000 #A9770F/创业板 #2E9147/科创 #A8498F/纳指 #12848C），白底对比 3.9–7.2:1、主图内部 21 对 ΔE≥20；副图 iOS 色板/语义红绿不动。③图表质感：主图线 2.4–2.6→2px 去发光去面积填充、副图 1.8px；十字标签奶油→深色 chip(#18181b 白字)；坐标轴/刻度/网格/tooltip 暖墨→中性灰、tooltip 白底细边去玻璃；缩放滑块暖灰重底→浅轨+细窗+白把手；参考线 1.5 实线→1 虚线。④可读性补丁：ⓘ 对比度提至 4.8:1+24px 命中区、移动端页签/图例开关字号 12、注ⓘ/测距/历史回撤 min-height 24。数据/rawData/阈值/交互契约零改动。 -->
@@ -963,7 +964,7 @@ document.addEventListener('click',()=>{if(Date.now()-refLineClickTs<200)return;h
 addEventListener('wheel',hideRefTip,{passive:true});
 // v8.1d：参考线胶囊（.ref-tags 框外药丸）退役——线端标注全端启用 + 图内参考线点击弹简介（见 initChart 内参考线 zrender 命中）。
 // buildRefTags / syncRefTagLabels / .ref-tags CSS 同步移除；REF_TAGS 注册表保留（线端文案、避让位与点击简介的单一来源）。
-const SERIES_GROUP={main:MAIN_SERIES,sub1:SUB1_LEGEND,sub2:SUB2_SERIES};
+const SERIES_GROUP={main:MAIN_SERIES,sub:[...SUB1_LEGEND,...SUB2_SERIES]}; // v8.6b：图例组并为 main/sub，键必须与 DOM data-group 一致（否则副图按钮全不渲染）
 function renderLegend(){
   Object.entries(SERIES_GROUP).forEach(([group,names])=>{
     const container=document.querySelector(`.legend-group[data-group="${group}"]`);
@@ -1013,7 +1014,7 @@ function syncLegendToggle(){
   legendToggleBtn.setAttribute('aria-expanded',String(legendDrawerOpen));
   // v7.7（Jesse 方案）：摘要=「N.指标名」编号列表——1=主图 2=副图1 3=副图2，同组、连接；不再显示"已开"计数与彩点
   const parts=[];
-  [MAIN_SERIES,SUB1_LEGEND,SUB2_SERIES].forEach((keys,i)=>{
+  [MAIN_SERIES,[...SUB1_LEGEND,...SUB2_SERIES]].forEach((keys,i)=>{
     const names=keys.filter(n=>selected[n]).map(n=>ratioBaseName(n));
     if(names.length)parts.push((i+1)+'.'+names.join('、'));
   });
