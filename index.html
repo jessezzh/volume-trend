@@ -2,6 +2,8 @@
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
+<!-- 量价趋势 · v8.13b（2026-11-22，Jesse 定）：回撤色带按 A 股红涨绿跌拆两段——峰→谷绿 #2E9147、谷→收复红 #C94F35，alpha .12、无边框、silent；未收复只有绿段，窗口末端加绿色虚线表示进行中。谷底标签「最大回撤 −x%」对齐谷底 x，收复日标签「收复 +N日」；点绿/红段弹卡，卡内加「区段」行。图注同步。数据/阈值/窗口口径零改动。 -->
+<!-- 量价趋势 · v8.13（2026-11-22，Jesse 定「历史回撤改成色带，标签走顶部、跟事件标签同一套字」）：①删掉 ddSeg1/ddSeg7、两级荧光 ddHalo、谷底/收复 markPoint 圆点；改用 ddBand 幽灵系列在主图 grid0 铺 markArea 区间色带，范围＝峰→收复日（未收复/收复日在窗口外→峰→窗口末端），填充＝焦点曲线本色 alpha .10、无边框、silent。②顶部两枚常驻标签：峰位「最大回撤 −x%」、末端「收复 +N日」或「至今 N日·未收复」，13px/600/#1f1f23/白描边 2px，与事件标签共用 TOP_LBL_STYLE / TOP_LBL_ROW_H=22。③回撤开着时事件标签从下一行起排（回撤标签占 1~2 行），两套同一 y 基准；回撤关/主图隐藏时立即释放。④点色带（峰→末端 x 区间、grid0 内）弹原详情卡，事件竖线命中优先。⑤删除双击切换小字。图注「历史回撤」文案同步改色带说法。数据/阈值/窗口口径零改动。 -->
 <!-- 量价趋势 · v8.12c（2026-11-22，Jesse 第二轮反馈「字再大两号、竖线更明显、美国 9 月加息漏了」）：①标签 11→13px、描边 3px、色 #1f1f23；竖线重大档 alpha .26→.50 宽 1.2px、次要档 .15→.30（开关只在用时打开，不必压暗）。②事件 36→60 条，新增部分全部经检索核实原始出处：美联储 2019-08 / 2020-03 降息、2022-06 单次 75bp、2024-09/11/12 三次降息、2025-09/10/12 三次降息、2026-09-17 加息 25bp 至 3.75–4.00%（2023-07 以来首次；美联储官网 9-16 声明，12:0）、2026-10-29 按兵不动（10:2，两票主张加息）；日本央行 2025-01-24 / 2025-12-19 / 2026-06-16 / 2026-09-18 四次加息；2026-03-02 中东战争升级（霍尔木兹海峡航运停滞、布油单日涨逾 7%）、2026-03-05 政府工作报告（增长目标 4.5–5%）、2026-08-19 美债利率飙升（30Y 破 5.2%，A股 5069 家下跌）、2026-09-29 央行工具调整、2026-11-12 黄仁勋辞职；国内补 2025-01-23 中长期资金入市、2025-04-25 政治局会议、2025-05-07 降准降息十项、2025-10-28 十五五规划建议。③标注量改「排得下多少标多少」：先试全标，用 canvas 实测文字宽度做区间碰撞（四行贪心、贴边改左右对齐、同级近期优先），排下不足八成就退到重要级、再退到里程碑级（tier 0）；竖线永远全画，没标签的点一下读说明。实测：全部 60 条标 11、5 年 37 条标 30、3 年 28 条标 25、1 年 12 条标 12。④修 tier 0 被 `tier||2` 兜底成 2 的 bug（0 是 falsy，里程碑一度全不显示）。数据/阈值/布局零改动。 -->
 <!-- 量价趋势 · v8.12b（2026-11-22，Jesse 反馈五条后修订）：①标签 9→11px（看不清）、描边 2.5px、色 #27272a；行距 12→14px。②事件按发生方命名——美联储加息 / 美联储末次加息 / 日本央行加息 / 日本央行再加息 / 欧央行加息，不再笼统写「加息」；补上金融危机后首次加息（2015-12-17）、欧央行 11 年来首次加息（2022-07）、日本结束负利率（2024-03-19）、日本再次加息（2024-07-31，8·5 全球暴跌的导火索）。③删掉纯价格顶（6124/5178），改成事件本身：5·30 印花税上调、清查场外配资。④「924」改「降准降息新政」，说明卡写清是什么政策（三部门发布会：降准 0.5pct、降息、下调存量房贷利率、创设互换便利）。⑤密度闸：平均间距 <55px 或绘图区 <520px 时只标 tier1，避免 11px 标签被贪心避让挤掉一半；tier2 竖线 alpha 降到 .15，一眼分主次。事件总数 36，日期仍按「发生日，非交易日前移到首个交易日」，说明卡两行日期都写。数据/阈值/布局零改动。 -->
 <!-- 量价趋势 · v8.12（2026-11-22，Jesse 定「上证主图加关键节点竖线，加息/战争这种影响金融的大事件，按钮制，放在历史回测后面、恐慌下跌之前，参考测距和历史回测的按钮格式」）：主图新增「事件」开关——按下按当前可视窗口绘制关键事件竖线（1px 虚线、中性墨色），线端 11px 短标签（按发生方命名：美联储/日本央行/欧央行/中国政策）；标签自动分行避让（3 行，先放重大事件），放不下时丢次要标签、竖线保留；点击竖线弹事件说明卡（日期+一行口径）。开关默认熄灭、不写 hash（同历史回撤）；缩放/平移/切页签/改窗口尺寸均跟随重绘。事件清单为纯视觉锚点，不改任何数据/阈值/参考线/布局。 -->
@@ -511,8 +513,8 @@ body{background-color:#f7f8fa;color:var(--apple-ink);font-family:var(--font-sans
       <div class="regime-wrap">
         <!-- 区间测距开关（2026-10-20）：按下＝图内拖动测区间涨跌幅；抬起＝拖动平移（旧行为） -->
         <button type="button" class="ms-toggle" id="msToggle" aria-pressed="true" aria-label="拖动测距模式"><i aria-hidden="true"></i>测距</button>
-        <!-- 历史回撤开关（v8.3c，2026-11-05）：按下＝最大回撤标尺（段线/圆点/曲线小字/详情卡）才允许出现；默认熄灭，不持久化 -->
-        <button type="button" class="ms-toggle" id="ddToggle" aria-pressed="false" aria-label="历史回撤（最大回撤标尺开关）"><i aria-hidden="true"></i>历史回撤</button>
+        <!-- 历史回撤开关（v8.13b）：按下＝最大回撤双色色带（绿=峰→谷、红=谷→收复；顶部两枚标签/详情卡）才允许出现；默认熄灭，不持久化 -->
+        <button type="button" class="ms-toggle" id="ddToggle" aria-pressed="false" aria-label="历史回撤（最大回撤双色色带开关）"><i aria-hidden="true"></i>历史回撤</button>
         <!-- 关键事件开关（v8.12，2026-11-22）：按下＝按当前窗口绘制事件竖线；默认熄灭，不持久化 -->
         <button type="button" class="ms-toggle" id="evtToggle" aria-pressed="false" aria-label="关键事件（主图事件竖线开关）"><i aria-hidden="true"></i>事件</button>
         <button type="button" class="regime-tag" id="regimePill" aria-expanded="false" aria-controls="regimePop"><span class="regime-dot" aria-hidden="true"></span><span id="regimePillTxt">--</span></button>
@@ -557,6 +559,7 @@ body{background-color:#f7f8fa;color:var(--apple-ink);font-family:var(--font-sans
         <p>· 拖动测距——绘图区内按住拖动，读出该区间<b>全部点亮主图曲线</b>（含两融余额）各自的起止值、涨跌额与涨跌幅：单开为焦点卡，多开为对照表，选带起止点按各曲线各标一枚本色点；涨跌幅＝(末−首)/首，红涨绿跌。缩放、切页签、切图例、改窗口尺寸或按 Esc 即清除；关闭页签右侧「测距」后恢复拖动平移。窄屏（≤640px）不提供测距，「测距」开关隐藏，单指拖动即平移</p>
       <p>· 参考线——图内线端小字标注该线语义（上穿加仓/下穿抄底、下穿减仓、拥挤、恐慌、超买/超卖、2万亿）；点击图内参考线弹出高于/低于说明（v8.1d 起胶囊改线端标注，点击简介保留）</p>
       <p>· 关键事件——页签右侧「事件」开：主图按当前窗口画出关键事件竖线（政策、地缘、流动性、外部冲击），线端短标签自动分行避让，排不下时丢次要标签、竖线保留；点击竖线读日期与口径。日期取生效日或 A 股首个反应日，非交易日前移到下一交易日；纯视觉锚点，不改任何指标与阈值</p>
+      <p>· 历史回撤＝从区间高点到谷底标绿、谷底到收复前高标红；未收复只有绿段（右边界虚线表示进行中）。顶部两枚 13px 标签读「最大回撤 −x%」与「收复 +N日 / 至今 N日·未收复」；点绿段/红段弹详情卡，卡内标出区段。关掉后色带与标签一起消失，曲线本身不变粗</p>
       <p>· 状态记忆——图例选中、缩放窗口、底板主题与测距开关写入网址（#后参数），刷新页面或把链接发给别人即可还原当前现场；清掉网址参数即回默认</p>
       </div>
     </div>
@@ -1224,14 +1227,15 @@ function makeSubSeries(name,xAxisIdx,ratioYAxis){
 }
 // v7.11 回撤标尺专用常量（逻辑实现见文末「最大回撤标尺」模块）
 const DD_COLOR='#1D1D1F'; // v7.11e：仅在取不到指标色时的兜底（正常一律跟随焦点曲线本色）
-const DD_HIT_PX=13;       // v7.11c：画布层点击判定的竖向命中半径（px），约 1.5 倍标准线宽，移动端也好点
-// v7.11g 荧光配方（Jesse：「颜色和正常线一样，回撤线加上荧光效果」）：
-// 芯线用焦点曲线**原色原宽**（与正常线像素级一致），辨识度全部交给光晕——
-// 光晕是与芯线同宽同色的 shadowBlur 扩散层，只加模糊、不加拉宽的实色描边。
-// 教训：加宽的半透明实色带边缘是硬的，会被读成「只是加了个边框」；纯模糊扩散没有硬边，才是「线在发光」。
-const DD_GLOW=3;          // 芯线贴身紧光（px）：让线身自带亮度，超过 4 就开始糊边
-const DD_HALO=[{op:.42,blur:9},{op:.19,blur:26}]; // 两级光晕：内层浓度高、外层铺得远，叠出衰减而非一圈轮廓
-const ddHaloId=(ax,i)=>'ddHalo'+i+'_'+ax;
+const DD_DOWN_COLOR='#2E9147'; // A股语义绿：峰→谷（回撤段）
+const DD_UP_COLOR='#C94F35';   // A股语义红：谷→收复（修复段）
+// v8.13：回撤改色带 + 顶部标签；标签与事件标签共用同一套字/行高（事件模块的 EVT_* 也引用这里）
+const TOP_LBL_ROW_H=22;
+const TOP_LBL_BOX_H=20;
+const TOP_LBL_STYLE={fontSize:13,fontWeight:600,color:'#1f1f23',textBorderColor:'#ffffff',textBorderWidth:2,position:'end',distance:0,rotate:0,align:'center',verticalAlign:'top'};
+const topMeasure=document.createElement('canvas').getContext('2d');
+topMeasure.font='600 '+TOP_LBL_STYLE.fontSize+'px '+getComputedStyle(document.body).fontFamily;
+const topTextWidth=t=>topMeasure.measureText(t).width+4;
 mainChart.setOption({
   backgroundColor:'transparent',animation:false,animationDuration:0,animationDurationUpdate:0,animationEasingUpdate:'linear',
   tooltip:Object.assign({trigger:'axis',transitionDuration:0,confine:true,axisPointer:{type:'cross',animation:false,label:{backgroundColor:'#18181b',color:'#ffffff'},lineStyle:{color:'rgba(24,24,27,.20)'}},formatter:tooltipFormatter},tipStyle),
@@ -1300,16 +1304,12 @@ mainChart.setOption({
     {name:'_rzStrAxis',type:'line',xAxisIndex:1,yAxisIndex:8,data:sRzStrength,smooth:false,symbol:'none',large:true,largeThreshold:3000,lineStyle:{opacity:0},itemStyle:{opacity:0},silent:true,z:0},
     // 幽灵序列：绑定右轴撑住刻度范围，指数曲线全隐藏时右轴不收掉（数据由 updateGhost 动态维护）
     {id:'ghostMain',name:'_idxAxisMain',type:'line',xAxisIndex:0,yAxisIndex:1,data:MAIN_IDX.some(n=>selected[n])?nulls():rawSh,smooth:false,symbol:'none',large:true,largeThreshold:3000,lineStyle:{opacity:0},itemStyle:{opacity:0},silent:true,z:0},
-    // v7.11g 回撤标尺：主图最大回撤段「原色实线 + 同色荧光」。
-    // 芯线与正常曲线**同色同宽**（2.4px，SERIES_COLOR 原值，不再 neon 提亮），差别只有一层荧光光晕：
-    // 芯线 z10 + 两级光晕 z9/z8（参数见 DD_HALO）。光晕与芯线同宽，只吃 shadowBlur 扩散，不留硬边。
-    // 两条轴——指数轴 yAxisIndex:1（上证/沪深300/中证2000/创业板指/科创综指）、纳指轴 7；两融余额是余额存量而非价格指标，**不做回撤标尺**（v7.11e Jesse 定）。
-    // 由 applyDrawdown 按「焦点指标」只写活跃轴，换轴即清空该轴的芯线+两级光晕。
-    // 段线 = 峰→谷→收复前高日（未收复则画到窗口末端）；谷底/收复点挂 markPoint **图内小字标注**（无底色无边框，同参考线「下穿减仓」那套质感），默认隐藏、双击段线才显示（v7.11h）。
-    // 「全部」页签/焦点熄灭/窗口过小/无回撤 → 数据清空即整体隐藏
-    {id:'ddSeg1',name:'_ddSeg1',type:'line',xAxisIndex:0,yAxisIndex:1,data:nulls(),smooth:false,symbol:'none',connectNulls:false,lineStyle:{width:2,color:DD_COLOR,cap:'round',join:'round',shadowBlur:DD_GLOW,shadowColor:hexA(DD_COLOR,.5)},itemStyle:{color:DD_COLOR},emphasis:{disabled:true},tooltip:{show:false},z:10,markPoint:{silent:false,symbol:'circle',symbolSize:4.5,label:{show:false},data:[]}},
-    {id:'ddSeg7',name:'_ddSeg7',type:'line',xAxisIndex:0,yAxisIndex:7,data:nulls(),smooth:false,symbol:'none',connectNulls:false,lineStyle:{width:2,color:DD_COLOR,cap:'round',join:'round',shadowBlur:DD_GLOW,shadowColor:hexA(DD_COLOR,.5)},itemStyle:{color:DD_COLOR},emphasis:{disabled:true},tooltip:{show:false},z:10,markPoint:{silent:false,symbol:'circle',symbolSize:4.5,label:{show:false},data:[]}},
-    ...[1,7].flatMap(ax=>DD_HALO.map((h,i)=>({id:ddHaloId(ax,i),name:'_'+ddHaloId(ax,i),type:'line',xAxisIndex:0,yAxisIndex:ax,data:nulls(),smooth:false,symbol:'none',connectNulls:false,silent:true,emphasis:{disabled:true},tooltip:{show:false},z:9-i,lineStyle:{width:2,color:DD_COLOR,opacity:h.op,cap:'round',join:'round',shadowBlur:h.blur,shadowColor:hexA(DD_COLOR,.95)}}))),
+    // v8.13 回撤色带：主图区间色带（markArea，无边框、silent）+ 顶部两枚标签（markLine，线本身透明）。
+    // v8.13b：峰→谷绿、谷→收复红；未收复只有绿段（右边界虚线）。alpha .12，不改变曲线样式。
+    // 标签与事件标签共用 TOP_LBL_STYLE / TOP_LBL_ROW_H，常驻显示；点击色带（峰→末端 x 区间、grid0 内）弹详情卡。
+    {id:'ddBand',name:'_ddBand',type:'line',xAxisIndex:0,yAxisIndex:1,data:nulls(),smooth:false,symbol:'none',silent:true,emphasis:{disabled:true},tooltip:{show:false},lineStyle:{opacity:0},itemStyle:{opacity:0},z:1,
+      markArea:{silent:true,itemStyle:{color:'rgba(29,29,31,.10)',borderWidth:0},data:[]},
+      markLine:{silent:true,symbol:'none',animation:false,emphasis:{disabled:true},lineStyle:{color:'transparent',width:0},label:{show:false},data:[]}},
     // ===== 副图 grid1~2：指标差异化，工厂函数统一生成 =====
     ...SUB1_SERIES.map(name=>makeSubSeries(name,1,2)),
     ...SUB2_SERIES.map(name=>makeSubSeries(name,1,2)),
@@ -1382,7 +1382,8 @@ rangeTabs.forEach(btn=>{
   btn.addEventListener('click',()=>{
     const days=+btn.dataset.days;
     mainChart.dispatchAction({type:'dataZoom',start:tabStart(days),end:100});
-    applyDrawdown(days,btn.textContent.trim()); // v7.11：页签联动最大回撤标尺（跟随焦点指标；「全部」清除）
+    if(days>0)applyDrawdown(days,btn.textContent.trim());
+    else applyDrawdown(0,null,0,dates.length-1); // v8.13：全部窗口也按整段算最大回撤（色带）
   });
 });
 
@@ -1431,13 +1432,17 @@ const grids=[0,1].map(i=>{
   if(figTitleEl)figTitleEl.textContent=`图 1　A股量价情绪综合趋势（${dates[0].slice(0,4)}–${dates[dates.length-1].slice(0,4)}）。${cap}`; // v8.1c C2：年份随数据现拼，不再写死
 }
 
-// ===== v7.11e 主图「最大回撤标尺」（Jesse 2026-10-15 需求；同日 b/c/d/e 四轮修 bug）=====
-// 点开 5年/3年/2年/1年/半年/1个月 页签 → 主图即显示该窗口内「焦点指标」的最大回撤：
-//   峰→谷→收复前高日（未收复则至窗口末端）＝**原色实线 + 同色荧光**：芯线与正常曲线同色同宽（2.4px），
-//   外叠两级 shadowBlur 光晕（参数见 DD_HALO）。不加宽、不提亮、不换色相——识别度全部由「线在发光」提供（v7.11g Jesse 定）。
-//   谷底/收复点挂 markPoint **图内小字标注**（无底色无边框 9px/600 提亮色，同参考线「下穿减仓」那套质感）；
-//   **两处小字默认隐藏，双击段线才出现**（v7.11h Jesse 定；圆点常驻，换窗口/换焦点自动收回隐藏）；
-//   点击段线/圆点/药丸弹出详情：回撤幅度、峰→谷用时、修复用时；未收复显示「正在修复中」。
+// ===== 主图「最大回撤」：色带 + 顶部标签（v8.13 改版，数据/口径不变）=====
+// 点开 5年/3年/2年/1年/半年/1个月 页签，或缩放/平移后 → 主图按「焦点指标」显示该窗口内的最大回撤：
+//   色带＝峰→谷绿、谷→收复红（未收复只有绿段，右边界绿色虚线）；alpha .12、无边框、silent；
+//   顶部两枚标签（与事件标签同一套 13px/600/#1f1f23/白描边 2px）：谷底「最大回撤 −x%」、收复日「收复 +N日」或末端「至今 N日·未收复」；
+//   点击色带（峰→末端 x 区间内、y 在 grid0 内）弹出详情卡：回撤幅度、峰谷、区间、修复。
+// 事件竖线命中优先于色带；回撤开着时事件标签从色带标签下一行起排，两套共用同一个 y 基准。
+// 焦点指标＝最近一次点亮的主图曲线（toggleSeries 维护，科创综指/沪深300/上证指数等一视同仁）；熄灭回退到仍点亮的首条；首屏取默认点亮的首条。
+// **两融余额不做标尺**：余额是存量指标、不是价格序列，回撤对它没有意义（v7.11e Jesse 定）→ 只剩指数轴 1 与纳指轴 7 两条序列。
+// 口径：窗口＝页签交易日数（244 交易日/年，与页签一致）或缩放后真实可见窗口（无页签匹配时）；
+//   回撤＝(谷底收盘−前高收盘)/前高收盘，前高为窗口内滑动峰值；修复＝谷底之后首次收盘≥前高（全序列搜索）。
+// 清除条件：焦点熄灭、可见窗口<10 个交易日、窗口内无回撤（单边上行/无有效数据）、主图不可见。
 // 焦点指标＝最近一次点亮的主图曲线（toggleSeries 维护，科创综指/沪深300/上证指数等一视同仁）；熄灭回退到仍点亮的首条；首屏取默认点亮的首条。
 // **两融余额不做标尺**：余额是存量指标、不是价格序列，回撤对它没有意义（v7.11e Jesse 定）→ 只剩指数轴 1 与纳指轴 7 两条序列。
 // 口径：窗口＝页签交易日数（244 交易日/年，与页签一致）或缩放后真实可见窗口（无页签匹配时）；
@@ -1449,9 +1454,7 @@ const DD_MIN_TD=10; // 可见窗口小于该交易日数不标尺（避免缩放
 let ddFocus=null;   // 焦点主图指标＝最近一次点亮的；null＝无焦点（不标尺）
 let ddGeomKey='none';
 let ddWinKey='none';// 当前标尺窗口签名：'tab:244'／'rng:from-to'／'none'
-let ddLastAxis=null;// 当前标尺所在数值轴；焦点换轴时清空上一轴的一对序列
-const ddState={on:false,axis:1,name:'',color:DD_COLOR,label:'',from:0,to:0,endI:0,dd:0,peakI:0,peakV:0,troughI:0,troughV:0,recI:-1,recV:null,ongoing:true,mp:null};
-let ddLabelsOn=false; // v7.11h：图内两处小字（最大回撤／收复前高）默认隐藏，双击段线才显示；v8.3c 起窗口/焦点一变复位到开关意愿（ddLabelsOn=ddGate）
+const ddState={on:false,axis:1,name:'',color:DD_COLOR,label:'',from:0,to:0,endI:0,dd:0,peakI:0,peakV:0,troughI:0,troughV:0,recI:-1,recV:null,ongoing:true,topRows:0};
 let ddGate=false; // v8.3c 历史回撤总闸（2026-11-05）：默认关。applyDrawdown 是唯一绘制入口，此处拦截＝页签/缩放/hash 三路径全覆盖；开关状态不持久化
 // 详情弹窗：复用 ref-tip 玻璃配方，可交互（点空白/滚轮/缩放/切页签/切图例收起）
 const ddTipEl=document.createElement('div');
@@ -1480,19 +1483,17 @@ function findDdRecovery(vals,troughI,peakV){
   return -1;
 }
 // 某轴的整套标尺图层（芯线 + 两级光晕）一起清空；光晕层不挂 markPoint
-const ddAxisClear=ax=>[{id:'ddSeg'+ax,data:nulls(),markPoint:{data:[]}},...DD_HALO.map((h,i)=>({id:ddHaloId(ax,i),data:nulls()}))];
 function clearDrawdown(){
   hideDdTip();
-  ddWinKey='none';ddGeomKey='none';ddState.on=false;
-  if(ddLastAxis!=null){
-    mainChart.setOption({series:ddAxisClear(ddLastAxis)});
-    ddLastAxis=null;
-  }
+  const wasOn=ddState.on,hadRows=ddState.topRows||0;
+  ddWinKey='none';ddGeomKey='none';ddState.on=false;ddState.topRows=0;
+  if(wasOn)mainChart.setOption({series:[{id:'ddBand',markArea:{data:[]},markLine:{data:[]}}]});
+  if(hadRows)applyEvents(); // 释放事件标签的第 0/1 行，两套标签同时回位
 }
-// 渲染标尺。days>0＝页签窗口（末 N 个交易日）；days<=0 且 from/to 有效＝缩放自定义窗口；days<=0 且无 from/to＝「全部」清除。
-// 幂等：页签点击直调与 dataZoom 回写双路径共用，窗口+焦点未变则只重定位药丸不重绘。
+// 渲染色带。days>0＝页签窗口（末 N 个交易日）；days<=0 且 from/to 有效＝缩放自定义窗口；days<=0 且无 from/to＝「全部」清除。
+// 幂等：页签点击直调与 dataZoom 回写双路径共用，窗口+焦点未变则只重定位标签不重绘。
 function applyDrawdown(days,label,from,to){
-  if(!ddGate){clearDrawdown();return} // v8.3c：历史回撤总闸关闭＝标尺一律不出现（页签/缩放/hash 恢复三路径在此一处拦截）
+  if(!ddGate){clearDrawdown();return} // v8.3c：历史回撤总闸关闭＝色带/标签一律不出现（页签/缩放/hash 恢复三路径在此一处拦截）
   const n=dates.length;
   let f,t,lab,key;
   if(days>0){f=Math.max(0,n-days);t=n-1;lab=label;key='tab:'+days}
@@ -1507,52 +1508,61 @@ function applyDrawdown(days,label,from,to){
     geomKey=[g.x,g.y,g.width,g.height,...e].join('|');
   }catch(e){}
   if(sameWindow&&geomKey===ddGeomKey)return;
-  if(!sameWindow)ddLabelsOn=ddGate; // v8.3c：窗口/焦点一变，小字复位到开关意愿——总闸开着＝新窗口直显，关着＝隐藏（双击段线临时切换保留）
-
   if(!name||!DD_VALS[name]||t-f+1<DD_MIN_TD){clearDrawdown();return}
   const vals=DD_VALS[name],axis=DD_AXIS[name];
   const r=scanDd(vals,f,t);
   if(!r){clearDrawdown();return} // 窗口内无回撤（单边上行或无有效数据）
   const recI=findDdRecovery(vals,r.troughI,r.peakV);
   const ongoing=recI<0;
-  const endI=ongoing?t:recI; // 未收复：段线画到窗口末端（水下进行中）；已收复：画到收复日
-  const seg=nulls();
-  for(let i=r.peakI;i<=endI;i++)seg[i]=vals[i];
-  const recV=ongoing?null:vals[recI];
-  const col=SERIES_COLOR[name]||DD_COLOR; // v7.11g：段线＝焦点曲线原色（与正常线一致），区分全靠荧光
-  const flu=neon(col); // 图内小字与圆点沿用提亮荧光色（Jesse 认可现有文字质感，不随线改）
-  // 图内小字标注：无底色无边框，9px/600 提亮色 —— 与参考线「下穿减仓」那套质感一致；默认隐藏，双击段线才显示。
-  // 自动避让：贴绘图区上下边缘时翻到另一侧，贴左右边缘时改横向排布（markPoint label 会被网格裁切，硬排会丢字）。
-  // v7.11j：避让阈值改以主图 grid0 绘图区为准——2/3 面板时 grid0 只占容器顶部一条，按整容器高判定恒不触发、谷底小字被裁丢。
-  const dom=mainChart.getDom(),chW=dom.clientWidth;
+  const recoveredInView=recI>=0&&recI<=t;
+  const bandEndI=recoveredInView?recI:t; // 未收复或收复日在窗口外：色带画到窗口末端
   let g0=null;try{const gc=mainChart.getModel().getComponent('grid',0);g0=gc&&gc.coordinateSystem?gc.coordinateSystem.getRect():null}catch(e){g0=null}
-  const yTop=g0?g0.y:0,yBot=g0?g0.y+g0.height:dom.clientHeight,xL=g0?g0.x:0,xSpan=g0?g0.width:chW;
-  const yBand=Math.max(14,(yBot-yTop)*.15);
-  const pxAt=(i,v)=>{try{const p=mainChart.convertToPixel({xAxisIndex:0,yAxisIndex:axis},[i,v]);return p||null}catch(e){return null}};
-  const posFor=(i,v,prefer)=>{
-    const p=pxAt(i,v);
-    if(!p)return prefer;
-    let q=prefer;
-    if(q==='bottom'&&p[1]>yBot-yBand)q='top';
-    else if(q==='top'&&p[1]<yTop+yBand)q='bottom';
-    if(p[0]<xL+xSpan*.14)q='right';else if(p[0]>xL+xSpan*.86)q='left';
-    return q;
-  };
-  const txt=(txt,pos)=>({show:ddLabelsOn,position:pos,distance:5,formatter:txt,fontSize:9,fontWeight:600,color:flu,silent:true});
-  const mp=[Object.assign({coord:[dates[r.troughI],r.troughV],symbolSize:4.5,itemStyle:{color:flu,borderColor:'#ffffff',borderWidth:1}},{label:txt('最大回撤 −'+(r.dd*-100).toFixed(1)+'%',posFor(r.troughI,r.troughV,'bottom'))})];
-  if(!ongoing&&recI<=t)mp.push(Object.assign({coord:[dates[recI],recV],symbolSize:4,itemStyle:{color:'#ffffff',borderColor:flu,borderWidth:1.6}},{label:txt('收复前高 +'+(recI-r.troughI)+'日',posFor(recI,recV,'top'))}));
-  const upd=[{id:'ddSeg'+axis,data:seg,lineStyle:{color:col,shadowColor:hexA(col,.5)},itemStyle:{color:col},markPoint:{data:mp}},
-    // 两级光晕与芯线同宽同色，每次只重写颜色；opacity / shadowBlur 由序列定义固定
-    ...DD_HALO.map((h,i)=>({id:ddHaloId(axis,i),data:seg,lineStyle:{color:col,shadowColor:hexA(col,.95)}}))];
-  if(ddLastAxis!=null&&ddLastAxis!==axis)upd.push(...ddAxisClear(ddLastAxis)); // 焦点换轴：清空上一轴三层
-  mainChart.setOption({series:upd});
-  ddLastAxis=axis;
-  Object.assign(ddState,{on:true,axis,name,color:col,label:lab,from:f,to:t,endI,dd:r.dd,peakI:r.peakI,peakV:r.peakV,troughI:r.troughI,troughV:r.troughV,recI:ongoing?-1:recI,recV,ongoing,mp});
+  if(!g0||g0.height<20||g0.width<20){clearDrawdown();return} // 主图不可见（只开副图）不画，避免色带退化到画布底部
+  const pxAt=i=>{try{const p=mainChart.convertToPixel({xAxisIndex:0},i);return Number.isFinite(p)?p:null}catch(e){return null}};
+  const troughX=pxAt(r.troughI),endAnchorI=recoveredInView?recI:bandEndI,endX=pxAt(endAnchorI);
+  if(troughX==null||endX==null){clearDrawdown();return}
+  const col=SERIES_COLOR[name]||DD_COLOR;
+  const since=dates.length-1-r.troughI; // 与详情卡「至今」同口径（v7.11j）
+  const endText=recoveredInView?('收复 +'+(recI-r.troughI)+'日'):(ongoing?('至今 '+since+'日·未收复'):('收复 +'+(recI-r.troughI)+'日'));
+  const items=[{i:r.troughI,x:troughX,text:'最大回撤 −'+(r.dd*-100).toFixed(1)+'%'},{i:endAnchorI,x:endX,text:endText}];
+  // 两枚标签先在顶部第 0 行并排；排不下时第二枚落到第 1 行。事件标签从 topRows 行开始，两套共用同一个 y 基准。
+  const rows=[[],[]],layout=[];
+  for(const it of items){
+    const tw=topTextWidth(it.text);
+    let al='center';
+    if(it.x+tw/2>g0.x+g0.width-2)al='right';else if(it.x-tw/2<g0.x+2)al='left';
+    let l=al==='right'?it.x-tw:(al==='left'?it.x:it.x-tw/2),rr=l+tw;
+    let row=0,dx=0;
+    if(rows[0].every(iv=>rr+6<iv[0]||l-6>iv[1])){rows[0].push([l,rr]);}
+    else if(rows[0].length){
+      // 同 x 两枚（如 1 年窗谷底恰好是窗口末端）：优先在同一行左右错开，保住「事件标签从第二行起」
+      const iv=rows[0][0];
+      const shL=(iv[0]-6)-rr;
+      if(l+shL>=g0.x+2){dx=shL;l+=shL;rr+=shL;rows[0].push([l,rr]);}
+      else{
+        const shR=(iv[1]+6)-l;
+        if(rr+shR<=g0.x+g0.width-2){dx=shR;l+=shR;rr+=shR;rows[0].push([l,rr]);}
+        else{row=1;rows[1].push([l,rr]);}
+      }
+    } else {row=1;rows[1].push([l,rr]);}
+    layout.push({it,al,row,dx});
+  }
+  const topRows=layout.reduce((m,o)=>Math.max(m,o.row+1),0);
+  const ml=layout.map(o=>({xAxis:dates[o.it.i],lineStyle:{color:'transparent',width:0},label:Object.assign({},TOP_LBL_STYLE,{show:true,formatter:o.it.text,align:o.al,offset:[o.dx||0,8+o.row*TOP_LBL_ROW_H]})}));
+  // v8.13b：峰→谷绿、谷→收复红；未收复只有绿段（画到窗口末端）并在右边界加绿色虚线。
+  const greenEndI=recoveredInView?r.troughI:bandEndI;
+  const ma=[[{xAxis:dates[r.peakI],itemStyle:{color:hexA(DD_DOWN_COLOR,.12),borderWidth:0}},{xAxis:dates[greenEndI]}]];
+  if(recoveredInView)ma.push([{xAxis:dates[r.troughI],itemStyle:{color:hexA(DD_UP_COLOR,.12),borderWidth:0}},{xAxis:dates[recI]}]);
+  if(!recoveredInView)ml.push({xAxis:dates[bandEndI],lineStyle:{color:hexA(DD_DOWN_COLOR,.45),width:1,type:[4,4]},label:{show:false}});
+  mainChart.setOption({series:[{id:'ddBand',markArea:{silent:true,itemStyle:{borderWidth:0},data:ma},markLine:{silent:true,symbol:'none',animation:false,emphasis:{disabled:true},lineStyle:{color:'transparent',width:0},label:{show:false},data:ml}}]});
+  const prevRows=ddState.topRows||0;
+  Object.assign(ddState,{on:true,axis,name,color:col,label:lab,from:f,to:t,endI:bandEndI,dd:r.dd,peakI:r.peakI,peakV:r.peakV,troughI:r.troughI,troughV:r.troughV,recI:ongoing?-1:recI,recV:ongoing?null:vals[recI],ongoing,topRows});
   ddWinKey=key;ddGeomKey=geomKey;
+  if((ddState.topRows||0)!==prevRows)applyEvents(); // 回撤标签占了几行，事件标签就从下一行起排
 }
 // 缩放/平移后与页签状态对齐：精确匹配最新页签按页签窗口重算；否则按真实可见窗口；「全部」/过窄 → 清除。
 // v7.11j：页签匹配在跨度一致之外还要求窗口右端贴数据末端（真实右端下标为 n−1）——只看跨度时平移恒命中页签分支，
-// 幂等键不变得段线锚死在最新窗口、随平移滚出视口，rng 分支「无匹配按真实可见窗口」永远走不到。
+// 幂等键不变得色带锚死在最新窗口、随平移滚出视口，rng 分支「无匹配按真实可见窗口」永远走不到。
 let ddSyncFrame=0;
 function syncDrawdownToZoom(){
   if(mainChart.isDisposed())return;
@@ -1566,7 +1576,7 @@ function syncDrawdownToZoom(){
   if(matched){
     const d=+matched.dataset.days;
     if(d>0)applyDrawdown(d,matched.textContent.trim());
-    else clearDrawdown();
+    else applyDrawdown(0,null,0,n-1); // v8.13：全部窗口也按整段算最大回撤
     return;
   }
   if(visible<DD_MIN_TD){clearDrawdown();return}
@@ -1575,7 +1585,7 @@ function syncDrawdownToZoom(){
 }
 const scheduleDrawdown=()=>{if(ddSyncFrame)return;ddSyncFrame=requestAnimationFrame(()=>{ddSyncFrame=0;syncDrawdownToZoom()})};
 mainChart.on('datazoom',scheduleDrawdown);
-// v8.3c 历史回撤开关（2026-11-05，Jesse 定）：开＝按当前窗口立即出标尺、小字直显；关＝段线/荧光/圆点/小字/详情卡全收。
+// v8.3c 历史回撤开关（2026-11-05，Jesse 定）：开＝按当前窗口立即出色带与顶部标签；关＝色带/标签/详情卡一起收。
 // 状态不写 hash（Jesse 定：不持久化），刷新回默认关。
 const ddToggleBtn=document.getElementById('ddToggle');
 ddToggleBtn.addEventListener('click',()=>{
@@ -1584,8 +1594,8 @@ ddToggleBtn.addEventListener('click',()=>{
   if(ddGate)syncDrawdownToZoom(); // 立即按当前窗口重算（「全部」/无焦点/窗口过窄则维持清除）
   else clearDrawdown();
 });
-// 详情弹窗：anchor＝DOM 药丸（按药丸定位）或 {x,y} 点击客户坐标（按点击点定位）
-function showDdTipAt(anchor){
+// 详情弹窗：anchor＝{x,y} 点击客户坐标（按点击点定位）
+function showDdTipAt(anchor,seg){
   const s=ddState;
   if(!s.on)return;
   msClear(); // v8.1 A6：回撤详情与测距卡互斥，两张毛玻璃卡不再同屏叠着
@@ -1595,11 +1605,13 @@ function showDdTipAt(anchor){
   // 「收复前高 xxx 点」（点位峰谷行已给）、峰→谷单独一行（并进区间行末的「(N日)」）。
   const since=s.ongoing?dates.length-1-s.troughI:s.to-s.troughI; // v7.11j：「至今」算到数据末端（原用可视窗口末端，历史窗口里的未收复段——如 6124 顶——会严重偏小）
   const fix=s.ongoing?(since<=0?'未收复 · 谷底即末位':('至今 '+since+'日 · 未收复')):((s.recI-s.troughI)+'日 · '+dates[s.recI]+' 收复');
+  const segTxt=seg==='up'?'修复段':'回撤段';
   ddTipEl.innerHTML=`<b>${s.name} · ${winTxt}</b>`
     +`<div class="rows">`
     +`<i>回撤</i><b>−${(s.dd*-100).toFixed(1)}%</b>`
     +`<i>峰谷</i><b>${fmt(s.peakV)} → ${fmt(s.troughV)}${unit}</b>`
     +`<i>区间</i><b>${dates[s.peakI]} → ${dates[s.troughI]}（${s.troughI-s.peakI}日）</b>`
+    +`<i>区段</i><b>${segTxt}</b>`
     +`<i>修复</i><b>${fix}</b>`
     +`</div>`;
   ddTipEl.style.display='block';
@@ -1613,54 +1625,33 @@ function showDdTipAt(anchor){
   ddTipEl.style.left=x+'px';ddTipEl.style.top=y+'px';
   ddOpenTs=Date.now(); // 打开瞬间的同一 click 事件随后会冒泡到 document，借此跳过本次收起
 }
-// 点击：段线/圆点 → 按点击坐标弹；药丸 → 按药丸弹（stopPropagation 防 document 收起逻辑误触）
-// v7.11j：单击弹卡延迟 240ms 且可被 dblclick 取消——dblclick 事件序列是 click→click→dblclick，
-// 不延迟的话每次双击切换小字都会连带弹出详情卡。
-let ddClickTimer=0;
-const ddClickOpen=fn=>{clearTimeout(ddClickTimer);ddClickTimer=setTimeout(()=>{if(!mainChart.isDisposed())fn()},240)};
-mainChart.on('click',p=>{
-  if(!ddState.on||Date.now()-msDragEndTs<400)return; // 2026-10-20：刚拖完测距的那一下点击不算回撤命中
-  const ax=ddState.axis;
-  const onSeg=(p.componentType==='series'&&p.seriesId==='ddSeg'+ax)
-    ||(p.componentType==='markPoint'&&p.seriesId==='ddSeg'+ax);
-  if(onSeg&&p.event&&p.event.event){const ev=p.event.event;ddClickOpen(()=>showDdTipAt({x:ev.clientX,y:ev.clientY}))}
-});
-// v7.11c 兜底命中：ECharts 对 symbol:'none' 的折线只按线宽做命中（2.4px 极窄），实测点击段线不派发 series click。
-// 改为在 zrender 画布层收点击，用 convertFromPixel 反算数据下标 + convertToPixel 反算曲线像素 y，
-// 落在绘图区内且到 [峰, 段末] 实际线段的像素距离 ≤DD_HIT_PX 即判定命中（不依赖图元命中测试，缩放/平移/多轴均成立）。
+// 点击色带：x 落在峰→色带末端区间、y 在 grid0 内即弹详情卡；事件竖线命中优先——事件处理器更晚注册，会再 hideDdTip。
 function ddHitAt(ox,oy){
-  const s=ddState,vals=DD_VALS[s.name];
-  if(!s.on||!vals||!mainChart.containPixel({gridIndex:0},[ox,oy]))return false;
-  const w=visibleWindow();
-  const x0=mainChart.convertToPixel({xAxisIndex:0},w.from);
-  const x1=mainChart.convertToPixel({xAxisIndex:0},w.to);
-  if(!Number.isFinite(x0)||!Number.isFinite(x1)||x1===x0)return false;
-  const f=w.from+(ox-x0)/(x1-x0)*(w.to-w.from),idx=Math.floor(f);
-  const point=i=>vals[i]==null?null:mainChart.convertToPixel({xAxisIndex:0,yAxisIndex:s.axis},[i,vals[i]]);
-  const within=(a,b)=>{
-    if(!a||!b||![...a,...b].every(Number.isFinite))return false;
-    const dx=b[0]-a[0],dy=b[1]-a[1],len=dx*dx+dy*dy;
-    const t=len?Math.max(0,Math.min(1,((ox-a[0])*dx+(oy-a[1])*dy)/len)):0;
-    return Math.hypot(ox-a[0]-t*dx,oy-a[1]-t*dy)<=DD_HIT_PX;
-  };
-  // 仅检查鼠标附近的实际相邻线段；null 断点不连线，边界允许圆点命中。
-  for(let i=Math.max(s.peakI,idx-1);i<=Math.min(s.endI,idx+1);i++){
-    const a=point(i);if(within(a,a))return true;
-    if(i<s.endI&&within(a,point(i+1)))return true;
-  }
-  return false;
+  const s=ddState;
+  if(!s.on)return null;
+  let g=null;try{const gc=mainChart.getModel().getComponent('grid',0);g=gc&&gc.coordinateSystem?gc.coordinateSystem.getRect():null}catch(e){g=null}
+  if(!g||oy<g.y||oy>g.y+g.height)return null;
+  const x0=mainChart.convertToPixel({xAxisIndex:0},s.peakI);
+  const x1=mainChart.convertToPixel({xAxisIndex:0},s.endI);
+  if(!Number.isFinite(x0)||!Number.isFinite(x1))return null;
+  if(ox<Math.min(x0,x1)-1||ox>Math.max(x0,x1)+1)return null;
+  const hasRepair=!s.ongoing&&s.recI>=0&&s.recI<=s.to;
+  if(!hasRepair)return 'down';
+  const xt=mainChart.convertToPixel({xAxisIndex:0},s.troughI);
+  return Number.isFinite(xt)&&ox>=xt?'up':'down';
 }
 mainChart.getZr().on('click',e=>{
-  if(!e||!e.event||Date.now()-msDragEndTs<400)return; // 2026-10-20：拖选测距松手后的 click 不弹回撤详情
+  if(!e||!e.event||Date.now()-msDragEndTs<400||Date.now()-evtHitTs<300)return; // 2026-10-20：拖选测距松手后的 click 不弹回撤详情；v8.12d：事件线命中优先
   const ox=e.offsetX,oy=e.offsetY,cx=e.event.clientX,cy=e.event.clientY;
-  ddClickOpen(()=>{if(ddHitAt(ox,oy))showDdTipAt({x:cx,y:cy})});
+  const seg=ddHitAt(ox,oy);
+  if(seg)showDdTipAt({x:cx,y:cy},seg);
 });
 // v8.1d：参考线点击简介——胶囊退役后说明卡的新入口：点击图内参考线（±7px 容差）弹出原胶囊同款语义；
 // 健康区没有线，命中＝色带内右侧 25% 区域（与「健康」小字同位）。窄屏由此补回 v7.8 起不可达的参考线简介。
 mainChart.getZr().on('click',e=>{
   if(!e||!e.event||Date.now()-msDragEndTs<400)return;
   const ox=e.offsetX,oy=e.offsetY,cx=e.event.clientX,cy=e.event.clientY;
-  if(ddHitAt(ox,oy))return; // 回撤段线命中优先
+  if(ddHitAt(ox,oy))return; // 回撤色带命中优先
   if(Date.now()-evtHitTs<300)return; // v8.12：事件竖线命中优先，参考线不再抢这一次点击（evtHitTs 为 var，见下方事件模块）
   try{
     // v8.3b：命中先按该参考线所属面板的 grid 矩形做横竖双向包含校验——原只比纵向 ±7px，
@@ -1690,17 +1681,6 @@ mainChart.getZr().on('click',e=>{
     }
   }catch(err){}
 });
-// v7.11h：双击段线＝切换图内两处小字（最大回撤／收复前高）显隐，再双击收回；单击弹详情不变。
-// dblclick 挂在图表容器上（zrender 不代理该事件），坐标按容器左上角换算成与 zr 同一套 offsetX/offsetY，再走同一个命中判定。
-chartEl.addEventListener('dblclick',e=>{
-  clearTimeout(ddClickTimer); // v7.11j：取消前两次单击的待弹卡
-  if(Date.now()-ddOpenTs<500)hideDdTip(); // 双击间隔较长时单击已抢先弹出，随双击收起（早前打开的卡片不受影响）
-  if(!ddState.on||!ddState.mp)return;
-  const box=chartEl.getBoundingClientRect();
-  if(!ddHitAt(e.clientX-box.left,e.clientY-box.top))return;
-  ddLabelsOn=!ddLabelsOn;
-  mainChart.setOption({series:[{id:'ddSeg'+ddState.axis,markPoint:{data:ddState.mp.map(o=>Object.assign({},o,{label:Object.assign({},o.label,{show:ddLabelsOn})}))}}]});
-});
 // 收起：点空白（弹窗自身与刚打开的那次点击除外）；滚轮直接收；缩放/切页签/切图例经 syncDrawdownToZoom→hideDdTip
 document.addEventListener('click',e=>{if(Date.now()-ddOpenTs<200)return;if(!ddTipEl.contains(e.target))hideDdTip()});
 addEventListener('wheel',hideDdTip,{passive:true});
@@ -1724,7 +1704,7 @@ let msFocus=MAIN_SERIES.find(n=>n in MS_AXIS&&selected[n])||null;
 let msOn=true;        // true＝拖动测距；false＝拖动平移（改造前行为）
 let msDrag=null;      // 拖拽中：{x0,box,moved}
 let msOpen=null;      // 已落定的测距结果
-let msDragEndTs=0;    // 刚松手的时间戳：dd 段线的单击命中要放过这一下，免得同时弹回撤详情
+let msDragEndTs=0;    // 刚松手的时间戳：dd 色带的单击命中要放过这一下，免得同时弹回撤详情
 let msTipOff=false;   // ECharts tooltip 是否被临时停用（拖动时只留测距卡，避免两块浮层叠一起）
 let msHinted=false;   // v8.1：无主图焦点时的提示每次会话只说一次，之后拖动直接平移
 let msHintTimer=0;
@@ -2041,6 +2021,7 @@ function toggleSeries(name){
   // v8.4a：副图2 相对强度退役（RETIRED_SERIES），原「相对强度↔比例类」两条互斥规则摘除——比例类四项同轴共存。
   // v8.6：副图1/副图2 合并成单副图后取消"互斥单选"——站上20日线/指数乖离率/成交额/拥挤度/站上30日线/恐慌指标可任意叠加。
   applyVisibility();
+  if(MAIN_SERIES.includes(name))applyEvents(); // v8.12e：主图曲线显隐变了，事件层立即重画/收起（grid0 是否可见由 applyEvents 内部再判）
 }
 
 // 图例 pill：事件委托，支持动态生成与后续重渲染；ⓘ 简介图标优先拦截（stopPropagation 防止触发开关与全局关闭顺序颠倒）
@@ -2086,7 +2067,7 @@ const EVENTS=[
   ['2008-11-05','四万亿刺激',0,'国常会推出四万亿投资计划，A股见底反转'],
   ['2010-04-16','股指期货上市',2,'沪深300股指期货上市，A股进入做空时代'],
   ['2010-04-17','地产新国十条',2,'国务院地产调控加码（4-19 沪指 −4.79%）'],
-  ['2011-08-05','美债降级',2,'标普下调美国主权评级 AAA→AA+（8-8 沪指 −3.79%）'],
+  ['2011-08-08','美债降级',2,'美东 8-5 盘后标普下调美国主权评级 AAA→AA+，8-8 沪指 −3.79%'],
   ['2013-06-20','钱荒',1,'银行间流动性危机，隔夜 Shibor 飙至 13.44%'],
   ['2014-11-17','沪港通开通',2,'沪港通开通，境内外互联互通起点'],
   ['2015-06-13','清查场外配资',0,'证监会清理场外配资，杠杆牛终结、千股跌停'],
@@ -2095,7 +2076,7 @@ const EVENTS=[
   ['2016-01-04','熔断机制',1,'熔断首日两度触发，13:34 提前收盘'],
   ['2016-06-24','英国脱欧',2,'脱欧公投通过，避险资产暴涨'],
   ['2017-06-21','A股入MSCI',2,'A股纳入 MSCI 新兴市场指数（2018-06 起分批纳入）'],
-  ['2018-03-22','中美贸易战',0,'特朗普签署 301 调查备忘录，贸易摩擦开启'],
+  ['2018-03-23','中美贸易战',0,'特朗普 3-22 签署 301 调查备忘录，3-23 沪指 −3.39%'],
   ['2019-06-13','科创板开板',2,'科创板正式开板（7-22 首批 25 家上市）'],
   ['2019-08-01','美联储降息',2,'2008 年以来首次降息 25bp（美东 7-31 决议）'],
   ['2020-02-03','疫情开市',0,'春节后首个交易日，沪指 −7.72%，逾三千股跌停'],
@@ -2139,23 +2120,32 @@ const EVENTS=[
   ['2026-10-29','美联储按兵不动',2,'维持 3.75%–4.00%，10:2 投票，两名理事主张加息（美东 10-28 决议）'],
   ['2026-11-12','黄仁勋辞职',2,'英伟达 CEO 黄仁勋辞职，AI 硬件链定价锚动摇'],
   ['2026-11-16','芯片出口新规',0,'美 BIS 先进算力出口管制新规（11-19 生效），海外数据中心租算力被堵，AI 硬件链重定价'],
+  ['2015-07-04','暂停IPO救市',1,'国务院决定暂停 IPO，证金公司入场；7-6 沪指收 +2.41%'],
+  ['2018-10-19','一行两会喊话',1,'副总理与一行两会同日发声稳市场，沪指 +2.58%，本轮政策底'],
+  ['2019-05-10','关税升级至25%',1,'美对 2000 亿美元中国商品加征至 25% 生效，沪指当日 +3.10%（利空出尽）'],
+  ['2020-11-04','蚂蚁暂缓上市',2,'11-03 晚间暂缓 A+H 上市，次日沪指 +0.19%'],
+  ['2021-09-22','恒大债务危机',1,'中秋假期恒大事件发酵、港股地产股暴跌，A股复市收 +0.40%'],
+  ['2022-08-02','佩洛西窜台',1,'佩洛西窜访台湾，沪指 −2.26%'],
+  ['2022-12-07','防疫新十条',1,'国务院联防联控发布「新十条」，防疫转向（当日沪指 −0.40%）'],
+  ['2023-10-23','汇金增持ETF',1,'汇金公告当日买入 ETF，沪指 −1.47%、次日 +0.78%'],
+  ['2024-02-07','证监会换帅',2,'吴清接任证监会主席，市场延续反弹（当日 +1.44%）'],
+  ['2026-11-03','美国中期选举',1,'美国中期选举投票日，市场担忧数据中心建设放缓，沪指 −0.82%、次日 +2.16%'],
 ];
 const EVT_LINE={color:'rgba(24,24,27,.50)',width:1.2,type:[5,4]};
 const EVT_LINE2={color:'rgba(24,24,27,.30)',width:1,type:[5,4]}; // 次要事件淡一档，但仍看得清（开关只在用时才打开，不必压太暗）
-const EVT_LBL={fontSize:13,fontWeight:600,color:'#1f1f23',textBorderColor:'#ffffff',textBorderWidth:3,position:'end',distance:0,rotate:0,align:'center',verticalAlign:'top'};
-// 标签宽度实测：与 EVT_LBL 同字号同字重同字族，避免中文按字数估算导致的碰撞漏判
-const evtMeasure=document.createElement('canvas').getContext('2d');
-evtMeasure.font='600 '+EVT_LBL.fontSize+'px '+getComputedStyle(document.body).fontFamily;
-const evtTextWidth=t=>evtMeasure.measureText(t).width+4;
+const EVT_ROW_H=TOP_LBL_ROW_H; // 与回撤顶部标签共用同一行高/字号/描边（v8.13）
+const EVT_LBL_H=TOP_LBL_BOX_H;
+const EVT_LBL=TOP_LBL_STYLE;
+const evtTextWidth=topTextWidth;
 const evtIdx=new Map();dates.forEach((d,i)=>evtIdx.set(d,i));
 const EVT_ITEMS=EVENTS.map(([d,lb,tier,note])=>{
   let i=evtIdx.get(d);
   if(i==null){i=dates.length;for(let k=0;k<dates.length;k++){if(dates[k]>=d){i=k;break}}if(i>=dates.length)return null}
   return {date:dates[i],raw:d,lb,tier:tier==null?2:tier,note,i}; // 注意 tier 0 是里程碑，不能用 || 兜底（0 是 falsy）
 }).filter(Boolean);
-let evtGate=false,evtFrame=0,evtOpenTs=0;
+let evtGate=false,evtFrame=0,evtOpenTs=0,evtTimer=0,evtLastMs=0;
 var evtHitTs=0; // var 提升：参考线点击处理器（定义在上方）靠它让路
-const evtState={key:'',hits:[]};
+const evtState={key:'',layoutKey:'__init__',hits:[]};
 const evtTipEl=document.createElement('div');
 evtTipEl.className='ref-tip evt-tip';evtTipEl.style.display='none';
 document.body.appendChild(evtTipEl);
@@ -2174,11 +2164,26 @@ function showEvtTipAt(ev,anchor){
 }
 function applyEvents(){
   hideEvtTip();
-  if(!evtGate){if(evtState.key){mainChart.setOption({series:[{id:'evtAxis',markLine:{data:[]}}]});evtState.key='';evtState.hits=[]}return}
+  if(!evtGate){if(evtState.key){mainChart.setOption({series:[{id:'evtAxis',markLine:{data:[]}}]});evtState.key='';evtState.layoutKey='__init__';evtState.hits=[]}return}
   const w=visibleWindow();
   const px=i=>{try{const p=mainChart.convertToPixel({xAxisIndex:0},i);return Number.isFinite(p)?p:null}catch(e){return null}};
   let g=null;try{const gc=mainChart.getModel().getComponent('grid',0);g=gc&&gc.coordinateSystem?gc.coordinateSystem.getRect():null}catch(e){g=null}
   const gx0=g?g.x:0,gx1=g?g.x+g.width:1e9;
+  // v8.12e：事件层属于主图。只开副图时 layoutPanes 把 grid0 压成 0 高，markLine 会退化到画布底部、压在日期轴上。
+  // 主图不可见（无任何主图曲线，或 grid0 高度/宽度≈0）就不画：清空 markLine 并把签名复位；主图回来（图例点亮/切页签/resize/hash 恢复）再重画。
+  const mainOn=MAIN_SERIES.some(n=>selected[n]);
+  if(!mainOn||!g||g.height<20||g.width<20){
+    if(evtState.key||evtState.layoutKey!=='__init__')mainChart.setOption({series:[{id:'evtAxis',markLine:{data:[]}}]});
+    evtState.key='';evtState.layoutKey='__init__';evtState.hits=[];
+    return;
+  }
+  const ddRows=(ddState&&ddState.on)?(ddState.topRows||1):0; // 回撤标签占用顶部行数：变化时事件标签必须重排
+  const geomKey=g?[g.x,g.y,g.width,g.height].join('|'):'';
+  const key=w.from+'-'+w.to+'|'+geomKey+'|dd:'+ddRows;
+  // v8.12d：窗口+几何签名未变＝可见事件、分行、对齐、命中框都还是对的，直接跳过整段 setOption。
+  // datazoom 常在同一帧派发多次、且滑块小幅拖动时取整后的窗口可能不变——这些空转帧不再重画 60 条 markLine。
+  // 几何也写进签名：resize/跨断点后窗口不变但 px 变了，必须重排。
+  if(key===evtState.key)return;
   const vis=EVT_ITEMS.filter(e=>e.i>=w.from&&e.i<=w.to);
   // 标签分行：先重大后次要，逐行贪心。宽度用 canvas 实测（中文/英文混排，估算会偏），
   // 并按实际对齐方式算出左右边界再做区间碰撞——贴边改左/右对齐后文字整体偏移，只比「上一个右边界」会漏判。
@@ -2188,7 +2193,8 @@ function applyEvents(){
   // 若排得下的不足八成，退一档只标重要+里程碑，再不够就只标里程碑。
   // 竖线始终全画（次要事件淡一档），没标签的点一下就能读说明——信息不丢，画面不糊。
   const PAD=6;
-  const place=lv=>{
+  const place=lv=>{ // ddRows 在函数开头算好并写进窗口签名，回撤开/关/占 2 行时事件标签立即重排
+
     const rows=[[],[],[],[]],rowOf=new Map(),alignOf=new Map();
     let total=0;
     for(const e of [...vis].sort((a,b)=>a.tier-b.tier||b.i-a.i)){ // 同级近期优先：最近的事最需要被看见
@@ -2199,7 +2205,7 @@ function applyEvents(){
       let al='center';
       if(x+tw/2>gx1-2)al='right';else if(x-tw/2<gx0+2)al='left';
       const l=al==='right'?x-tw:(al==='left'?x:x-tw/2),r=l+tw;
-      const r0=x<gx0+34?1:0; // 贴左缘从第 2 行起排，避开面板角标 (a)
+      const r0=Math.max(ddRows,x<gx0+34?1:0); // 回撤开着时让出顶部行；贴左缘仍从第 2 行起，避开面板角标 (a)
       for(let k=r0;k<rows.length;k++){
         if(rows[k].every(iv=>r+PAD<iv[0]||l-PAD>iv[1])){rows[k].push([l,r]);rowOf.set(e,k);alignOf.set(e,al);break}
       }
@@ -2214,25 +2220,64 @@ function applyEvents(){
   const rowOf=pick.rowOf,alignOf=pick.alignOf;
   const data=vis.map(e=>{
     const r=rowOf.has(e)?rowOf.get(e):null;
-    return {xAxis:e.date,lineStyle:e.tier<2?EVT_LINE:EVT_LINE2,label:Object.assign({},EVT_LBL,{show:r!=null,formatter:e.lb,align:alignOf.get(e)||'center',offset:[0,8+r*15]})};
+    return {xAxis:e.date,lineStyle:e.tier<2?EVT_LINE:EVT_LINE2,label:Object.assign({},EVT_LBL,{show:r!=null,formatter:e.lb,align:alignOf.get(e)||'center',offset:[0,8+r*EVT_ROW_H]})};
   });
-  mainChart.setOption({series:[{id:'evtAxis',markLine:{silent:true,symbol:'none',lineStyle:EVT_LINE,label:EVT_LBL,data:data}}]});
-  evtState.key=w.from+'-'+w.to;
-  evtState.hits=vis.map(e=>({e,x:px(e.i)})).filter(o=>o.x!=null);
+  // v8.12d 二级幂等：窗口几乎每帧都在变，但「可见事件集合 + 分行 + 对齐」往往几十帧才变一次。
+  // markLine 按日期锚定，窗口平移时线/标签本来就跟着轴走——布局签名没变就不 setOption，只更新下面的命中框。
+  // 签名含：窗口内事件日期、tier（决定线深）、行号、对齐；数据/样式在运行期不会变，足以代表整份 markLine。
+  const layoutKey=vis.length?vis.map(e=>e.date+'|'+e.tier+'|'+(rowOf.has(e)?rowOf.get(e):-1)+'|'+(alignOf.get(e)||'center')).join(';'):'__empty__';
+  if(layoutKey!==evtState.layoutKey)mainChart.setOption({series:[{id:'evtAxis',markLine:{silent:true,symbol:'none',lineStyle:EVT_LINE,label:EVT_LBL,data:data}}]},{lazyUpdate:true});
+  evtState.layoutKey=layoutKey;
+  evtState.key=key;
+  // v8.12d：命中不再只认竖线 ±6px——把每条已标注事件的标签 bbox 一并存下（按实际 align 算左右边界），
+  // 点标签文字本身也能弹卡。未标注事件 lab=null，仍走竖线命中。
+  evtState.hits=vis.map(e=>{
+    const x=px(e.i);if(x==null)return null;
+    let lab=null;
+    if(rowOf.has(e)&&g){
+      const rw=rowOf.get(e),al=alignOf.get(e)||'center',tw=evtTextWidth(e.lb);
+      const l=al==='right'?x-tw:(al==='left'?x:x-tw/2);
+      const t=g.y+6+rw*EVT_ROW_H;
+      lab={l,r:l+tw,t,b:t+EVT_LBL_H};
+    }
+    return {e,x,lab};
+  }).filter(Boolean);
 }
-function scheduleEvents(){if(!evtGate||evtFrame)return;evtFrame=requestAnimationFrame(()=>{evtFrame=0;if(!mainChart.isDisposed())applyEvents()})}
+// v8.12d：datazoom 节流——窗口签名/布局签名都拦不住的「布局确实变了」帧，最多每 120ms 重排一次；
+//   线/标签按日期锚定，拖拽过程中本来就随轴逐帧移动，这里只延迟分行/对齐/显隐的重算，视觉上跟得上。
+//   松手（pointerup）立即补一次最终布局，避免拖完马上点标签时命中框还停在旧位置。
+function scheduleEvents(){
+  if(!evtGate)return;
+  const wait=120-(Date.now()-evtLastMs);
+  if(wait<=0){
+    evtLastMs=Date.now();
+    if(evtTimer){clearTimeout(evtTimer);evtTimer=0}
+    if(!evtFrame)evtFrame=requestAnimationFrame(()=>{evtFrame=0;if(!mainChart.isDisposed())applyEvents()});
+  }else if(!evtTimer){
+    evtTimer=setTimeout(()=>{evtTimer=0;evtLastMs=Date.now();if(!mainChart.isDisposed())applyEvents()},wait);
+  }
+}
+addEventListener('pointerup',()=>{if(!evtGate||!evtTimer)return;clearTimeout(evtTimer);evtTimer=0;evtLastMs=Date.now();if(!mainChart.isDisposed())applyEvents()},{passive:true});
 mainChart.on('datazoom',scheduleEvents);
 const evtBtn=document.getElementById('evtToggle');
-if(evtBtn)evtBtn.addEventListener('click',()=>{evtGate=!evtGate;evtBtn.setAttribute('aria-pressed',String(evtGate));applyEvents()});
-// 命中：竖线 ±6px（竖向容差走 grid0 矩形），命中优先于参考线点击
+if(evtBtn)evtBtn.addEventListener('click',()=>{evtGate=!evtGate;if(evtTimer){clearTimeout(evtTimer);evtTimer=0}evtBtn.setAttribute('aria-pressed',String(evtGate));applyEvents()});
+// 命中：竖线 ±6px，或落在该事件标签的 bbox 内（竖向容差走 grid0 矩形），命中优先于参考线点击
 mainChart.getZr().on('click',e=>{
   if(!evtGate||!e||!e.event||Date.now()-msDragEndTs<400)return;
   const ox=e.offsetX,oy=e.offsetY;
   let g=null;try{const gc=mainChart.getModel().getComponent('grid',0);g=gc&&gc.coordinateSystem?gc.coordinateSystem.getRect():null}catch(err){g=null}
   if(!g||ox<g.x-4||ox>g.x+g.width+4||oy<g.y-2||oy>g.y+g.height+2)return;
   let best=null,bd=1e9;
-  for(const h of evtState.hits){const d=Math.abs(ox-h.x);if(d<bd){bd=d;best=h.e}}
-  if(!best||bd>6)return;
+  // v8.12d：先认标签 bbox（宽标签的可点区域远大于竖线 ±6px 的 12px 带）；多个 bbox 命中时取离自己竖线最近的
+  for(const h of evtState.hits){
+    const b=h.lab;
+    if(!b||ox<b.l||ox>b.r||oy<b.t||oy>b.b)continue;
+    const d=Math.abs(ox-h.x);if(d<bd){bd=d;best=h.e}
+  }
+  if(!best){
+    for(const h of evtState.hits){const d=Math.abs(ox-h.x);if(d<bd){bd=d;best=h.e}}
+    if(!best||bd>6)return;
+  }
   evtHitTs=Date.now();
   showEvtTipAt(best,{x:e.event.clientX,y:e.event.clientY});
 });
